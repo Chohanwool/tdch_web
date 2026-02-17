@@ -1,19 +1,8 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 import { navItems } from "@/lib/site-data";
 
 export default function SiteHeader() {
-  const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
-
   return (
     <header className="sticky top-0 z-50 border-b border-cedar/10 bg-white backdrop-blur-lg">
       <div className="section-shell flex flex-col gap-3 py-3 md:gap-4 md:py-4">
@@ -26,71 +15,50 @@ export default function SiteHeader() {
             </div>
           </Link>
 
-          <button
-            type="button"
-            aria-label="메뉴 열기"
-            aria-expanded={mobileOpen}
-            onClick={() => setMobileOpen((prev) => !prev)}
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-cedar/20 text-cedar md:hidden"
-          >
-            <span className="text-xl leading-none">{mobileOpen ? "×" : "≡"}</span>
-          </button>
-
           <Link
             href="/newcomer"
             className="hidden min-h-11 items-center justify-center rounded-full border border-clay px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-clay transition hover:bg-clay hover:text-ivory md:inline-flex"
           >
             처음 오셨나요
           </Link>
-        </div>
 
-        <nav className="hidden items-center gap-2 text-sm font-medium text-ink/80 md:flex">
-          {navItems.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={
-                  active
-                    ? "rounded-full bg-cedar/10 px-3 py-2 text-clay"
-                    : "rounded-full px-3 py-2 transition hover:bg-cedar/5 hover:text-clay"
-                }
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {mobileOpen ? (
-          <div className="surface-card-strong rounded-2xl p-3 md:hidden">
-            <nav className="grid grid-cols-2 gap-2 text-sm font-semibold text-ink/85">
-              {navItems.map((item) => {
-                const active = pathname === item.href;
-                return (
+          <details className="group md:hidden">
+            <summary className="inline-flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-xl border border-cedar/20 text-xl leading-none text-cedar">
+              ☰
+            </summary>
+            <div className="surface-card-strong absolute left-4 right-4 top-[76px] rounded-2xl p-3">
+              <nav className="grid grid-cols-2 gap-2 text-sm font-semibold text-ink/85">
+                {navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={
-                      active
-                        ? "rounded-xl bg-clay px-3 py-3 text-center text-ivory"
-                        : "rounded-xl bg-white/75 px-3 py-3 text-center transition hover:bg-white"
-                    }
+                    className="rounded-xl bg-white/75 px-3 py-3 text-center transition hover:bg-white"
                   >
                     {item.label}
                   </Link>
-                );
-              })}
-            </nav>
+                ))}
+              </nav>
+              <Link
+                href="/newcomer"
+                className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-cedar px-4 py-3 text-sm font-semibold text-ivory"
+              >
+                새가족 안내 바로가기
+              </Link>
+            </div>
+          </details>
+        </div>
+
+        <nav className="hidden items-center gap-2 text-sm font-medium text-ink/80 md:flex">
+          {navItems.map((item) => (
             <Link
-              href="/newcomer"
-              className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-cedar px-4 py-3 text-sm font-semibold text-ivory"
+              key={item.href}
+              href={item.href}
+              className="rounded-full px-3 py-2 transition hover:bg-cedar/5 hover:text-clay"
             >
-              새가족 안내 바로가기
+              {item.label}
             </Link>
-          </div>
-        ) : null}
+          ))}
+        </nav>
       </div>
     </header>
   );
