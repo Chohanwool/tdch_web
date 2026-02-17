@@ -4,14 +4,14 @@ import { navItems } from "@/lib/site-data";
 
 export default function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-cedar/10 bg-white backdrop-blur-lg">
+    <header className="sticky top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg">
       <div className="section-shell flex flex-col gap-3 py-3 md:gap-4 md:py-4">
         <div className="flex items-center justify-between gap-3">
           <Link href="/" className="flex items-center gap-3">
             <span className="h-7 w-7 rounded-full bg-gradient-to-br from-gold to-clay md:h-8 md:w-8" />
             <div>
-              <p className="hidden text-xs uppercase tracking-[0.2em] text-cedar/70 sm:block">The Disciple Church</p>
-              <p className="font-serif text-base font-semibold text-ink md:text-lg">더 제자교회</p>
+              <p className="hidden text-[10px] uppercase tracking-[0.18em] text-cedar/70 sm:block">The Jeja Church</p>
+              <p className="font-serif text-xl font-semibold text-ink md:text-2xl">더 제자교회</p>
             </div>
           </Link>
 
@@ -32,7 +32,7 @@ export default function SiteHeader() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="rounded-xl bg-white/75 px-3 py-3 text-center transition hover:bg-white"
+                    className="rounded-xl bg-palette-surface/75 px-3 py-3 text-center transition hover:bg-palette-surface"
                   >
                     {item.label}
                   </Link>

@@ -53,3 +53,22 @@ docker compose up -d --build
 - 예배시간/설교/공지 기본 데이터: `src/lib/site-data.ts`
 
 이후 단계로 CMS 도입(예: Sanity/Notion API) 또는 관리자 페이지를 연결할 수 있습니다.
+
+## 디자인 팔레트
+
+기본 팔레트는 `tailwind.config.ts`와 `src/app/globals.css`에서 함께 관리합니다.
+
+- `Background`: `#f3f3f2`
+- `Surface`: `#e9f1ff`
+- `Surface Soft`: `#dbe8ff`
+- `Ink` (기본 텍스트): `#10213f`
+- `Cedar` (보조 텍스트/테두리): `#2a4f8f`
+- `Clay` (포인트/CTA): `#3f74c7`
+- `Gold` (하이라이트): `#6ca6f0`
+- `Moss` (보조 강조): `#2f6f9e`
+
+사용 원칙:
+
+- 배경/카드 톤은 `globals.css`의 CSS 변수(`--color-*`, `--surface-*`)를 우선 사용
+- 컴포넌트 색상 클래스는 Tailwind 팔레트(`ink`, `cedar`, `clay` 등) 사용
+- 기존 클래스 호환을 위해 레거시 별칭(`ivory`, `ink`, `cedar`, `moss`, `clay`, `gold`) 유지

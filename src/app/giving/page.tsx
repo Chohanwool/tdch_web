@@ -21,9 +21,9 @@ export default function GivingPage() {
       <section className="surface-card rounded-2xl p-5 text-sm text-ink/75 md:p-6">
         <h3 className="text-lg font-semibold text-ink">헌금 종류 표기 예시</h3>
         <div className="mt-3 grid gap-2 sm:grid-cols-3">
-          <p className="rounded-xl bg-white/70 p-3">주일헌금: 홍길동주일</p>
-          <p className="rounded-xl bg-white/70 p-3">감사헌금: 홍길동감사</p>
-          <p className="rounded-xl bg-white/70 p-3">선교헌금: 홍길동선교</p>
+          <p className="rounded-xl bg-palette-surface/70 p-3">주일헌금: 홍길동주일</p>
+          <p className="rounded-xl bg-palette-surface/70 p-3">감사헌금: 홍길동감사</p>
+          <p className="rounded-xl bg-palette-surface/70 p-3">선교헌금: 홍길동선교</p>
         </div>
       </section>
     </div>

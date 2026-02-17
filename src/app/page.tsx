@@ -16,7 +16,7 @@ export default function Home() {
     <div className="section-shell flex w-full flex-col gap-12 pb-16 pt-10 md:gap-16 md:pb-20 md:pt-12">
       <section className="fade-up surface-card-strong grid gap-8 rounded-3xl p-6 md:p-10 lg:grid-cols-[1.15fr,0.85fr] lg:gap-10 lg:p-12">
         <div>
-          <p className="chip bg-clay/12 text-clay">The Disciple Church</p>
+          <p className="chip bg-clay/12 text-clay">The Jeja Church</p>
           <h1 className="mt-5 max-w-3xl font-serif text-[clamp(2rem,6vw,3.4rem)] leading-tight text-ink">
             작은 시작이지만,
             <br />
@@ -48,7 +48,7 @@ export default function Home() {
 
           <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {quickHighlights.map((item) => (
-              <article key={item.label} className="rounded-2xl border border-cedar/10 bg-white/65 p-4">
+              <article key={item.label} className="rounded-2xl border border-cedar/10 bg-palette-surface/65 p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-cedar/70">{item.label}</p>
                 <p className="mt-2 text-lg font-semibold text-ink">{item.value}</p>
               </article>
@@ -60,7 +60,7 @@ export default function Home() {
           <p className="chip bg-moss/10 text-moss">이번 주 예배</p>
           <div className="mt-4 space-y-3">
             {serviceTimes.map((item) => (
-              <div key={item.title} className="rounded-xl border border-cedar/10 bg-white/70 p-4">
+              <div key={item.title} className="rounded-xl border border-cedar/10 bg-palette-surface/70 p-4">
                 <p className="text-xs font-semibold text-cedar/80">{item.title}</p>
                 <p className="mt-1 text-base font-semibold text-ink">{item.time}</p>
               </div>

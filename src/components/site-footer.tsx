@@ -9,7 +9,7 @@ const kakao = process.env.NEXT_PUBLIC_KAKAO_URL ?? "#";
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-cedar/10 bg-ink py-10 text-ivory/80 md:py-12">
+    <footer className="border-t border-cedar/20 bg-cedar py-10 text-ivory/80 md:py-12">
       <div className="section-shell grid gap-7 text-sm lg:grid-cols-[1.2fr,1fr,1fr]">
         <div className="space-y-3">
           <p className="font-serif text-2xl text-ivory">더 제자교회</p>

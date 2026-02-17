@@ -13,15 +13,26 @@ const config: Config = {
         serif: ["var(--font-serif)", "serif"]
       },
       colors: {
-        ivory: "#f7f5ef",
-        ink: "#222018",
-        cedar: "#4f3a28",
-        moss: "#5b6f4f",
-        clay: "#b77e55",
-        gold: "#d0ad68"
+        palette: {
+          background: "#f3f3f2",
+          surface: "#e9f1ff",
+          surfaceSoft: "#dbe8ff",
+          ink: "#10213f",
+          cedar: "#2a4f8f",
+          moss: "#2f6f9e",
+          clay: "#3f74c7",
+          gold: "#6ca6f0"
+        },
+        // Legacy aliases kept for existing classNames.
+        ivory: "#e9f1ff",
+        ink: "#10213f",
+        cedar: "#2a4f8f",
+        moss: "#2f6f9e",
+        clay: "#3f74c7",
+        gold: "#6ca6f0"
       },
       boxShadow: {
-        soft: "0 12px 40px rgba(34, 32, 24, 0.12)"
+        soft: "0 12px 40px rgba(16, 33, 63, 0.14)"
       }
     }
   },
