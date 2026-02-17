@@ -36,8 +36,8 @@ export default function AboutPage() {
       <section className="rounded-2xl border border-cedar/10 bg-white/70 p-6 text-sm text-ink/80">
         <h3 className="font-serif text-2xl text-ink">담임목사 인사</h3>
         <p className="mt-3 leading-relaxed">
-          "교회가 크기보다 본질을 지키는 것이 중요하다고 믿습니다. 말씀과 기도로 한 사람을 제자로
-          세우는 일에 집중하겠습니다."
+          &quot;교회가 크기보다 본질을 지키는 것이 중요하다고 믿습니다. 말씀과 기도로 한 사람을
+          제자로 세우는 일에 집중하겠습니다.&quot;
         </p>
       </section>
     </div>
