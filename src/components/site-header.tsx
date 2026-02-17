@@ -15,7 +15,7 @@ export default function SiteHeader() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-cedar/10 bg-ivory/95 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 border-b border-cedar/10 bg-white backdrop-blur-lg">
       <div className="section-shell flex flex-col gap-3 py-3 md:gap-4 md:py-4">
         <div className="flex items-center justify-between gap-3">
           <Link href="/" className="flex items-center gap-3">
