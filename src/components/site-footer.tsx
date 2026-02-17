@@ -1,17 +1,59 @@
+import Link from "next/link";
+
 const phone = process.env.NEXT_PUBLIC_CHURCH_PHONE ?? "010-0000-0000";
 const email = process.env.NEXT_PUBLIC_CHURCH_EMAIL ?? "hello@deojeja.church";
 const address =
   process.env.NEXT_PUBLIC_CHURCH_ADDRESS ?? "서울시 OO구 OO로 00, 더 제자교회";
+const youtube = process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "#";
+const kakao = process.env.NEXT_PUBLIC_KAKAO_URL ?? "#";
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-cedar/10 bg-ink py-8 text-ivory/80 md:py-10">
-      <div className="mx-auto grid max-w-6xl gap-4 px-4 text-sm md:px-6 lg:grid-cols-2">
-        <div className="space-y-2">
-          <p className="font-serif text-xl text-ivory">더 제자교회</p>
-          <p>복음으로 사람을 세우는 공동체</p>
+    <footer className="border-t border-cedar/10 bg-ink py-10 text-ivory/80 md:py-12">
+      <div className="section-shell grid gap-7 text-sm lg:grid-cols-[1.2fr,1fr,1fr]">
+        <div className="space-y-3">
+          <p className="font-serif text-2xl text-ivory">더 제자교회</p>
+          <p className="max-w-sm leading-relaxed">복음으로 사람을 세우는 공동체</p>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={youtube}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-10 items-center rounded-full border border-ivory/30 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-ivory transition hover:bg-ivory/10"
+            >
+              Youtube
+            </a>
+            <a
+              href={kakao}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-10 items-center rounded-full border border-ivory/30 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-ivory transition hover:bg-ivory/10"
+            >
+              Kakao
+            </a>
+          </div>
         </div>
-        <div className="space-y-1 text-left lg:text-right">
+
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ivory/60">Quick Links</p>
+          <div className="grid gap-1 text-ivory/90">
+            <Link href="/about" className="transition hover:text-gold">
+              교회소개
+            </Link>
+            <Link href="/sermons" className="transition hover:text-gold">
+              말씀/설교
+            </Link>
+            <Link href="/news" className="transition hover:text-gold">
+              교회소식
+            </Link>
+            <Link href="/newcomer" className="transition hover:text-gold">
+              새가족안내
+            </Link>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ivory/60">Contact</p>
           <p>{address}</p>
           <p>{phone}</p>
           <p>{email}</p>
