@@ -16,7 +16,7 @@ export default function Home() {
     <div className="section-shell flex w-full flex-col gap-12 pb-16 pt-10 md:gap-16 md:pb-20 md:pt-12">
       <section className="fade-up surface-card-strong grid gap-8 rounded-3xl p-6 md:p-10 lg:grid-cols-[1.15fr,0.85fr] lg:gap-10 lg:p-12">
         <div>
-          <p className="chip bg-clay/12 text-clay">The Jeja Church</p>
+          <p className="chip bg-clay/12 text-clay">The Disciples Church</p>
           <h1 className="mt-5 max-w-3xl font-serif text-[clamp(2rem,6vw,3.4rem)] leading-tight text-ink">
             작은 시작이지만,
             <br />

@@ -10,7 +10,7 @@ export default function SiteHeader() {
           <Link href="/" className="flex items-center gap-3">
             <span className="h-7 w-7 rounded-full bg-gradient-to-br from-gold to-clay md:h-8 md:w-8" />
             <div>
-              <p className="hidden text-[10px] uppercase tracking-[0.18em] text-cedar/70 sm:block">The Jeja Church</p>
+              <p className="hidden text-[10px] uppercase tracking-[0.18em] text-cedar/70 sm:block">The Disciples Church</p>
               <p className="font-serif text-xl font-semibold text-ink md:text-2xl">더 제자교회</p>
             </div>
           </Link>
