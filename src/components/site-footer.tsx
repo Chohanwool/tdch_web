@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 const phone = process.env.NEXT_PUBLIC_CHURCH_PHONE ?? "010-5252-8580";
 const email = process.env.NEXT_PUBLIC_CHURCH_EMAIL ?? "hello@thedisciples.church";
 const address =
@@ -12,7 +10,7 @@ const kakao = process.env.NEXT_PUBLIC_KAKAO_URL ?? "https://open.kakao.com/o/you
 export default function SiteFooter() {
   return (
     <footer className="border-t border-cedar/20 bg-cedar py-10 text-ivory/80 md:py-12">
-      <div className="section-shell grid gap-7 text-sm lg:grid-cols-[1.2fr,1fr,1fr]">
+      <div className="section-shell grid gap-7 text-sm lg:grid-cols-[1.2fr,1fr]">
         <div className="space-y-3">
           <p className="font-serif text-2xl text-ivory">더 제자교회</p>
           <p className="max-w-sm leading-relaxed">성령으로 제자삼는 교회</p>
@@ -33,24 +31,6 @@ export default function SiteFooter() {
             >
               Kakao
             </a>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ivory/60">Quick Links</p>
-          <div className="grid gap-1 text-ivory/90">
-            <Link href="/about" className="transition hover:text-gold">
-              교회소개
-            </Link>
-            <Link href="/sermons" className="transition hover:text-gold">
-              말씀/설교
-            </Link>
-            <Link href="/news" className="transition hover:text-gold">
-              교회소식
-            </Link>
-            <Link href="/newcomer" className="transition hover:text-gold">
-              새가족안내
-            </Link>
           </div>
         </div>
 
