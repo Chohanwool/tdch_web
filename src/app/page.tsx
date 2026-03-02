@@ -7,7 +7,7 @@ import { newsPosts, sermons } from "@/lib/site-data";
 export default function Home() {
   return (
     <div className="section-shell flex w-full flex-col gap-12 pb-16 pt-0 md:gap-16 md:pb-20 md:pt-0">
-      <section className="relative left-1/2 w-[min(100vw,1480px)] -translate-x-1/2 overflow-hidden rounded-b-[2rem] shadow-[0_20px_46px_rgba(16,33,63,0.2)]">
+      <section className="relative left-1/2 w-[min(2200px,122vw)] -translate-x-1/2 overflow-hidden rounded-b-[2rem] shadow-[0_20px_46px_rgba(16,33,63,0.2)]">
         <div className="relative min-h-[430px] md:min-h-[560px]">
           <Image
             src="/images/sample2.jpg"
