@@ -9,6 +9,7 @@ declare module "react" {
       > & {
         src?: string;
         trigger?: string;
+        target?: string;
         colors?: string;
         state?: string;
         delay?: string | number;
