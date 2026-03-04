@@ -4,9 +4,10 @@ import { navMenuGroups } from "@/lib/site-data";
 
 export default function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg">
+    <header className="sticky top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg animate-header-item">
       <div className="section-shell py-[31px] md:py-[35px]">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4 md:gap-6">
+          {/* 로고 */}
           <Link href="/" className="shrink-0">
             <div>
               <p className="hidden text-[10px] uppercase tracking-[0.18em] text-cedar/70 sm:block">The Disciples Church</p>
@@ -14,9 +15,13 @@ export default function SiteHeader() {
             </div>
           </Link>
 
+          {/* 데스크탑 내비게이션 */}
           <nav className="hidden items-center justify-center gap-6 text-lg font-semibold text-ink/85 lg:flex xl:gap-8">
             {navMenuGroups.map((menu) => (
-              <div key={menu.label} className="group/menu relative pb-2 -mb-2">
+              <div
+                key={menu.label}
+                className="group/menu relative pb-2 -mb-2"
+              >
                 <Link
                   href={menu.href}
                   className="inline-flex whitespace-nowrap rounded-full border border-transparent px-6 py-2.5 transition group-focus-within/menu:border-cedar/20 group-focus-within/menu:bg-white group-focus-within/menu:text-clay group-hover/menu:border-cedar/20 group-hover/menu:bg-white group-hover/menu:text-clay"
@@ -44,6 +49,7 @@ export default function SiteHeader() {
             ))}
           </nav>
 
+          {/* 모바일 햄버거 버튼 */}
           <details className="group relative shrink-0">
             <summary className="inline-flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-xl border border-cedar/20 text-xl leading-none text-cedar transition hover:border-cedar/40 hover:text-clay">
               ☰
@@ -82,3 +88,5 @@ export default function SiteHeader() {
     </header>
   );
 }
+
+

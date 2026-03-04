@@ -56,7 +56,7 @@ const newsPosts: NewsPostPreview[] = [
     category: "공지",
     title: "봄 학기 성경공부 신청 안내 (더미)",
     date: "2026.03.01",
-    thumbnail: "/images/sample.png"
+    thumbnail: "/images/main_bg_3.jpg"
   },
   {
     href: "/sermons#setlist",
@@ -77,7 +77,7 @@ const newsPosts: NewsPostPreview[] = [
     category: "주보",
     title: "2월 4주차 주보 안내 (더미)",
     date: "2026.02.23",
-    thumbnail: "/images/sample.png"
+    thumbnail: "/images/main_bg_3.jpg"
   },
   {
     href: "/news#notice",
