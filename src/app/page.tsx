@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Gowun_Batang } from "next/font/google";
 import MissionSection from "@/components/mission-section";
 import AnimatedCards from "@/components/animated-cards";
 import SermonCard from "@/components/sermon-card";
@@ -10,15 +11,17 @@ import {
   homeSermonList,
 } from "@/lib/site-data";
 
+const gowunBatang = Gowun_Batang({ subsets: ["latin"], weight: ["400", "700"] });
+
 export default function Home() {
   const youtubeUrl =
     process.env.NEXT_PUBLIC_YOUTUBE_URL ??
     "https://www.youtube.com/@%EB%8D%94%EC%A0%9C%EC%9E%90%EA%B5%90%ED%9A%8C";
 
   return (
-    <div className="section-shell flex w-full flex-col pb-0 pt-0">
+    <div className="flex w-full flex-col pb-0 pt-0 overflow-x-hidden">
       {/* 1. 히어로 섹션 */}
-      <section className="relative left-1/2 h-[740px] w-[3000px] -translate-x-1/2 overflow-hidden">
+      <section className="relative w-full h-[560px] sm:h-[620px] lg:h-[740px] overflow-hidden">
         <div className="relative h-full">
           <Image
             src="/images/main_bg/main_bg_sec1.png"
@@ -30,46 +33,45 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-ink/78 via-ink/52 to-ink/18" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/38 via-transparent to-transparent" />
 
-          <div className="relative z-10 flex h-full items-center py-8 md:py-10">
+          <div className="relative z-10 flex h-full items-center py-8">
             <div className="section-shell w-full">
-              <div className="grid items-end gap-3 lg:grid-cols-[minmax(0,770px),270px] lg:items-stretch lg:justify-center lg:gap-4">
+              <div className="grid items-center gap-3 lg:grid-cols-[minmax(0,770px),270px] lg:items-stretch lg:gap-4">
                 {/* 비전 텍스트 카드 */}
-                <div className="w-full max-w-xl space-y-6 rounded-2xl bg-black/30 px-6 py-7 text-ivory backdrop-blur-md md:space-y-7 md:max-w-[770px] md:px-7 md:py-8">
-                  <p className="chip w-fit bg-gold/30 text-ivory">VISION</p>
-                  <h1 className="font-yeongwol text-6xl leading-[1.18] tracking-wider md:text-8xl">
+                <div className="w-full space-y-3 rounded-2xl bg-black/30 px-5 py-5 text-ivory backdrop-blur-md sm:space-y-4 sm:px-6 sm:py-6 md:space-y-5 md:px-7 md:py-7 lg:space-y-6 lg:py-8">
+                  <p className="chip w-fit bg-gold/30 text-ivory text-[0.65rem] sm:text-xs">VISION</p>
+                  <h1 className="font-yeongwol text-[2.2rem] leading-[1.2] tracking-wide sm:text-5xl md:text-6xl lg:text-7xl lg:tracking-wider xl:text-8xl">
                     성령으로
                     <br />
                     제자삼는 교회
                   </h1>
-                  <div className="mt-5 text-lg font-medium leading-[1.72] text-ivory/92 md:mt-6 md:text-[1.42rem]">
-                    <p>
-                      <span className="block lg:whitespace-nowrap">
+                  {/* 성경 구절 */}
+                  <div className={`${gowunBatang.className} mt-2 text-sm font-medium leading-[1.8] text-ivory/90 sm:mt-3 md:text-base md:mt-4 lg:text-[1.42rem] lg:mt-5`}>
+                    <p className="lg:space-y-3">
+                      <span className="block">
                         예수께서 나아와 말씀하여 이르시되 하늘과 땅의 모든 권세를 내게 주셨으니
                       </span>
-                      <span className="block lg:whitespace-nowrap">
+                      <span className="block">
                         너희는 가서 모든 민족을 제자로 삼아 아버지와 아들과 성령의 이름으로
                       </span>
-                      <span className="block lg:whitespace-nowrap">
+                      <span className="block">
                         세례를 베풀고 내가 너희에게 분부한 모든 것을 가르쳐 지키게 하라
                       </span>
-                    </p>
-                    <p className="flex items-end justify-between gap-3">
-                      <span className="lg:whitespace-nowrap">
+                      <span className="block">
                         볼지어다 내가 세상 끝날까지 너희와 항상 함께 있으리라
                       </span>
                     </p>
                   </div>
-                  <p className="text-right text-base font-semibold tracking-wide text-white md:text-lg">
+                  <p className="text-right text-xs font-semibold tracking-wide text-white sm:text-sm md:text-base">
                     마태복음 28:18~20
                   </p>
                 </div>
 
-                {/* 오시는 길 & YouTube 바로가기 카드 */}
-                <div className="grid gap-4 lg:h-full lg:grid-rows-2 lg:gap-5">
+                {/* 오시는 길 & YouTube 바로가기 카드: lg 이상에서만 표시 */}
+                <div className="hidden lg:grid gap-5 h-full grid-rows-2">
                   <Link
                     href="/about#location"
                     id="hero-location-card"
-                    className="group flex h-[210px] flex-col items-center justify-center rounded-[2rem] border border-white/70 bg-[#f1f3f5]/80 px-6 py-6 text-center text-ink shadow-[0_18px_26px_rgba(16,33,63,0.18)] backdrop-blur-md transition duration-300 hover:-translate-y-1 lg:h-full lg:px-8 lg:py-7"
+                    className="group flex h-full flex-col items-center justify-center rounded-[2rem] border border-white/70 bg-[#f1f3f5]/80 px-8 py-7 text-center text-ink shadow-[0_18px_26px_rgba(16,33,63,0.18)] backdrop-blur-md transition duration-300 hover:-translate-y-1"
                   >
                     <lord-icon
                       src="/images/wired-outline-18-location-pin-hover-jump.json"
@@ -79,12 +81,8 @@ export default function Home() {
                     ></lord-icon>
                     <p className="mt-1 text-[1.72rem] font-bold leading-none tracking-[-0.01em]">오시는 길</p>
                     <p className="mt-1 text-[1.02rem] font-medium leading-none text-ink/65">Location</p>
-                    <p className="mt-2 text-sm font-medium leading-snug text-ink/65 md:text-base">
-                      경기도 수원시 팔달구
-                      <br />
-                      경수대로425 지하1층
-                      <br />
-                      (나인아트홀)
+                    <p className="mt-2 text-sm font-medium leading-snug text-ink/65">
+                      경기도 수원시 팔달구<br />경수대로425 지하1층<br />(나인아트홀)
                     </p>
                   </Link>
 
@@ -93,7 +91,7 @@ export default function Home() {
                     id="hero-youtube-card"
                     target="_blank"
                     rel="noreferrer"
-                    className="group flex h-[210px] flex-col items-center justify-center rounded-[2rem] border border-white/70 bg-[#f1f3f5]/80 px-6 py-6 text-center text-ink shadow-[0_18px_26px_rgba(16,33,63,0.18)] backdrop-blur-md transition duration-300 hover:-translate-y-1 lg:h-full lg:px-8 lg:py-7"
+                    className="group flex h-full flex-col items-center justify-center rounded-[2rem] border border-white/70 bg-[#f1f3f5]/80 px-8 py-7 text-center text-ink shadow-[0_18px_26px_rgba(16,33,63,0.18)] backdrop-blur-md transition duration-300 hover:-translate-y-1"
                   >
                     <lord-icon
                       src="/images/wired-outline-2547-logo-youtube-hover-pinch.json"
@@ -101,12 +99,8 @@ export default function Home() {
                       target="#hero-youtube-card"
                       style={{ width: "72px", height: "72px" }}
                     ></lord-icon>
-                    <p className="mt-1 text-[1.48rem] font-bold leading-none tracking-[-0.01em]">
-                      The 제자티비
-                    </p>
-                    <p className="mt-1 text-[0.94rem] font-medium leading-none text-ink/65">
-                      Youtube Channel
-                    </p>
+                    <p className="mt-1 text-[1.48rem] font-bold leading-none tracking-[-0.01em]">The 제자티비</p>
+                    <p className="mt-1 text-[0.94rem] font-medium leading-none text-ink/65">Youtube Channel</p>
                   </a>
                 </div>
               </div>
@@ -116,14 +110,13 @@ export default function Home() {
       </section>
 
       {/* 2. 웰컴 문구 + 사명 이미지 영역 */}
-      <section className="relative left-1/2 mt-0 w-[1800px] -translate-x-1/2 overflow-hidden">
-        <div className="absolute inset-0 bg-[#ffffff]" />
+      <section className="relative w-full overflow-hidden bg-white">
         <MissionSection />
       </section>
 
       {/* 3. 퀵메뉴 + 말씀 영역 */}
-      <section className="relative left-1/2 mt-0 w-[3000px] -translate-x-1/2">
-        <div className="pointer-events-none absolute inset-y-0 left-1/2 w-full -translate-x-1/2 opacity-70">
+      <section className="relative w-full">
+        <div className="pointer-events-none absolute inset-0 opacity-70">
           <Image
             src="/images/main_bg/main_bg_sec3.png"
             alt="섹션 3 배경 이미지"
@@ -143,7 +136,7 @@ export default function Home() {
             <div className="space-y-8">
               <div className="flex items-end justify-between">
                 <div className="text-center">
-                  <h2 className="font-serif text-3xl font-semibold text-ink md:text-4xl">말씀</h2>
+                  <h2 className="font-serif text-2xl font-semibold text-ink sm:text-3xl md:text-4xl">말씀</h2>
                   <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-cedar/70">Sermon</p>
                 </div>
                 <Link href="/sermons" className="text-sm font-semibold text-cedar transition hover:text-clay">
@@ -151,7 +144,7 @@ export default function Home() {
                 </Link>
               </div>
 
-              <section className="grid gap-4 lg:grid-cols-2">
+              <section className="grid gap-4 md:grid-cols-2">
                 {homeSermonList.map((sermon, i) => (
                   <SermonCard
                     key={i}
@@ -170,20 +163,20 @@ export default function Home() {
       </section>
 
       {/* 4. The 제자 소식 섹션 */}
-      <section className="relative left-1/2 mt-0 w-[3000px] -translate-x-1/2 overflow-hidden">
+      <section className="relative w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#13243a] via-[#1c2f48] to-[#0f1c2e]" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-        <div className="relative z-10 section-shell pb-28 pt-10 md:pt-12">
+        <div className="relative z-10 section-shell pb-16 pt-10 md:pb-24 md:pt-12 lg:pb-28">
           {/* 섹션 헤더 */}
           <div className="mb-8">
-            <div className="inline-block text-center">
-              <h2 className="font-serif text-3xl font-semibold text-ivory md:text-4xl">The 제자 소식</h2>
+            <div className="inline-block">
+              <h2 className="font-serif text-2xl font-semibold text-ivory sm:text-3xl md:text-4xl">The 제자 소식</h2>
               <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-ivory/50">THE DISCIPLES NEWS</p>
             </div>
           </div>
 
-          {/* 3컬럼 레이아웃 */}
-          <div className="grid gap-6 lg:grid-cols-3">
+          {/* 3컬럼 레이아웃: 모바일 1열, 태블릿 2열, 데스크탑 3열 */}
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 
             {/* 컬럼 1 — 교회 소식 */}
             <div className="flex flex-col">
@@ -196,13 +189,10 @@ export default function Home() {
                   더보기 +
                 </Link>
               </div>
-              <ul className="space-y-0 divide-y divide-white/8">
+              <ul className="divide-y divide-white/8">
                 {churchNewsList.map((item) => (
                   <li key={item.title}>
-                    <Link
-                      href={item.href}
-                      className="group flex items-start justify-between gap-3 py-3 transition"
-                    >
+                    <Link href={item.href} className="group flex items-start justify-between gap-3 py-3 transition">
                       <span className="text-sm font-medium leading-snug text-ivory/80 transition group-hover:text-ivory">
                         {item.title}
                       </span>
@@ -224,13 +214,10 @@ export default function Home() {
                   더보기 +
                 </Link>
               </div>
-              <ul className="space-y-0 divide-y divide-white/8">
+              <ul className="divide-y divide-white/8">
                 {bulletinList.map((item) => (
                   <li key={item.title}>
-                    <Link
-                      href={item.href}
-                      className="group flex items-start justify-between gap-3 py-3 transition"
-                    >
+                    <Link href={item.href} className="group flex items-start justify-between gap-3 py-3 transition">
                       <span className="text-sm font-medium leading-snug text-ivory/80 transition group-hover:text-ivory">
                         {item.title}
                       </span>
@@ -242,7 +229,7 @@ export default function Home() {
             </div>
 
             {/* 컬럼 3 — 교회 행사 사진 */}
-            <div className="flex flex-col">
+            <div className="flex flex-col md:col-span-2 lg:col-span-1">
               <div className="mb-4 flex items-center justify-between border-b border-white/15 pb-3">
                 <div className="flex items-baseline gap-2.5">
                   <h3 className="text-lg font-bold text-ivory">교회 행사</h3>
@@ -254,7 +241,7 @@ export default function Home() {
               </div>
               <Link
                 href="/gallery"
-                className="group relative block h-[216px] w-full overflow-hidden rounded-2xl"
+                className="group relative block h-[216px] w-full overflow-hidden rounded-2xl md:h-[260px] lg:h-[216px]"
               >
                 <Image
                   src="/images/sample/main_bg_2.jpg"
