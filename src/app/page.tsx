@@ -241,6 +241,12 @@ export default function Home() {
             })}
           </section>
 
+          <div className="flex items-center gap-3">
+            <span className="font-serif text-3xl font-semibold text-ink md:text-4xl">말씀</span>
+            <span className="text-2xl text-cedar/50 md:text-3xl">·</span>
+            <span className="font-serif text-3xl font-semibold text-ink md:text-4xl">주보</span>
+          </div>
+
           <section className="grid gap-4 lg:grid-cols-2">
             <a
               href={youtubeUrl}
