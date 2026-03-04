@@ -333,51 +333,122 @@ export default function Home() {
       </section>
 
       {/* 4. The 제자 소식 섹션 */}
-      <section className="relative left-1/2 mt-0 w-[1800px] -translate-x-1/2">
-        <div className="relative z-10 section-shell pb-12 pt-16 md:pb-16 md:pt-20">
-          <div className="space-y-6">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div className="text-center">
-                <h2 className="font-serif text-3xl font-semibold text-ink md:text-4xl">The 제자 소식</h2>
-                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-cedar/70">Church News</p>
+      <section className="relative left-1/2 mt-0 w-[1800px] -translate-x-1/2 overflow-hidden">
+        {/* 어두운 그라디언트 배경 — 추후 이미지로 교체 예정 */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#13243a] via-[#1c2f48] to-[#0f1c2e]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+        <div className="relative z-10 section-shell pb-16 pt-16 md:pb-20 md:pt-20">
+          {/* 섹션 헤더 */}
+          <div className="mb-10">
+            <h2 className="font-serif text-3xl font-semibold text-ivory md:text-4xl">The 제자 소식</h2>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-ivory/50">Church News</p>
+          </div>
+
+          {/* 3컬럼 레이아웃 */}
+          <div className="grid gap-6 lg:grid-cols-3">
+
+            {/* 컬럼 1 — 교회소식 */}
+            <div className="flex flex-col">
+              <div className="mb-4 flex items-center justify-between border-b border-white/15 pb-3">
+                <div className="flex items-baseline gap-2.5">
+                  <h3 className="text-lg font-bold text-ivory">교회소식</h3>
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-ivory/40">Church News</p>
+                </div>
+                <Link href="/news#notice" className="text-xs font-semibold text-ivory/50 transition hover:text-ivory">
+                  더보기 +
+                </Link>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <span className="rounded-full bg-cedar/10 px-3 py-1 text-xs font-semibold text-cedar">주보</span>
-                <span className="rounded-full bg-cedar/10 px-3 py-1 text-xs font-semibold text-cedar">공지</span>
-                <span className="rounded-full bg-cedar/10 px-3 py-1 text-xs font-semibold text-cedar">
-                  셋 리스트
-                </span>
-                <span className="rounded-full bg-cedar/10 px-3 py-1 text-xs font-semibold text-cedar">새가족</span>
-              </div>
+              <ul className="space-y-0 divide-y divide-white/8">
+                {[
+                  { title: "봄 학기 성경공부 신청 안내", date: "2026.03.01" },
+                  { title: "새가족 환영 모임 안내", date: "2026.02.28" },
+                  { title: "금요 기도회 시간 변경 안내", date: "2026.02.21" },
+                  { title: "3월 교회 행사 일정 안내", date: "2026.02.18" },
+                  { title: "제자훈련 3기 수료식 안내", date: "2026.02.15" },
+                ].map((item) => (
+                  <li key={item.title}>
+                    <Link
+                      href="/news#notice"
+                      className="group flex items-start justify-between gap-3 py-3 transition"
+                    >
+                      <span className="text-sm font-medium leading-snug text-ivory/80 transition group-hover:text-ivory">
+                        {item.title}
+                      </span>
+                      <span className="mt-0.5 shrink-0 text-xs text-ivory/35">{item.date}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <section className="rounded-3xl border border-cedar/14 bg-white/95 p-5 shadow-[0_16px_34px_rgba(16,33,63,0.12)] md:p-6">
-              <div className="no-scrollbar flex gap-4 overflow-x-auto pb-1">
-                {newsPosts.map((post) => (
-                  <Link
-                    key={`${post.category}-${post.title}`}
-                    href={post.href}
-                    className="group w-[260px] min-w-[260px] overflow-hidden rounded-2xl border border-cedar/12 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-[0_12px_26px_rgba(16,33,63,0.14)]"
-                  >
-                    <div className="relative aspect-[16/10] w-full overflow-hidden">
-                      <Image
-                        src={post.thumbnail}
-                        alt={`${post.category} 썸네일`}
-                        fill
-                        className="object-cover transition duration-500 group-hover:scale-[1.04]"
-                      />
-                    </div>
-                    <div className="space-y-2 p-4">
-                      <span className="inline-flex rounded-full bg-cedar/12 px-2.5 py-1 text-xs font-semibold text-cedar">
-                        {post.category}
-                      </span>
-                      <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-ink">{post.title}</h3>
-                      <p className="text-xs font-medium text-ink/55">{post.date}</p>
-                    </div>
-                  </Link>
-                ))}
+            {/* 컬럼 2 — 교회주보 */}
+            <div className="flex flex-col">
+              <div className="mb-4 flex items-center justify-between border-b border-white/15 pb-3">
+                <div className="flex items-baseline gap-2.5">
+                  <h3 className="text-lg font-bold text-ivory">교회주보</h3>
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-ivory/40">Bulletin</p>
+                </div>
+                <Link href="/news#bulletin" className="text-xs font-semibold text-ivory/50 transition hover:text-ivory">
+                  더보기 +
+                </Link>
               </div>
-            </section>
+              <ul className="space-y-0 divide-y divide-white/8">
+                {[
+                  { title: "3월 1주차 주보", date: "2026.03.02" },
+                  { title: "2월 4주차 주보", date: "2026.02.23" },
+                  { title: "2월 3주차 주보", date: "2026.02.16" },
+                  { title: "2월 2주차 주보", date: "2026.02.09" },
+                  { title: "2월 1주차 주보", date: "2026.02.02" },
+                ].map((item) => (
+                  <li key={item.title}>
+                    <Link
+                      href="/news#bulletin"
+                      className="group flex items-start justify-between gap-3 py-3 transition"
+                    >
+                      <span className="text-sm font-medium leading-snug text-ivory/80 transition group-hover:text-ivory">
+                        {item.title}
+                      </span>
+                      <span className="mt-0.5 shrink-0 text-xs text-ivory/35">{item.date}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* 컬럼 3 — 교회 행사 사진 */}
+            <div className="flex flex-col rounded-2xl bg-white/5 p-5 lg:ml-6">
+              <div className="mb-4 flex items-center justify-between border-b border-white/15 pb-3">
+                <div className="flex items-baseline gap-2.5">
+                  <h3 className="text-lg font-bold text-ivory">교회 행사</h3>
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-ivory/40">Gallery</p>
+                </div>
+                <Link href="/gallery" className="text-xs font-semibold text-ivory/50 transition hover:text-ivory">
+                  더보기 +
+                </Link>
+              </div>
+              {/* 최신 행사 게시글 사진 1장 — 세련된 액자 스타일 */}
+              <Link
+                href="/gallery"
+                className="group relative block aspect-[4/3] w-full overflow-hidden rounded-2xl"
+              >
+                <Image
+                  src="/images/main_bg_2.jpg"
+                  alt="최신 교회 행사 사진"
+                  fill
+                  className="object-cover transition duration-700 group-hover:scale-[1.04]"
+                />
+                {/* 그라디언트 오버레이 */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                {/* 하단 텍스트 영역 */}
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-white/50">2026.03.01</p>
+                  <h4 className="mt-1 text-base font-bold leading-snug text-white">봄 수련회 현장</h4>
+                </div>
+                {/* 호버 오버레이 */}
+                <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl transition duration-300 group-hover:ring-white/25" />
+              </Link>
+            </div>
+
           </div>
         </div>
       </section>
