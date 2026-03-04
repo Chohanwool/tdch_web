@@ -109,7 +109,7 @@ export default function Home() {
 
   return (
     <div className="section-shell flex w-full flex-col pb-0 pt-0">
-      <section className="relative left-1/2 h-[650px] w-[1800px] -translate-x-1/2 overflow-hidden">
+      <section className="relative left-1/2 h-[740px] w-[1800px] -translate-x-1/2 overflow-hidden">
         <div className="relative h-full">
           <Image
             src="/images/sample2.png"
@@ -239,7 +239,7 @@ export default function Home() {
           />
         </div>
 
-        <div className="relative z-10 section-shell space-y-11 pb-16 pt-[2em] md:pb-20">
+        <div className="relative z-10 section-shell space-y-11 pb-8 pt-[2em] md:pb-10">
           <section className="relative z-20 -mt-[6rem] grid gap-4 md:-mt-[6.5rem] md:grid-cols-2 xl:grid-cols-4">
             {quickInfoCards.map((card) => (
               <Link
