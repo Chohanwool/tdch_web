@@ -3,7 +3,7 @@ import Link from "next/link";
 import MissionSection from "@/components/mission-section";
 import AnimatedCards from "@/components/animated-cards";
 
-interface QuickInfoCard {
+interface QuickMenuCard {
   href: string;
   title: string;
   enTitle: string;
@@ -18,7 +18,8 @@ interface NewsPostPreview {
   thumbnail: string;
 }
 
-const quickInfoCards: QuickInfoCard[] = [
+// 퀵 메뉴: 히어로 섹션 바로 아래 주요 안내 바로가기 카드 4개
+const quickMenuCards: QuickMenuCard[] = [
   {
     href: "/about",
     title: "교회소개",
@@ -222,7 +223,8 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 section-shell space-y-11 pb-8 pt-[2em] md:pb-10">
-          <AnimatedCards cards={quickInfoCards} />
+          {/* 퀵 메뉴 — 주요 안내 바로가기 카드 4개 */}
+          <AnimatedCards cards={quickMenuCards} />
 
           {/* 상단 4개 카드와 말씀 메뉴 사이 명시적 공간 확보 */}
           <div className="h-3 md:h-4"></div>
