@@ -43,9 +43,11 @@ export default function AnimatedCards({ cards }: AnimatedCardsProps) {
                     <Link
                         key={card.title}
                         href={card.href}
-                        className="group rounded-3xl border border-cedar/12 p-5 shadow-[0_12px_28px_rgba(16,33,63,0.12)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_30px_rgba(16,33,63,0.16)]"
+                        className={`group rounded-3xl border border-cedar/12 p-5 shadow-[0_12px_28px_rgba(16,33,63,0.12)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_30px_rgba(16,33,63,0.16)] ${isColored
+                                ? "bg-gradient-to-br from-[#13243a] via-[#1c2f48] to-[#0f1c2e]"
+                                : "bg-white"
+                            }`}
                         style={{
-                            backgroundColor: isColored ? "#6b83b0" : "#ffffff",
                             opacity: visible ? 1 : 0,
                             transform: visible ? "translateY(0)" : "translateY(4rem)",
                             transition: `opacity 0.5s ease, transform 0.5s ease`,

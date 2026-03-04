@@ -192,7 +192,7 @@ export default function Home() {
                       style={{ width: "72px", height: "72px" }}
                     ></lord-icon>
                     <p className="mt-1 text-[1.48rem] font-bold leading-none tracking-[-0.01em]">
-                      유튜브 채널
+                      The 제자티비
                     </p>
                     <p className="mt-1 text-[0.94rem] font-medium leading-none text-ink/65">
                       Youtube Channel

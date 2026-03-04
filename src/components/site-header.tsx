@@ -10,7 +10,7 @@ export default function SiteHeader() {
           {/* 로고 */}
           <Link href="/" className="shrink-0">
             <div className="text-center">
-              <p className="hidden text-[10px] uppercase tracking-[0.18em] text-cedar/70 sm:block">The Disciples Church</p>
+              <p className="hidden text-[10px] uppercase tracking-[0.18em] text-themeBlue/70 sm:block">The Disciples Church</p>
               <p className="whitespace-nowrap font-serif text-xl font-semibold text-ink md:text-2xl">The 제자교회</p>
             </div>
           </Link>
@@ -24,7 +24,7 @@ export default function SiteHeader() {
               >
                 <Link
                   href={menu.href}
-                  className="inline-flex whitespace-nowrap rounded-full border border-transparent px-6 py-2.5 transition group-hover/menu:border-cedar/20 group-hover/menu:bg-white group-hover/menu:text-clay"
+                  className="inline-flex whitespace-nowrap rounded-full border border-transparent px-6 py-2.5 transition group-hover/menu:border-cedar/20 group-hover/menu:bg-white group-hover/menu:text-themeBlue"
                 >
                   <span>{menu.label}</span>
                 </Link>
@@ -38,7 +38,7 @@ export default function SiteHeader() {
                       <Link
                         key={`${menu.label}-${item.href}`}
                         href={item.href}
-                        className="block rounded-xl px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-cedar/5 hover:text-clay"
+                        className="block rounded-xl px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-cedar/5 hover:text-themeBlue"
                       >
                         {item.label}
                       </Link>
@@ -51,20 +51,20 @@ export default function SiteHeader() {
 
           {/* 모바일 햄버거 버튼 */}
           <details className="group relative shrink-0">
-            <summary className="inline-flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-xl border border-cedar/20 text-xl leading-none text-cedar transition hover:border-cedar/40 hover:text-clay">
+            <summary className="inline-flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-xl border border-themeBlue/20 text-xl leading-none text-themeBlue transition hover:border-themeBlue/40 hover:text-themeBlue">
               ☰
             </summary>
             <div className="surface-card-strong absolute right-0 top-[calc(100%+0.6rem)] z-50 w-[min(19rem,calc(100vw-2rem))] rounded-2xl p-3">
               <nav className="space-y-3">
                 {navMenuGroups.map((menu) => (
                   <details key={`mobile-${menu.label}`} className="group/sub rounded-xl border border-cedar/12 bg-white/90 px-2 py-1">
-                    <summary className="flex cursor-pointer list-none items-center rounded-lg px-2 py-2 text-sm font-semibold text-ink transition hover:bg-cedar/5 hover:text-clay">
+                    <summary className="flex cursor-pointer list-none items-center rounded-lg px-2 py-2 text-sm font-semibold text-ink transition hover:bg-cedar/5 hover:text-themeBlue">
                       <span>{menu.label}</span>
                     </summary>
                     <div className="grid gap-1 pb-2 pl-2">
                       <Link
                         href={menu.href}
-                        className="block rounded-lg px-2 py-1.5 text-xs font-semibold text-cedar transition hover:bg-cedar/5 hover:text-clay"
+                        className="block rounded-lg px-2 py-1.5 text-xs font-semibold text-cedar transition hover:bg-cedar/5 hover:text-themeBlue"
                       >
                         {menu.label} 메인
                       </Link>
@@ -72,7 +72,7 @@ export default function SiteHeader() {
                         <Link
                           key={`mobile-${menu.label}-${item.href}`}
                           href={item.href}
-                          className="block rounded-lg px-2 py-1.5 text-xs font-medium text-ink/75 transition hover:bg-cedar/5 hover:text-clay"
+                          className="block rounded-lg px-2 py-1.5 text-xs font-medium text-ink/75 transition hover:bg-cedar/5 hover:text-themeBlue"
                         >
                           {item.label}
                         </Link>
