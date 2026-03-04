@@ -257,7 +257,7 @@ export default function Home() {
                 className="group relative block h-[216px] w-full overflow-hidden rounded-2xl"
               >
                 <Image
-                  src="/images/main_bg_2.jpg"
+                  src="/images/sample/main_bg_2.jpg"
                   alt="최신 교회 행사 사진"
                   fill
                   className="object-cover transition duration-700 group-hover:scale-[1.04]"
