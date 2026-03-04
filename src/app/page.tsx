@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import MissionSection from "@/components/mission-section";
 
 interface QuickInfoCard {
   href: string;
@@ -205,27 +206,7 @@ export default function Home() {
       {/* 2. 웰컴 문구 + 사명 이미지 영역 */}
       <section className="relative left-1/2 mt-0 w-[1800px] -translate-x-1/2 overflow-hidden">
         <div className="absolute inset-0 bg-[#ffffff]" />
-
-        <div className="relative z-10 section-shell pb-28 pt-10 md:pb-36 md:pt-12">
-          <section className="px-2 py-2 text-center">
-            <h2 className="font-serif text-3xl font-bold leading-tight text-ink md:text-5xl">
-              The 제자교회에 오신 것을 환영합니다
-            </h2>
-          </section>
-
-          {/* ── 교회 사명 섹션 ── */}
-          <section>
-            <div className="mx-auto w-full max-w-[800px]">
-              <Image
-                src="/images/mission.png"
-                alt="The 제자교회 사명 - 다음 세대 자녀 양육, 다문화 가족 지원, 다민족 선교"
-                width={800}
-                height={600}
-                className="h-auto w-full object-contain"
-              />
-            </div>
-          </section>
-        </div>
+        <MissionSection />
       </section>
 
       {/* 3. 하단 카드 영역 */}
