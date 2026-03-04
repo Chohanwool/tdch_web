@@ -416,7 +416,7 @@ export default function Home() {
             </div>
 
             {/* 컬럼 3 — 교회 행사 사진 */}
-            <div className="flex flex-col rounded-2xl bg-white/5 p-5 lg:ml-6">
+            <div className="flex flex-col">
               <div className="mb-4 flex items-center justify-between border-b border-white/15 pb-3">
                 <div className="flex items-baseline gap-2.5">
                   <h3 className="text-lg font-bold text-ivory">교회 행사</h3>
@@ -429,7 +429,7 @@ export default function Home() {
               {/* 최신 행사 게시글 사진 1장 — 세련된 액자 스타일 */}
               <Link
                 href="/gallery"
-                className="group relative block aspect-[4/3] w-full overflow-hidden rounded-2xl"
+                className="group relative block h-[216px] w-full overflow-hidden rounded-2xl"
               >
                 <Image
                   src="/images/main_bg_2.jpg"
