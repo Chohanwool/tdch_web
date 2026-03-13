@@ -1,22 +1,30 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import MobileNav from "@/components/mobile-nav";
 
 import { navMenuGroups } from "@/lib/site-data";
 
 export default function SiteHeader() {
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   return (
     <header className="sticky top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg animate-header-item">
       <div className="section-shell py-[25px]">
-        <div className="flex items-center justify-between gap-4 md:gap-6">
-          {/* 로고 */}
-          <Link href="/" className="shrink-0">
-            <div className="text-center">
-              <p className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-themeBlue/70 sm:block">The Disciples Church</p>
+        <div className="relative flex items-center justify-between gap-4 md:gap-6">
+          {/* 모바일 환경: 좌측 여백(가상 요소)을 주어 로고가 완벽히 중앙에 오도록 맞춤 */}
+          <div className="w-11 lg:hidden"></div>
+
+          {/* 로고 (모바일/태블릿에서는 중앙, 데스크탑에서는 좌측) */}
+          <Link href="/" className="lg:shrink-0 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0 text-center">
+            <div>
+              <p className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-themeBlue/70 lg:block">The Disciples Church</p>
               <p className="whitespace-nowrap font-serif text-[20px] font-bold text-ink md:text-[24px]">The 제자교회</p>
             </div>
           </Link>
 
           {/* 데스크탑 내비게이션 */}
-          <nav className="hidden items-center justify-center gap-6 text-[20px] font-semibold text-ink/85 lg:flex xl:gap-8">
+          <nav className="hidden items-center justify-center gap-6 text-[20px] font-semibold text-ink/85 lg:flex xl:gap-8 lg:mr-auto lg:pl-10">
             {navMenuGroups.map((menu) => (
               <div
                 key={menu.label}
@@ -49,40 +57,10 @@ export default function SiteHeader() {
             ))}
           </nav>
 
-          {/* 모바일 햄버거 버튼 */}
-          <details className="group relative shrink-0">
-            <summary className="inline-flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-xl border border-themeBlue/20 text-xl leading-none text-themeBlue transition hover:border-themeBlue/40 hover:text-themeBlue">
-              ☰
-            </summary>
-            <div className="surface-card-strong absolute right-0 top-[calc(100%+0.6rem)] z-50 w-[min(19rem,calc(100vw-2rem))] rounded-2xl p-3">
-              <nav className="space-y-3">
-                {navMenuGroups.map((menu) => (
-                  <details key={`mobile-${menu.label}`} className="group/sub rounded-xl border border-cedar/12 bg-white/90 px-2 py-1">
-                    <summary className="flex cursor-pointer list-none items-center rounded-lg px-2 py-2 text-sm font-semibold text-ink transition hover:bg-cedar/5 hover:text-themeBlue">
-                      <span>{menu.label}</span>
-                    </summary>
-                    <div className="grid gap-1 pb-2 pl-2">
-                      <Link
-                        href={menu.href}
-                        className="block rounded-lg px-2 py-1.5 text-xs font-semibold text-cedar transition hover:bg-cedar/5 hover:text-themeBlue"
-                      >
-                        {menu.label} 메인
-                      </Link>
-                      {menu.items.map((item) => (
-                        <Link
-                          key={`mobile-${menu.label}-${item.href}`}
-                          href={item.href}
-                          className="block rounded-lg px-2 py-1.5 text-xs font-medium text-ink/75 transition hover:bg-cedar/5 hover:text-themeBlue"
-                        >
-                          {item.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </details>
-                ))}
-              </nav>
-            </div>
-          </details>
+          {/* 모바일 햄버거 버튼 & 전체 화면 메뉴 */}
+          <div className="lg:hidden flex items-center shrink-0">
+            <MobileNav isOpen={isMobileNavOpen} setIsOpen={setIsMobileNavOpen} />
+          </div>
         </div>
       </div>
     </header>
