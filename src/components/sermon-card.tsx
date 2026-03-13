@@ -44,12 +44,14 @@ export default function SermonCard({ data, youtubeUrl, shadowClass = "shadow-[0_
                 <h3 className="mt-2 text-base font-bold leading-snug text-ink md:text-lg">
                     {data.title}
                 </h3>
-                <p className="mt-1 text-xs text-ink/55 line-clamp-1">
-                    {data.scripture} <span className="mx-1 text-ink/30">|</span> {data.pastor}
-                </p>
-                <p className="mt-4 text-xs font-medium text-ink/40">
-                    {data.date}
-                </p>
+                <div className="mt-3 flex items-center justify-between gap-4 text-xs">
+                    <p className="text-ink/55 line-clamp-1">
+                        {data.scripture} <span className="mx-1 text-ink/30">|</span> {data.pastor}
+                    </p>
+                    <p className="shrink-0 font-medium text-ink/40">
+                        {data.date}
+                    </p>
+                </div>
             </div>
         </a>
     );
