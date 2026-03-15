@@ -67,6 +67,7 @@ a {
   box-shadow: 0 16px 34px var(--shadow-strong);
 }
 
+/* ── 기본 컨텐츠 셸 (유동적 반응형) ── */
 .section-shell {
   margin-inline: auto;
   width: 100%;
@@ -76,7 +77,19 @@ a {
 
 @media (min-width: 768px) {
   .section-shell {
-    padding-inline: 1.5rem;
+    padding-inline: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .section-shell {
+    max-width: 1200px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .section-shell {
+    max-width: 1400px;
   }
 }
 

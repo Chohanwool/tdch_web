@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { navMenuGroups } from "@/lib/site-data";
 
 interface PageHeaderProps {
   title: string;
@@ -7,16 +11,29 @@ interface PageHeaderProps {
 }
 
 export default function PageHeader({
-  title,
+  title: defaultTitle,
   subtitle,
   backgroundImageUrl = "/images/main_bg/main_bg_sec1.png"
 }: PageHeaderProps) {
+  const pathname = usePathname();
+
+  // Find the sub-menu item based on the current pathname
+  const menuGroup = navMenuGroups.find(
+    (g) => pathname === g.href || pathname.startsWith(`${g.href}/`)
+  );
+  const currentItem = menuGroup?.items.find(
+    (item) => pathname === item.href || pathname.startsWith(`${item.href}/`)
+  );
+
+  // Use the sub-menu label if found, otherwise fallback to the group title
+  const displayTitle = currentItem?.label || defaultTitle;
+
   return (
     <section className="relative w-full h-[260px] sm:h-[300px] overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src={backgroundImageUrl}
-          alt={`${title} 배경 이미지`}
+          alt={`${displayTitle} 배경 이미지`}
           fill
           priority
           /* 원래 object-center 였으나, 더 상단 영역(y축 25%)이 보이도록 커스텀 포지셔닝 적용 */
@@ -31,7 +48,7 @@ export default function PageHeader({
             {subtitle}
           </p>
           <h1 className="font-serif text-3xl font-bold text-ivory sm:text-4xl md:text-5xl">
-            {title}
+            {displayTitle}
           </h1>
         </div>
       </div>

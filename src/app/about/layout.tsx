@@ -1,5 +1,5 @@
 import PageHeader from "@/components/page-header";
-import SubNav from "@/components/sub-nav";
+import Breadcrumb from "@/components/breadcrumb";
 
 export default function AboutLayout({
   children,
@@ -13,8 +13,8 @@ export default function AboutLayout({
         subtitle="THE DISCIPLES CHURCH"
         backgroundImageUrl="/images/main_bg/main_bg_sec1.png"
       />
-      <SubNav groupLabel="교회소개" />
-      <main className="section-shell pt-16 md:pt-24">{children}</main>
+      <Breadcrumb />
+      <main className="section-shell pt-10 md:pt-16 pb-20">{children}</main>
     </div>
   );
 }
