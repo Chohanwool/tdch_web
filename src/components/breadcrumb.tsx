@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navMenuGroups } from "@/lib/site-data";
 
-// Breadscrumb(브레드크럼)
-// 현재 위치의 계층 표시
+// Breadscrumb(브레드크럼) 과 LNB 목록
+// Breadscrumb: 현재 위치의 계층 표시
+// lnb row: GNB기준 현재 화면의 LNB 메뉴 ROW 탭
 export default function Breadcrumb() {
   const pathname = usePathname();
 
@@ -20,8 +21,9 @@ export default function Breadcrumb() {
   );
 
   return (
-    <div className="w-full border-b border-cedar/8 bg-[#f8fafd]">
-      <nav className="section-shell py-3" aria-label="Breadcrumb">
+    <div className="w-full flex flex-col bg-[#f8fafd]">
+      {/* 1. Breadcrumb (경로 표시) */}
+      <nav className="section-shell py-3 border-b border-cedar/8" aria-label="Breadcrumb">
         <ol className="flex items-center justify-center gap-1.5 text-sm">
           {/* 홈 */}
           <li>
@@ -44,9 +46,8 @@ export default function Breadcrumb() {
               <li>
                 <Link
                   href={menuGroup.href}
-                  className={`font-medium transition hover:text-themeBlue ${
-                    currentItem ? "text-ink/40" : "text-ink/80"
-                  }`}
+                  className={`font-medium transition hover:text-themeBlue ${currentItem ? "text-ink/40" : "text-ink/80"
+                    }`}
                 >
                   {menuGroup.label}
                 </Link>
@@ -71,6 +72,31 @@ export default function Breadcrumb() {
           )}
         </ol>
       </nav>
+
+      {/* 2. LNB (Local Navigation Bar) - 소메뉴 목록 */}
+      {menuGroup && menuGroup.items && menuGroup.items.length > 0 && (
+        <nav className="w-full border-b border-cedar/8 bg-white overflow-x-auto no-scrollbar" aria-label="LNB">
+          <ul className="section-shell flex items-center justify-start sm:justify-center gap-1 min-w-max px-4">
+            {menuGroup.items.map((item) => {
+              const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+              return (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className={`block py-3.5 px-3 md:px-4 text-[0.92rem] font-medium whitespace-nowrap border-b-[2.5px] transition-colors ${isActive
+                        ? "border-themeBlue text-themeBlue font-bold"
+                        : "border-transparent text-ink/65 hover:text-themeBlue hover:border-themeBlue/30"
+                      }`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      )}
     </div>
   );
 }
