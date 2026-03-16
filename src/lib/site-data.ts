@@ -156,3 +156,45 @@ export const sermonList: SermonCardData[] = [
   { href: "", thumbnail: "/images/sermon_thumb/0302_thumb.jpg", thumbnailAlt: "설교 썸네일", category: "설교", type: "수요예배", title: "깨어 기도하라", scripture: "마태복음 26:36~41", pastor: "이진욱 목사", date: "2025.12.11" },
   { href: "", thumbnail: "/images/sermon_thumb/0228_thumb.jpg", thumbnailAlt: "설교 썸네일", category: "설교", type: "주일예배", title: "하나님의 시간표", scripture: "전도서 3:1~8", pastor: "이진욱 목사", date: "2025.12.08" },
 ];
+
+// ─── 예배 시간 안내 페이지 데이터 ─────────────────────────────────────────
+
+export interface ServiceTimeData {
+  name: string;
+  enName: string;
+  day: string;
+  time: string;
+  ampm: string;
+  location: string;
+  note?: string;
+  highlight?: boolean;
+}
+
+export const serviceTimes: ServiceTimeData[] = [
+  { name: "주일 1부 예배", enName: "SUNDAY 1ST", day: "주일", time: "9:00", ampm: "AM", location: "본당", note: "" },
+  { name: "주일 2부 예배", enName: "SUNDAY 2ND · MAIN", day: "주일", time: "11:00", ampm: "AM", location: "본당", note: "대표 주일예배 · 라이브 영상예배로\n동시 진행됩니다", highlight: true },
+  { name: "주일 3부 예배", enName: "SUNDAY 3RD", day: "주일", time: "2:00", ampm: "PM", location: "본당", note: "오후 찬양 예배" },
+  { name: "새벽 기도회", enName: "MON - SAT", day: "월~금", time: "5:30", ampm: "AM", location: "기도실", note: "매일 아침 은혜로" },
+  { name: "수요 예배", enName: "WEDNESDAY", day: "수요일", time: "8:00", ampm: "PM", location: "본당", note: "주간 가운데 쉼과 말씀" },
+  { name: "금요 기도회", enName: "FRIDAY", day: "금요일", time: "9:00", ampm: "PM", location: "기도실", note: "성령 충만한 기도로\n깊은 은혜 시간" },
+];
+
+export const serviceNotices: string[] = [
+  "주일 오전 예배시간은 11시에 시작된 2부 예배가 본 교회의 주 예배입니다.",
+  "주차 공간이 한정되어 있으므로 대중교통 이용을 권장합니다.",
+];
+
+export interface SpecialServiceData {
+  name: string;
+  date: string;
+  location: string;
+  note: string;
+}
+
+export const specialServices: SpecialServiceData[] = [
+  { name: "신년 감사 예배", date: "1월 첫째 주일", location: "본당", note: "-" },
+  { name: "사순절 뉴 새벽 서비스 예배", date: "-", location: "기도실", note: "-" },
+  { name: "부활절 연합 예배", date: "부활절 주일 오전 8:00", location: "야외 / 본당", note: "-" },
+  { name: "추수 감사 예배", date: "11월 셋째 주일", location: "본당", note: "-" },
+  { name: "성탄 전야 예배", date: "12월 24일 오후 7:30", location: "본당", note: "-" },
+];
