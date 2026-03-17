@@ -239,8 +239,9 @@ export default function GreetingPage() {
       </section>
 
       <section className="border-b border-black/20 py-14 md:py-12">
-        <div className="section-shell grid items-center gap-10 lg:grid-cols-[minmax(0,489px)_minmax(280px,460px)] lg:justify-between">
-          <div className="space-y-8 py-2">
+        <div className="section-shell flex flex-col lg:flex-row items-center gap-10 lg:gap-14">
+          {/* 좌측 텍스트 영역: 고정 크기(lg:w-[489px]), 크기 유지(shrink-0) */}
+          <div className="w-full lg:w-[489px] shrink-0 space-y-8 py-2">
             <div className="max-w-[566px] space-y-5">
               <SectionEyebrow>OUR COMMUNITY</SectionEyebrow>
               <div className="space-y-4">
@@ -269,12 +270,18 @@ export default function GreetingPage() {
             </div>
           </div>
 
-          <ImagePanel
-            src="/images/mission_bak.png"
-            alt="The 제자교회가 마음 두는 공동체를 설명하는 소개 이미지"
-            className="min-h-[280px] lg:min-h-[360px]"
-            imageClassName="object-contain bg-white p-6"
-          />
+          {/* 우측 사진 영역: 남은 공간 차지(flex-1), 3개 사진 교차 배치 */}
+          <div className="flex-1 w-full flex items-center justify-center gap-3 sm:gap-4 lg:gap-6 min-h-[360px] lg:min-h-[460px]">
+            <div className="w-1/3 max-w-[220px] aspect-[3/4] rounded-2xl bg-black/5 flex items-center justify-center shadow-sm translate-y-6">
+              <span className="text-black/30 font-semibold text-center text-sm md:text-base">Photo 1</span>
+            </div>
+            <div className="w-1/3 max-w-[220px] aspect-[3/4] rounded-2xl bg-black/10 flex items-center justify-center shadow-md -translate-y-6">
+              <span className="text-black/40 font-semibold text-center text-sm md:text-base">Photo 2</span>
+            </div>
+            <div className="w-1/3 max-w-[220px] aspect-[3/4] rounded-2xl bg-black/5 flex items-center justify-center shadow-sm translate-y-6">
+              <span className="text-black/30 font-semibold text-center text-sm md:text-base">Photo 3</span>
+            </div>
+          </div>
         </div>
       </section>
 
