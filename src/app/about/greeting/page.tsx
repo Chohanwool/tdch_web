@@ -23,14 +23,14 @@ const missionCards = [
     eyebrow: "HEALING",
     title: "치유하는 사명",
     description:
-      "부서진 사람 앞에서 무릎을 꿇으셨고, 사랑으로 그 마음을 회복시키셨습니다.",
+      "무너진 사람 앞에서 무릎을 꿇으셨고, 사랑으로 그 마음을 회복시키셨습니다.",
     letter: "H"
   },
   {
     eyebrow: "EVANGELIZING",
     title: "전파하는 사명",
     description:
-      "아무도 찾지 않는 사람에게 먼저 찾아가셨어요. 삶으로 복음을 전하는 것.",
+      "아무도 찾지 않는 사람에게 먼저 찾아가셔서 삶으로 복음을 전하셨습니다.",
     letter: "E"
   }
 ];
@@ -139,7 +139,7 @@ export default function GreetingPage() {
               </div>
             </div>
 
-            <div className="mt-[42px] grid w-full gap-[10px] md:grid-cols-3">
+            <div className="mt-[42px] flex w-full flex-col gap-[10px] md:flex-row md:items-start md:gap-[20px]">
               {missionCards.map((card) => (
                 <article
                   key={card.title}
