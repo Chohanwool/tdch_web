@@ -13,7 +13,7 @@ export default function AboutLayout({
   const isGreetingPage = pathname?.startsWith("/about/greeting");
 
   return (
-    <div className="flex w-full flex-col pb-20">
+    <div className="flex w-full flex-col">
       {!isGreetingPage && (
         <>
           <PageHeader

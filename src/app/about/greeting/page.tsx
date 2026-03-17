@@ -186,7 +186,7 @@ export default function GreetingPage() {
       </section>
 
       <section
-        className="relative z-0 w-full overflow-visible border-b border-black/20 bg-[#fcfbf8] py-14 md:min-h-[482px] md:py-[70px]"
+        className="relative z-0 w-full overflow-visible border-b border-black/20 bg-white py-14 md:min-h-[482px] md:py-[70px]"
         data-section="community"
       >
         <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-10 px-0 md:flex-row md:items-start md:justify-between md:gap-0">
@@ -272,9 +272,68 @@ export default function GreetingPage() {
         </div>
       </section>
       <section
-        className="relative z-20 min-h-[584px] w-full bg-[#fcfbf8]"
+        className="relative z-20 w-full border-b border-black/20 bg-[#fcfbf8] py-14 md:min-h-[584px] md:py-[80px]"
         data-section="open-door"
-      />
+      >
+        <div className="section-shell">
+          <div className="relative flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
+            <div className="relative z-10 flex w-full max-w-[430px] flex-col md:max-w-[448px] md:pt-[18px]">
+              <span
+                className={`${originalSurfer.className} pointer-events-none absolute left-[-10px] top-[-28px] text-[112px] leading-none tracking-normal text-[#ece8e2] md:left-[-18px] md:top-[-32px] md:text-[116px]`}
+              >
+                03
+              </span>
+
+              <div className="relative z-10 flex flex-col gap-[20px]">
+                <p
+                  className={`${originalSurfer.className} text-[18px] leading-none tracking-[0.08em] text-[#caa643] md:text-[20px]`}
+                >
+                  OPEN DOOR
+                </p>
+
+                <div className={`${nanumMyeongjo.className} text-[28px] leading-[1.28] tracking-[0.01em] text-black md:text-[30px]`}>
+                  <p>완벽하지 않아도</p>
+                  <p>됩니다</p>
+                </div>
+
+                <div className="space-y-[18px] pt-[6px] text-[18px] leading-[1.8] tracking-[0.01em] text-black/88">
+                  <p>
+                    더제자교회는 완벽한 사람들이 모인 곳이 아닙니다.
+                    <br />
+                    의심해도 되고, 넘어져도 되고, 질문해도 됩니다.
+                  </p>
+                  <p>
+                    성령님이 이 공동체를 이끄실 거라 믿기 때문에,
+                    <br />
+                    우리는 오늘도 함께 배우면서 걸어가고 있어요.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-[38px] max-w-[412px] rounded-r-[12px] border-l-[3px] border-[#caa643] bg-gradient-to-r from-[#fffaf0] to-[rgba(252,251,248,0.2)] px-[28px] py-[30px]">
+                <div className={`${nanumMyeongjo.className} text-[18px] leading-[1.78] tracking-[0.01em] text-black`}>
+                  <p>지쳤다면, 여기서 쉬어가세요.</p>
+                  <p className="mt-1">다시 시작하고 싶다면, 함께 걸어가요.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full md:w-[460px]">
+              <div className="relative h-[360px] border border-[rgba(0,0,0,0.22)] bg-white md:h-[432px]">
+                <div className="absolute left-[18px] right-[18px] top-[24px] bottom-[24px] overflow-hidden rounded-[8px] border border-[#0b0b0b] shadow-[0px_1px_1px_rgba(0,0,0,0.1)] md:left-[21px] md:right-[21px] md:top-[30px] md:bottom-[92px]">
+                  <Image
+                    src="/images/greeting/open_door.png"
+                    alt="더제자교회 공동체 사진"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 416px"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
