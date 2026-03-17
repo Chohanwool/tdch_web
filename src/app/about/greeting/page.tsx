@@ -179,7 +179,7 @@ export default function GreetingPage() {
         <div className="relative z-10 flex h-full min-h-[420px] md:min-h-[360px] items-end py-12 md:py-16">
           <div className="section-shell w-full">
             <div className="space-y-5">
-              <SectionEyebrow isHero className="text-ivory/80">Pastor's Greeting</SectionEyebrow>
+              <SectionEyebrow isHero className="text-ivory/80">Pastor&apos;s Greeting</SectionEyebrow>
               <div className="space-y-4">
                 <h2 className="font-serif text-[38px] font-bold leading-[1.18] tracking-[0.02em] text-ivory md:text-[48px] md:leading-[1.18]">
                   <span className="block">당신이 여기 있어서,</span>

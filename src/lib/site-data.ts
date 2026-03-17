@@ -14,8 +14,8 @@ export const navMenuGroups: NavMenuGroup[] = [
     href: "/about", // 메인 클릭 시 /about/greeting 으로 리다이렉트 처리 예정
     label: "교회소개",
     items: [
-      { href: "/about/greeting", label: "인사말" },
-      { href: "/about/vision", label: "비전" },
+      { href: "/about/greeting", label: "인사말/비전" },
+      { href: "/about/pastor", label: "담임목사 소개" },
       { href: "/about/service-times", label: "예배 시간 안내" },
       { href: "/about/location", label: "오시는 길" },
       { href: "/about/history", label: "교회연혁" }
