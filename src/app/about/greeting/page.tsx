@@ -139,7 +139,7 @@ export default function GreetingPage() {
                   </h2>
                 </div>
 
-                <p className="max-w-[620px] text-[15px] leading-[1.8] tracking-[0.01em] text-white/92 md:text-[16px]">
+                <p className="max-w-[620px] text-[18px] leading-[1.8] tracking-[0.01em] text-white/92">
                   예수님은 평생 세 가지 일을 하셨어요. 가르치고, 치유하고, 복음을 전하셨습니다.
                   <br />
                   The 제자교회도 그렇게 하고 싶습니다.
@@ -179,7 +179,7 @@ export default function GreetingPage() {
               ))}
             </div>
 
-            <p className="mt-[34px] text-[15px] leading-[1.8] tracking-[0.01em] text-white/92 md:text-[16px]">
+            <p className="mt-[34px] text-[18px] leading-[1.8] tracking-[0.01em] text-white/92">
               거창하지 않아도 됩니다. 예수님이 하신 것처럼, 그냥 그렇게요.
             </p>
           </div>
@@ -233,7 +233,7 @@ export default function GreetingPage() {
             </div>
           </div>
 
-          <div className="relative z-10 flex w-full max-w-[430px] flex-col px-5 md:mr-[14px] md:max-w-[448px] md:px-0 md:pt-[52px]">
+          <div className="relative z-10 flex w-full max-w-[430px] flex-col px-5 md:mr-[14px] md:max-w-[390px] md:px-0 md:pt-[52px]">
             <span
               className={`${originalSurfer.className} pointer-events-none absolute left-0 top-[-30px] text-[112px] leading-none tracking-normal text-[#ece8e2] md:left-[-85px] md:top-[-16px] md:text-[116px]`}
             >
@@ -253,9 +253,9 @@ export default function GreetingPage() {
                 </div>
               </div>
 
-              <div className="pt-[2px] text-[15px] leading-[1.8] tracking-[0.01em] text-black/88 md:text-[16px] md:leading-[28px]">
+              <div className="pt-[2px] text-[18px] leading-[1.8] tracking-[0.01em] text-black/88">
                 <p>하나님 나라엔 국적도, 언어도, 배경도 따로 없으니까요.</p>
-                <p>이 모두가 저희 교회가 꿈꾸는 가족입니다.</p>
+                <p className="mt-1">이 모두가 저희 교회가 꿈꾸는 가족입니다.</p>
               </div>
             </div>
 
