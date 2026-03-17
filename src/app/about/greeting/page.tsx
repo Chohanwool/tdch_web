@@ -116,13 +116,12 @@ export default function GreetingPage() {
         className="relative w-full border-b border-black/50 bg-[#202f55] py-14 text-white md:min-h-[586px] md:py-[72px]"
         data-section="mission"
       >
-        <span
-          className={`${originalSurfer.className} pointer-events-none absolute left-[155px] top-[43px] text-[112px] leading-none tracking-normal text-[#111d38]/70 md:text-[116px]`}
-        >
-          01
-        </span>
-
-        <div className="section-shell">
+        <div className="section-shell relative">
+          <span
+            className={`${originalSurfer.className} pointer-events-none absolute left-[-13px] top-[-30px] text-[112px] leading-none tracking-normal text-[#111d38]/70 md:text-[116px]`}
+          >
+            01
+          </span>
           <div className="flex flex-col items-start">
             <div className="relative w-full">
               <div className="relative z-10 flex w-full flex-col items-start gap-[34px] pt-[42px]">
