@@ -329,7 +329,7 @@ export default function GreetingPage() {
       >
         <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-10 px-0 md:flex-row md:items-start md:justify-between md:gap-0">
           {/* Photo collage with fly-in animations */}
-          <div className="relative h-[520px] w-full overflow-visible md:-ml-[118px] md:-mt-[42px] md:h-[596px] md:w-[660px]">
+          <div className="order-2 relative h-[520px] w-full overflow-visible md:order-1 md:-ml-[118px] md:-mt-[42px] md:h-[596px] md:w-[660px]">
             {[
               {
                 src: "/images/greeting/our_mission_1.png",
@@ -392,7 +392,7 @@ export default function GreetingPage() {
           </div>
 
           {/* Community text */}
-          <div className="relative z-10 flex w-full max-w-[430px] flex-col px-5 md:mr-[14px] md:max-w-[390px] md:px-0 md:pt-[52px]">
+          <div className="order-1 relative z-10 flex w-full max-w-[430px] flex-col px-5 md:order-2 md:mr-[14px] md:max-w-[390px] md:px-0 md:pt-[52px]">
             <motion.span
               className={`${sectionNumberClass} ${sectionTwoNumberClass} text-[#ece8e2]`}
               variants={fadeIn}
