@@ -117,7 +117,7 @@ export default function ServiceTimesPage() {
           </table>
         </div>
 
-        <div className="mt-10">
+        <div className="mt-10 px-5 md:px-0">
           <SectionHeading title="안내" subtitle="Notice" />
           <ul className="space-y-3 text-base leading-7 text-ink/75 md:text-lg">
             <li className="flex gap-3">
