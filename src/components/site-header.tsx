@@ -13,9 +13,17 @@ export default function SiteHeader() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const nextCondensed = currentScrollY > 24;
+      setIsCondensed((prev) => {
+        if (currentScrollY <= 0) {
+          return false;
+        }
 
-      setIsCondensed((prev) => (prev === nextCondensed ? prev : nextCondensed));
+        if (currentScrollY > 24) {
+          return true;
+        }
+
+        return prev;
+      });
     };
 
     handleScroll();
