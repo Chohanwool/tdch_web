@@ -171,9 +171,8 @@ export interface ServiceTimeData {
 }
 
 export const serviceTimes: ServiceTimeData[] = [
-  { name: "주일 1부 예배", enName: "SUNDAY 1ST", day: "주일", time: "9:00", ampm: "AM", location: "본당", note: "" },
-  { name: "주일 2부 예배", enName: "SUNDAY 2ND · MAIN", day: "주일", time: "11:00", ampm: "AM", location: "본당", note: "대표 주일예배 · 라이브 영상예배로\n동시 진행됩니다", highlight: true },
-  { name: "주일 3부 예배", enName: "SUNDAY 3RD", day: "주일", time: "2:00", ampm: "PM", location: "본당", note: "오후 찬양 예배" },
+  { name: "주일 1부 예배", enName: "SUNDAY 1ST", day: "주일", time: "11:00", ampm: "AM", location: "본당", note: "대표 주일예배 · 라이브 영상예배로\n동시 진행됩니다", highlight: true },
+  { name: "주일 2부 오후 찬양 예배", enName: "SUNDAY 2ND", day: "주일", time: "2:00", ampm: "PM", location: "본당", note: "오후 찬양 예배" },
   { name: "새벽 기도회", enName: "MON - SAT", day: "월~금", time: "5:30", ampm: "AM", location: "기도실", note: "매일 아침 은혜로" },
   { name: "수요 예배", enName: "WEDNESDAY", day: "수요일", time: "8:00", ampm: "PM", location: "본당", note: "주간 가운데 쉼과 말씀" },
   { name: "금요 기도회", enName: "FRIDAY", day: "금요일", time: "9:00", ampm: "PM", location: "기도실", note: "성령 충만한 기도로\n깊은 은혜 시간" },
