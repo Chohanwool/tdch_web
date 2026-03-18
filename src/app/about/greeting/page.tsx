@@ -43,6 +43,18 @@ const communityFocus = [
   "교회에서 상처받은 분들"
 ];
 
+const sectionNumberClass =
+  `${originalSurfer.className} pointer-events-none absolute left-[-10px] top-[-28px] text-[112px] leading-none tracking-normal md:text-[116px]`;
+const sectionOneNumberClass = "md:left-[-9px] md:top-[-32px]";
+const sectionTwoNumberClass = "md:left-[-40px] md:top-[-25px]";
+const sectionThreeNumberClass = "md:left-[-40px] md:top-[-60px]";
+const sectionEyebrowClass =
+  `${originalSurfer.className} text-[18px] leading-none tracking-[0.08em] text-[#caa643] md:text-[20px]`;
+const sectionTitleClass =
+  `${nanumMyeongjo.className} text-[28px] font-bold leading-[1.28] tracking-[0.01em] md:text-[30px] md:leading-[1.32]`;
+const sectionIntroGroupClass = "flex flex-col gap-[14px]";
+const sectionCopyStackClass = "relative z-10 flex flex-col gap-[24px]";
+
 export default function GreetingPage() {
   return (
     <div className="w-full bg-white">
@@ -95,7 +107,7 @@ export default function GreetingPage() {
 
             <div className="w-full rounded-r-[12px] border-l-[3px] border-[#c9a84c] bg-gradient-to-r from-[#fffcf5] to-[#fffefc] px-5 py-5 md:px-[30px] md:py-5">
               <div
-                className={`${nanumMyeongjo.className} space-y-1 text-[22px] font-bold leading-[1.65] tracking-[0.04em] text-[#1a2744] md:text-[24px]`}
+                className={`${nanumMyeongjo.className} space-y-1 text-[18px] font-bold leading-[1.78] tracking-[0.01em] text-[#1a2744]`}
               >
                 <p>솔직히 교회가 힘들었던 적 있으신가요?</p>
                 <p>기대했다가 상처받고, 지쳐서 떠났다가,</p>
@@ -118,31 +130,29 @@ export default function GreetingPage() {
       >
         <div className="section-shell relative">
           <span
-            className={`${originalSurfer.className} pointer-events-none absolute left-[-13px] top-[-30px] text-[112px] leading-none tracking-normal text-[#111d38]/70 md:text-[116px]`}
+            className={`${sectionNumberClass} ${sectionOneNumberClass} text-[#111d38]/70`}
           >
             01
           </span>
           <div className="flex flex-col items-start">
             <div className="relative w-full">
-              <div className="relative z-10 flex w-full flex-col items-start gap-[34px] pt-[42px]">
-                <div className="flex w-full max-w-[566px] flex-col items-start gap-[14px] text-white">
-                  <p
-                    className={`${originalSurfer.className} text-[18px] leading-none tracking-[0.08em] text-[#d1ab46] md:text-[22px]`}
-                  >
+              <div className={`${sectionCopyStackClass} w-full items-start pt-[42px]`}>
+                <div className={`${sectionIntroGroupClass} w-full max-w-[566px] items-start text-white`}>
+                  <p className={sectionEyebrowClass}>
                     OUR MISSION
                   </p>
-                  <h2
-                    className={`${nanumMyeongjo.className} text-[28px] font-bold leading-[1.22] tracking-[0.01em] md:text-[31px]`}
-                  >
+                  <h2 className={sectionTitleClass}>
                     예수님이 하신 세 가지
                   </h2>
                 </div>
 
-                <p className="max-w-[620px] text-[18px] leading-[1.8] tracking-[0.01em] text-white/92">
-                  예수님은 평생 세 가지 일을 하셨어요. 가르치고, 치유하고, 복음을 전하셨습니다.
-                  <br />
-                  The 제자교회도 그렇게 하고 싶습니다.
-                </p>
+                <div className="max-w-[620px]">
+                  <p className="text-[18px] leading-[1.8] tracking-[0.01em] text-white/92">
+                    예수님은 평생 세 가지 일을 하셨어요. 가르치고, 치유하고, 복음을 전하셨습니다.
+                    <br />
+                    The 제자교회도 그렇게 하고 싶습니다.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -234,25 +244,22 @@ export default function GreetingPage() {
 
           <div className="relative z-10 flex w-full max-w-[430px] flex-col px-5 md:mr-[14px] md:max-w-[390px] md:px-0 md:pt-[52px]">
             <span
-              className={`${originalSurfer.className} pointer-events-none absolute left-0 top-[-30px] text-[112px] leading-none tracking-normal text-[#ece8e2] md:left-[-85px] md:top-[-16px] md:text-[116px]`}
+              className={`${sectionNumberClass} ${sectionTwoNumberClass} text-[#ece8e2]`}
             >
               02
             </span>
-
-            <div className="relative z-10 flex flex-col gap-[12px]">
-              <div className="flex flex-col gap-[24px]">
-                <p
-                  className={`${originalSurfer.className} text-[18px] leading-none tracking-[0.08em] text-[#caa643] md:text-[20px]`}
-                >
+            <div className={sectionCopyStackClass}>
+              <div className={sectionIntroGroupClass}>
+                <p className={sectionEyebrowClass}>
                   OUR COMMUNITY
                 </p>
-                <div className={`${nanumMyeongjo.className} text-[28px] leading-[1.3] tracking-[0.01em] text-black md:text-[30px] md:leading-[1.32]`}>
-                  <p>저희가 특히</p>
-                  <p>마음을 두는 사람들</p>
-                </div>
+                <h2 className={sectionTitleClass}>
+                  <span className="block">저희가 특히</span>
+                  <span className="block">마음을 두는 사람들</span>
+                </h2>
               </div>
 
-              <div className="pt-[2px] text-[18px] leading-[1.8] tracking-[0.01em] text-black/88">
+              <div className="text-[18px] leading-[1.8] tracking-[0.01em] text-black/88">
                 <p>하나님 나라엔 국적도, 언어도, 배경도 따로 없으니까요.</p>
                 <p className="mt-1">이 모두가 저희 교회가 꿈꾸는 가족입니다.</p>
               </div>
@@ -279,26 +286,25 @@ export default function GreetingPage() {
           <div className="relative flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
             <div className="relative z-10 flex w-full max-w-[430px] flex-col md:max-w-[448px] md:pt-[18px]">
               <span
-                className={`${originalSurfer.className} pointer-events-none absolute left-[-10px] top-[-28px] text-[112px] leading-none tracking-normal text-[#ece8e2] md:left-[-18px] md:top-[-32px] md:text-[116px]`}
+                className={`${sectionNumberClass} ${sectionThreeNumberClass} text-[#ece8e2]`}
               >
                 03
               </span>
+              <div className={sectionCopyStackClass}>
+                <div className={sectionIntroGroupClass}>
+                  <p className={sectionEyebrowClass}>
+                    OPEN DOOR
+                  </p>
 
-              <div className="relative z-10 flex flex-col gap-[20px]">
-                <p
-                  className={`${originalSurfer.className} text-[18px] leading-none tracking-[0.08em] text-[#caa643] md:text-[20px]`}
-                >
-                  OPEN DOOR
-                </p>
-
-                <div className={`${nanumMyeongjo.className} text-[28px] leading-[1.28] tracking-[0.01em] text-black md:text-[30px]`}>
-                  <p>완벽하지 않아도</p>
-                  <p>됩니다</p>
+                  <h2 className={sectionTitleClass}>
+                    <span className="block">완벽하지 않아도</span>
+                    <span className="block">됩니다</span>
+                  </h2>
                 </div>
 
-                <div className="space-y-[18px] pt-[6px] text-[18px] leading-[1.8] tracking-[0.01em] text-black/88">
+                <div className="space-y-[18px] text-[18px] leading-[1.8] tracking-[0.01em] text-black/88">
                   <p>
-                    더제자교회는 완벽한 사람들이 모인 곳이 아닙니다.
+                    The 제자교회는 완벽한 사람들이 모인 곳이 아닙니다.
                     <br />
                     의심해도 되고, 넘어져도 되고, 질문해도 됩니다.
                   </p>
