@@ -19,22 +19,36 @@ const missionCards = [
   {
     eyebrow: "TEACHING",
     title: "가르치는 사명",
-    description:
-      "강단에서 진리를 가르치셨고, 말씀으로\n세상을 살아가는 힘을 주셨습니다.",
+    description: (
+      <>
+        강단에서 진리를 가르치셨고, 말씀으로
+        <br />
+        세상을 살아가는 힘을 주셨습니다.
+      </>
+    ),
     letter: "T"
   },
   {
     eyebrow: "HEALING",
     title: "치유하는 사명",
-    description:
-      "무너진 사람 앞에서 무릎을 꿇으셨고,\n사랑으로 그 마음을 회복시키셨습니다.",
+    description: (
+      <>
+        무너진 사람 앞에서 무릎을 꿇으셨고,
+        <br />
+        사랑으로 그 마음을 회복시키셨습니다.
+      </>
+    ),
     letter: "H"
   },
   {
     eyebrow: "EVANGELIZING",
     title: "전파하는 사명",
-    description:
-      "아무도 찾지 않는 사람에게 먼저 찾아가셔서\n삶으로 복음을 전하셨습니다.",
+    description: (
+      <>
+        아무도 찾지 않는 사람에게<br className="md:hidden" /> 먼저
+        찾아가셔서 삶으로 복음을<br className="md:hidden" /> 전하셨습니다.
+      </>
+    ),
     letter: "E"
   }
 ];
@@ -218,7 +232,7 @@ export default function GreetingPage() {
         </div>
       </section>
 
-      {/* ━━━ MISSION (01) ━━━ */}
+      {/* ━━━ OUR MISSION (01) ━━━ */}
       <section
         ref={mission.ref}
         className="relative w-full border-b border-black/50 bg-[#202f55] py-14 text-white md:min-h-[586px] md:py-[72px]"
@@ -293,7 +307,7 @@ export default function GreetingPage() {
                       </h3>
                     </div>
 
-                    <p className="max-w-[236px] whitespace-pre-line text-[15px] leading-[1.76] tracking-[0.01em] text-black/85 md:max-w-[264px] md:text-[15px] md:leading-[1.82]">
+                    <p className="max-w-[236px] text-[15px] leading-[1.76] tracking-[0.01em] text-black/85 md:max-w-[264px] md:text-[15px] md:leading-[1.82]">
                       {card.description}
                     </p>
                   </div>
