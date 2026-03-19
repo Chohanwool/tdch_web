@@ -52,7 +52,7 @@ export default function SiteHeader() {
           {/* 로고 (모바일/태블릿에서는 중앙, 데스크탑에서는 좌측) */}
           <Link
             href="/"
-            className="lg:shrink-0 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center transition-[transform,font-size] duration-300 lg:static lg:translate-x-0 lg:translate-y-0"
+            className="absolute left-1/2 top-1/2 max-w-[calc(100%-7.5rem)] -translate-x-1/2 -translate-y-1/2 text-center transition-[transform,font-size] duration-300 lg:static lg:max-w-none lg:shrink-0 lg:translate-x-0 lg:translate-y-0"
           >
             <div>
               <p
@@ -63,7 +63,7 @@ export default function SiteHeader() {
                 The Disciples Church
               </p>
               <p
-                className={`whitespace-nowrap font-serif font-bold text-ink transition-[font-size] duration-300 ${
+                className={`truncate font-serif font-bold text-ink transition-[font-size] duration-300 ${
                   isCondensed ? "text-[18px] md:text-[21px]" : "text-[20px] md:text-[24px]"
                 }`}
               >

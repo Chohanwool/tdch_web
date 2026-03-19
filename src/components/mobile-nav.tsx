@@ -17,15 +17,23 @@ export default function MobileNav({ isOpen, setIsOpen }: { isOpen: boolean, setI
   // URL 경로가 변경되면(이동하면) 메뉴 닫기
   useEffect(() => {
     setIsOpen(false);
-  }, [pathname]);
+  }, [pathname, setIsOpen]);
 
   // 메뉴가 열렸을 때 백그라운드 스크롤 방지
   useEffect(() => {
+    const { body, documentElement } = document;
+    const prevBodyOverflowY = body.style.overflowY;
+    const prevHtmlOverflowY = documentElement.style.overflowY;
+
     if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
+      body.style.overflowY = "hidden";
+      documentElement.style.overflowY = "hidden";
     }
+
+    return () => {
+      body.style.overflowY = prevBodyOverflowY;
+      documentElement.style.overflowY = prevHtmlOverflowY;
+    };
   }, [isOpen]);
 
   return (
