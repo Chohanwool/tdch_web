@@ -12,7 +12,7 @@ const originalSurfer = Original_Surfer({
 
 const nanumMyeongjo = Nanum_Myeongjo({
   subsets: ["latin"],
-  weight: ["800"]
+  weight: ["400", "700", "800"]
 });
 
 const missionCards = [
@@ -200,13 +200,13 @@ export default function GreetingPage() {
                 <p>솔직히 교회가 힘들었던 적 있으신가요?</p>
                 <p>기대했다가 상처받고, 지쳐서 떠났다가,</p>
                 <p>
-                  그래도 어딘가 <span className="text-[#c9a84c]">하나님은 믿고 싶은 그 마음.</span>
+                  그래도 어딘가 <span className="text-[#c9a84c] font-extrabold">하나님은 믿고 싶은 그 마음.</span>
                 </p>
               </div>
             </motion.div>
 
             <motion.p
-              className="text-base leading-[1.8] tracking-[0.04em] text-[#1a2744] md:text-[18px]"
+              className="text-base font-bold leading-[1.8] tracking-[0.04em] text-[#1a2744] md:text-[20px]"
               variants={fadeUp}
               initial="hidden"
               animate={welcome.isInView ? "visible" : "hidden"}
@@ -260,7 +260,9 @@ export default function GreetingPage() {
                   custom={0.25}
                 >
                   <p className="text-[18px] leading-[1.8] tracking-[0.01em] text-white/92">
-                    예수님은 평생 세 가지 일을 하셨어요. 가르치고, 치유하고, 복음을 전하셨습니다.
+                    예수님은 평생 세 가지 일을 하셨어요.<br className="md:hidden" />
+                    가르치고, 치유하고,
+                    복음을 전하셨습니다.
                     <br />
                     The 제자교회도 그렇게 하고 싶습니다.
                   </p>
