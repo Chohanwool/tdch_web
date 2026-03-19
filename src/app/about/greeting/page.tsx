@@ -112,15 +112,17 @@ function useScrollReveal(amount = 0.25) {
 }
 
 export default function GreetingPage() {
-  const welcome = useScrollReveal(0.3);
-  const mission = useScrollReveal(0.15);
-  const community = useScrollReveal(0.15);
-  const openDoor = useScrollReveal(0.15);
+  const hero = useScrollReveal(0.4);
+  const welcome = useScrollReveal(0.35);
+  const mission = useScrollReveal(0.35);
+  const community = useScrollReveal(0.35);
+  const openDoor = useScrollReveal(0.35);
 
   return (
     <div className="w-full bg-white">
       {/* ━━━ HERO ━━━ */}
       <section
+        ref={hero.ref}
         className="relative h-[420px] w-full overflow-hidden md:h-[520px]"
         data-section="hero"
       >
@@ -128,7 +130,7 @@ export default function GreetingPage() {
         <motion.div
           className="absolute inset-0"
           initial={{ scale: 1.12 }}
-          animate={{ scale: 1 }}
+          animate={hero.isInView ? { scale: 1 } : { scale: 1.12 }}
           transition={{ duration: 6, ease: "easeOut" }}
         >
           <Image
@@ -148,7 +150,7 @@ export default function GreetingPage() {
               <motion.p
                 className={`${originalSurfer.className} text-[11px] uppercase tracking-[0.28em] text-white/80 md:text-[15px] md:tracking-[0.14em]`}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={hero.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
               >
                 Pastor&apos;s Greeting
@@ -156,7 +158,7 @@ export default function GreetingPage() {
               <motion.h1
                 className={`${nanumMyeongjo.className} mt-4 text-[34px] font-extrabold leading-[1.15] tracking-[0.02em] md:mt-[18px] md:text-[48px] md:leading-[1.16]`}
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={hero.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.8, delay: 0.55, ease: [0.25, 0.46, 0.45, 0.94] as const }}
               >
                 <span className="block">당신이 여기 있어서,</span>
@@ -289,7 +291,7 @@ export default function GreetingPage() {
                       </h3>
                     </div>
 
-                    <p className="max-w-[236px] whitespace-pre-line text-[13px] leading-[1.76] tracking-[0.01em] text-black/85 md:max-w-[264px] md:text-[15px] md:leading-[1.82]">
+                    <p className="max-w-[236px] whitespace-pre-line text-[15px] leading-[1.76] tracking-[0.01em] text-black/85 md:max-w-[264px] md:text-[15px] md:leading-[1.82]">
                       {card.description}
                     </p>
                   </div>
