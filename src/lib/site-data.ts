@@ -45,11 +45,11 @@ export const navMenuGroups: NavMenuGroup[] = [
     ]
   },
   {
-    href: "/contact",
+    href: "/about/location",
     label: "오시는 길/문의",
     items: [
-      { href: "/contact#map", label: "지도" },
-      { href: "/contact#contact-info", label: "연락처" },
+      { href: "/about/location#map", label: "지도" },
+      { href: "/about/location#contact-info", label: "연락처" },
     ]
   },
   {
@@ -72,7 +72,7 @@ export const quickMenuCards: QuickMenuCard[] = [
   { href: "/about/greeting", title: "교회소개", enTitle: "Church Intro", imageName: "/images/quick_menu/church.png" },
   { href: "/about/service-times", title: "예배 시간 안내", enTitle: "Service Times", imageName: "/images/quick_menu/clock.png" },
   { href: "/newcomer", title: "새가족 안내", enTitle: "Newcomer", imageName: "/images/quick_menu/people-group.png" },
-  { href: "/contact#map", title: "오시는길/문의", enTitle: "Visit & Contact", imageName: "/images/quick_menu/map-marker.png" },
+  { href: "/about/location#map", title: "오시는길/문의", enTitle: "Visit & Contact", imageName: "/images/quick_menu/map-marker.png" },
 ];
 
 // ─── 섹션4: 교회 소식 데이터 (임시 더미 — 추후 API 연동 예정) ─────────────

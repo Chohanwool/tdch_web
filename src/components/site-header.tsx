@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import MobileNav from "@/components/mobile-nav";
 
@@ -36,14 +37,12 @@ export default function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg animate-header-item transition-[box-shadow,background-color] duration-300 ${
-        isCondensed ? "shadow-[0_10px_30px_rgba(16,33,63,0.08)]" : ""
-      }`}
+      className={`sticky top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg animate-header-item transition-[box-shadow,background-color] duration-300 ${isCondensed ? "shadow-[0_10px_30px_rgba(16,33,63,0.08)]" : ""
+        }`}
     >
       <div
-        className={`section-shell transition-[padding] duration-300 ${
-          isCondensed ? "py-3 md:py-4" : "py-[25px]"
-        }`}
+        className={`section-shell transition-[padding] duration-300 ${isCondensed ? "py-3 md:py-4" : "py-[25px]"
+          }`}
       >
         <div className="relative flex items-center justify-between gap-4 md:gap-6">
           {/* 모바일 환경: 좌측 여백(가상 요소)을 주어 로고가 완벽히 중앙에 오도록 맞춤 */}
@@ -54,18 +53,27 @@ export default function SiteHeader() {
             href="/"
             className="absolute left-1/2 top-1/2 max-w-[calc(100%-7.5rem)] -translate-x-1/2 -translate-y-1/2 text-center transition-[transform,font-size] duration-300 lg:static lg:max-w-none lg:shrink-0 lg:translate-x-0 lg:translate-y-0"
           >
-            <div>
+            <div className="lg:hidden">
+              <Image
+                src="/images/logo/church_logo.png"
+                alt="The 제자교회 로고"
+                width={3099}
+                height={3265}
+                priority
+                className={`h-auto transition-[width] duration-300 ${isCondensed ? "w-[50px] md:w-[70px]" : "w-[86px] md:w-[90px]"
+                  }`}
+              />
+            </div>
+            <div className="hidden lg:block">
               <p
-                className={`hidden font-semibold uppercase tracking-[0.18em] text-themeBlue/70 transition-[font-size,opacity] duration-300 lg:block ${
-                  isCondensed ? "text-[9px] opacity-80" : "text-[10px]"
-                }`}
+                className={`hidden font-semibold uppercase tracking-[0.18em] text-themeBlue/70 transition-[font-size,opacity] duration-300 lg:block ${isCondensed ? "text-[9px] opacity-80" : "text-[10px]"
+                  }`}
               >
                 The Disciples Church
               </p>
               <p
-                className={`truncate font-serif font-bold text-ink transition-[font-size] duration-300 ${
-                  isCondensed ? "text-[18px] md:text-[21px]" : "text-[20px] md:text-[24px]"
-                }`}
+                className={`truncate font-serif font-bold text-ink transition-[font-size] duration-300 ${isCondensed ? "text-[18px] md:text-[21px]" : "text-[20px] md:text-[24px]"
+                  }`}
               >
                 The 제자교회
               </p>
@@ -74,9 +82,8 @@ export default function SiteHeader() {
 
           {/* 데스크탑 내비게이션 */}
           <nav
-            className={`hidden items-center justify-center font-semibold text-ink/85 transition-[gap,font-size] duration-300 lg:mr-auto lg:flex lg:pl-10 ${
-              isCondensed ? "gap-5 text-[18px] xl:gap-6" : "gap-6 text-[20px] xl:gap-8"
-            }`}
+            className={`hidden items-center justify-center font-semibold text-ink/85 transition-[gap,font-size] duration-300 lg:mr-auto lg:flex lg:pl-10 ${isCondensed ? "gap-5 text-[18px] xl:gap-6" : "gap-6 text-[20px] xl:gap-8"
+              }`}
           >
             {navMenuGroups.map((menu) => (
               <div
@@ -85,9 +92,8 @@ export default function SiteHeader() {
               >
                 <Link
                   href={menu.href}
-                  className={`inline-flex whitespace-nowrap rounded-full border border-transparent transition duration-300 group-hover/menu:border-cedar/20 group-hover/menu:bg-white group-hover/menu:text-themeBlue ${
-                    isCondensed ? "px-5 py-2" : "px-6 py-2.5"
-                  }`}
+                  className={`inline-flex whitespace-nowrap rounded-full border border-transparent transition duration-300 group-hover/menu:border-cedar/20 group-hover/menu:bg-white group-hover/menu:text-themeBlue ${isCondensed ? "px-5 py-2" : "px-6 py-2.5"
+                    }`}
                 >
                   <span>{menu.label}</span>
                 </Link>

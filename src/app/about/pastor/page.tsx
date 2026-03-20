@@ -423,7 +423,7 @@ function PastorFinalSection() {
             오시는 길 →
           </Link>
           <Link
-            href="/contact#contact-info"
+            href="/about/location#contact-info"
             className="inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl border border-white/30 bg-[#26345d] px-6 text-[1.1rem] font-semibold tracking-[-0.02em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a]"
           >
             문의하기
@@ -452,7 +452,7 @@ function PastorFinalSection() {
                 오시는 길 →
               </Link>
               <Link
-                href="/contact#contact-info"
+                href="/about/location#contact-info"
                 className="inline-flex min-h-[60px] min-w-[150px] items-center justify-center rounded-xl border border-white/30 px-8 text-[1rem] font-semibold tracking-[-0.03em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a] lg:min-h-[50px] lg:min-w-[170px]"
               >
                 문의하기
