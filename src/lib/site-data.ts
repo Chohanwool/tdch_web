@@ -34,7 +34,13 @@ export const navMenuGroups: NavMenuGroup[] = [
     label: "교회소식",
     items: [
       { href: "/news#notice", label: "공지" },
-      { href: "/news#bulletin", label: "주보" },
+      { href: "/news#bulletin", label: "주보" }
+    ]
+  },
+  {
+    href: "/newcomer",
+    label: "새가족안내",
+    items: [
       { href: "/newcomer", label: "새가족 안내" }
     ]
   },

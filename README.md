@@ -77,6 +77,10 @@ docker compose up -d --build
 
 이 프로젝트는 당분간 `clamp()` 기반 fluid typography 대신, 고정 `rem` + `md`/`lg` 브레이크포인트 조합을 사용합니다.
 
+상세 문서:
+
+- [Typography Policy](docs/typography-policy.md)
+
 루트 기준:
 
 - `html` 루트 `font-size`는 기본값 `100%`를 유지합니다.
