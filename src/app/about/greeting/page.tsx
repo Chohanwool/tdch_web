@@ -64,7 +64,7 @@ const communityFocus = [
 const sectionNumberClass =
   `${originalSurfer.className} pointer-events-none absolute left-[-10px] top-[-28px] text-[112px] leading-none tracking-normal md:text-[116px]`;
 const sectionOneNumberClass = "md:left-[-9px] md:top-[-32px]";
-const sectionTwoNumberClass = "md:left-[-40px] md:top-[-25px]";
+const sectionTwoNumberClass = "md:left-[-40px] md:top-[-80px]";
 const sectionThreeNumberClass = "md:left-[-40px] md:top-[-60px]";
 const sectionEyebrowClass =
   `${originalSurfer.className} text-[18px] leading-none tracking-[0.08em] text-[#caa643] md:text-[20px]`;
@@ -405,7 +405,7 @@ export default function GreetingPage() {
           </div>
 
           {/* Community text */}
-          <div className="order-1 relative z-10 flex w-full max-w-[430px] flex-col px-5 md:order-2 md:mr-[14px] md:max-w-[390px] md:px-0 md:pt-[52px]">
+          <div className="order-1 relative z-10 flex w-full max-w-[430px] flex-col px-5 md:order-2 md:mr-[14px] md:max-w-[390px] md:self-center md:px-0">
             <motion.span
               className={`${sectionNumberClass} ${sectionTwoNumberClass} text-[#ece8e2]`}
               variants={fadeIn}
@@ -416,7 +416,7 @@ export default function GreetingPage() {
               02
             </motion.span>
             <motion.div
-              className={`${sectionCopyStackClass} pt-[42px]`}
+              className={`${sectionCopyStackClass}`}
               variants={fadeUp}
               initial="hidden"
               animate={community.isInView ? "visible" : "hidden"}
@@ -527,20 +527,20 @@ export default function GreetingPage() {
 
             {/* Photo frame slide in from right */}
             <motion.div
-              className="w-full md:w-[460px]"
+              className="w-full max-w-[398px] self-center md:w-[460px] md:max-w-none md:self-start"
               variants={slideInRight}
               initial="hidden"
               animate={openDoor.isInView ? "visible" : "hidden"}
               custom={0.2}
             >
-              <div className="relative h-[360px] border border-[rgba(0,0,0,0.22)] bg-white md:h-[432px]">
-                <div className="absolute left-[18px] right-[18px] top-[24px] bottom-[24px] overflow-hidden rounded-[8px] border border-[#0b0b0b] shadow-[0px_1px_1px_rgba(0,0,0,0.1)] md:left-[21px] md:right-[21px] md:top-[30px] md:bottom-[92px]">
+              <div className="relative h-[560px] border border-[rgba(0,0,0,0.22)] bg-white md:h-[640px]">
+                <div className="absolute left-[18px] right-[18px] top-[24px] bottom-[44px] overflow-hidden rounded-[8px] border border-[#0b0b0b] shadow-[0px_1px_1px_rgba(0,0,0,0.1)] md:left-[21px] md:right-[21px] md:top-[30px] md:bottom-[56px]">
                   <Image
-                    src="/images/greeting/open_door.png"
+                    src="/images/greeting/open_door.jpeg"
                     alt="더제자교회 공동체 사진"
                     fill
                     sizes="(max-width: 768px) 100vw, 416px"
-                    className="object-cover"
+                    className="object-cover object-center"
                   />
                 </div>
               </div>
