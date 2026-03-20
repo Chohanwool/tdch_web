@@ -63,9 +63,9 @@ const communityFocus = [
 
 const sectionNumberClass =
   `${originalSurfer.className} pointer-events-none absolute left-[-10px] top-[-28px] text-[112px] leading-none tracking-normal md:text-[116px]`;
-const sectionOneNumberClass = "md:left-[-9px] md:top-[-35px]";
-const sectionTwoNumberClass = "md:left-[-40px] md:top-[-80px]";
-const sectionThreeNumberClass = "md:left-[-40px] md:top-[-80px]";
+const sectionOneNumberClass = "left-[10px] top-[-35px] md:left-[-9px] md:top-[-35px]";
+const sectionTwoNumberClass = "top-[-75px] md:left-[-40px] md:top-[-80px]";
+const sectionThreeNumberClass = "top-[-75px] md:left-[-40px] md:top-[-80px]";
 const sectionEyebrowClass =
   `${originalSurfer.className} text-[18px] leading-none tracking-[0.08em] text-[#caa643] md:text-[20px]`;
 const sectionTitleClass =
@@ -186,7 +186,7 @@ export default function GreetingPage() {
       {/* ━━━ WELCOME ━━━ */}
       <section
         ref={welcome.ref}
-        className="w-full border-b border-black/20 bg-[#fffefc] py-14 md:min-h-[428px] md:py-20"
+        className="w-full border-b border-black/20 bg-[#fffefc] py-[5.5rem] md:min-h-[428px] md:py-20"
         data-section="welcome"
       >
         <div className="section-shell">
@@ -235,7 +235,7 @@ export default function GreetingPage() {
       {/* ━━━ OUR MISSION (01) ━━━ */}
       <section
         ref={mission.ref}
-        className="relative w-full border-b border-black/50 bg-[#202f55] py-14 text-white md:min-h-[586px] md:py-[72px]"
+        className="relative w-full border-b border-black/50 bg-[#202f55] py-[5.5rem] text-white md:min-h-[586px] md:py-[72px]"
         data-section="mission"
       >
         <div className="section-shell relative">
@@ -337,7 +337,7 @@ export default function GreetingPage() {
       {/* ━━━ COMMUNITY (02) ━━━ */}
       <section
         ref={community.ref}
-        className="relative z-0 w-full overflow-visible border-b border-black/20 bg-white py-14 md:min-h-[482px] md:py-[70px]"
+        className="relative z-0 w-full overflow-visible border-b border-black/20 bg-white py-[5.5rem] md:min-h-[482px] md:py-[70px]"
         data-section="community"
       >
         <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-10 px-0 md:flex-row md:items-start md:justify-between md:gap-0">
@@ -466,7 +466,7 @@ export default function GreetingPage() {
       {/* ━━━ OPEN DOOR (03) ━━━ */}
       <section
         ref={openDoor.ref}
-        className="relative z-20 w-full border-b border-black/20 bg-[#fcfbf8] py-14 md:min-h-[584px] md:py-[70px]"
+        className="relative z-20 w-full border-b border-black/20 bg-[#fcfbf8] py-[5.5rem] md:min-h-[584px] md:py-[70px]"
         data-section="open-door"
       >
         <div className="section-shell">
