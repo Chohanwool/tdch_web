@@ -215,13 +215,13 @@ function PastorMissionSection() {
             PHILIPPINES · 2009 - 2025
           </p>
 
-          <h2 className={`${gowunBatang.className} mt-3 text-[2rem] font-bold leading-[1.2] tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.8rem] lg:text-[3.4rem]`}>
+          <h2 className={`${gowunBatang.className} mt-3 text-[2rem] font-bold leading-[1.2] tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.25rem] lg:text-[2.5rem]`}>
             산타로사에서의 17년
           </h2>
         </div>
 
         <div className="mt-12 grid gap-10 md:mt-14 md:gap-12 lg:mt-16 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] lg:gap-[84px]">
-          <div className="border-l-[4px] border-[#cda74d] pl-6 md:pl-8 lg:flex lg:items-center lg:pl-8">
+          <div className="border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:flex lg:items-center lg:pl-8">
             <div className="font-serif flex flex-col gap-2 text-[1.2rem] leading-[1] tracking-[-0.03em] text-[#22345c] md:text-[1.35rem] lg:gap-2 lg:text-[1.4rem]">
               {pastorSectionTwoLeadLines.map((line, index) => (
                 <p
@@ -259,13 +259,13 @@ function PastorSectionThree() {
             JOURNEY OF LEARNING
           </p>
 
-          <h2 className={`${gowunBatang.className} mt-3 text-[2rem] font-bold leading-[1.2] tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.8rem] lg:text-[3.25rem]`}>
+          <h2 className={`${gowunBatang.className} mt-3 text-[2rem] font-bold leading-[1.2] tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.25rem] lg:text-[2.5rem]`}>
             더 잘 섬기고 싶어서
           </h2>
         </div>
 
-        <div className="mt-12 border-l-[4px] border-[#cda74d] pl-6 md:pl-8 lg:mt-[56px] lg:max-w-[560px] lg:pl-4">
-          <div className="font-serif text-[1.45rem] leading-[1.6] tracking-[-0.03em] text-[#22345c] md:text-[1.85rem] lg:text-[1.4rem] lg:leading-[1.55]">
+        <div className="mt-12 border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:mt-[56px] lg:max-w-[560px] lg:pl-4">
+          <div className="font-serif text-[1.45rem] leading-[1.6] tracking-[-0.03em] text-[#22345c] md:text-[1.35rem] lg:text-[1.4rem] lg:leading-[1.55]">
             <p>뭔가를 이루려는 게 아니라,</p>
             <p className="text-[#cda74d]">더 잘 섬기고 싶어서입니다.</p>
           </div>
@@ -291,7 +291,7 @@ function PastorSectionFour() {
             WHO HE IS
           </p>
 
-          <h2 className={`${gowunBatang.className} mt-3 text-[2rem] font-bold leading-[1.2] tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.8rem] lg:text-[3.15rem]`}>
+          <h2 className={`${gowunBatang.className} mt-3 text-[2rem] font-bold leading-[1.2] tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.25rem] lg:text-[2.5rem]`}>
             삶에서 나온 말을 합니다
           </h2>
         </div>
@@ -302,11 +302,11 @@ function PastorSectionFour() {
               key={card.number}
               className="rounded-[22px] border border-black/6 bg-white px-6 py-7 shadow-[0_8px_18px_rgba(0,0,0,0.12)] md:px-8 md:py-8 lg:min-h-[322px] lg:px-6 lg:py-7"
             >
-              <p className="font-[var(--font-serif)] text-[3.9rem] font-semibold leading-none tracking-[-0.05em] text-[#d9d9d9]/75 md:text-[4.8rem] lg:text-[4rem]">
+              <p className="font-[var(--font-serif)] text-[3rem] font-semibold leading-none tracking-[-0.05em] text-[#d9d9d9]/75 md:text-[4rem] lg:text-[4rem]">
                 {card.number}
               </p>
 
-              <h3 className="mt-5 text-[1.5rem] font-bold leading-[1.4] tracking-[-0.03em] text-black md:text-[1.8rem] lg:mt-4 lg:text-[1.2rem]">
+              <h3 className="mt-5 text-[1.5rem] font-bold leading-[1.4] tracking-[-0.03em] text-black md:text-[1.5rem] lg:mt-4 lg:text-[1.3rem]">
                 {card.title}
               </h3>
 
@@ -397,7 +397,7 @@ function PastorSectionFive() {
             </p>
           </div>
 
-          <h2 className={`${gowunBatang.className} mt-6 text-[2.5rem] font-bold leading-[1.15] tracking-[-0.04em] text-[#22345c] md:text-[3.6rem] lg:text-[4.25rem]`}>
+          <h2 className={`${gowunBatang.className} mt-6 text-[2.5rem] font-bold leading-[1.15] tracking-[-0.04em] text-[#22345c] md:text-[2.25rem] lg:text-[2.5rem]`}>
             걸어온 길
           </h2>
         </div>
