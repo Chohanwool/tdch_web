@@ -87,16 +87,16 @@ export default function ServiceTimesPage() {
         </div>
 
         <div className="hidden overflow-x-auto border-x border-b border-t-[3px] border-cedar/15 border-t-ink/90 bg-white md:block">
-          <table className="w-full min-w-[760px] border-collapse text-left">
+          <table className="w-full min-w-[680px] table-fixed border-collapse text-left lg:min-w-[760px]">
             <thead>
               <tr className="border-b border-cedar/15 bg-[#fafcff]">
-                <th className="w-[35%] border-r border-cedar/15 px-6 py-5 text-center text-lg font-bold text-ink">
+                <th className="w-[38%] border-r border-cedar/15 px-4 py-4 text-center text-base font-bold text-ink lg:px-6 lg:py-5 lg:text-lg">
                   구분
                 </th>
-                <th className="w-[35%] border-r border-cedar/15 px-6 py-5 text-center text-lg font-bold text-ink">
+                <th className="w-[37%] border-r border-cedar/15 px-4 py-4 text-center text-base font-bold text-ink lg:px-6 lg:py-5 lg:text-lg">
                   시간
                 </th>
-                <th className="px-6 py-5 text-center text-lg font-bold text-ink">
+                <th className="w-[25%] px-4 py-4 text-center text-base font-bold text-ink lg:px-6 lg:py-5 lg:text-lg">
                   장소
                 </th>
               </tr>
@@ -104,16 +104,16 @@ export default function ServiceTimesPage() {
             <tbody>
               {mainLocationServices.map((svc, index) => (
                 <tr key={svc.name} className="border-b border-cedar/15 last:border-b-0">
-                  <td className="border-r border-cedar/15 px-6 py-6 text-center text-xl font-bold text-ink">
+                  <td className="border-r border-cedar/15 px-4 py-5 text-center text-lg font-bold text-ink lg:px-6 lg:py-6 lg:text-xl">
                     {svc.name}
                   </td>
-                  <td className="border-r border-cedar/15 px-6 py-6 text-center text-xl font-medium text-ink/80">
+                  <td className="border-r border-cedar/15 px-4 py-5 text-center text-lg font-medium text-ink/80 lg:px-6 lg:py-6 lg:text-xl">
                     {formatSchedule(svc.day, svc.time, svc.ampm)}
                   </td>
                   {index === 0 ? (
                     <td
                       rowSpan={mainLocationServices.length}
-                      className="px-6 py-6 text-center align-middle text-xl font-medium text-ink/80"
+                      className="px-4 py-5 text-center align-middle text-base font-medium leading-[1.5] text-ink/80 lg:px-6 lg:py-6 lg:text-xl"
                     >
                       나인아트홀(지하1층)
                     </td>
@@ -122,13 +122,13 @@ export default function ServiceTimesPage() {
               ))}
               {otherLocationServices.map((svc) => (
                 <tr key={svc.name} className="border-b border-cedar/15 last:border-b-0">
-                  <td className="border-r border-cedar/15 px-6 py-6 text-center text-xl font-bold text-ink">
+                  <td className="border-r border-cedar/15 px-4 py-5 text-center text-lg font-bold text-ink lg:px-6 lg:py-6 lg:text-xl">
                     {svc.name}
                   </td>
-                  <td className="border-r border-cedar/15 px-6 py-6 text-center text-xl font-medium text-ink/80">
+                  <td className="border-r border-cedar/15 px-4 py-5 text-center text-lg font-medium text-ink/80 lg:px-6 lg:py-6 lg:text-xl">
                     {formatSchedule(svc.day, svc.time, svc.ampm)}
                   </td>
-                  <td className="px-6 py-6 text-center align-middle text-xl font-medium text-ink/80">
+                  <td className="px-4 py-5 text-center align-middle text-base font-medium leading-[1.5] text-ink/80 lg:px-6 lg:py-6 lg:text-xl">
                     {svc.location}
                   </td>
                 </tr>
