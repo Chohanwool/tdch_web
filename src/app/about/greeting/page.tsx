@@ -337,7 +337,7 @@ export default function GreetingPage() {
       {/* ━━━ COMMUNITY (02) ━━━ */}
       <section
         ref={community.ref}
-        className="relative z-0 w-full overflow-visible border-b border-black/20 bg-white py-14 md:min-h-[482px] md:py-[70px]"
+        className="relative z-0 w-full overflow-visible border-b border-black/20 bg-white py-14 md:min-h-[482px] md:py-[35px]"
         data-section="community"
       >
         <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-10 px-0 md:flex-row md:items-start md:justify-between md:gap-0">
