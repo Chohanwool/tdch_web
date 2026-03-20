@@ -33,7 +33,7 @@ const missionCards = [
     title: "치유하는 사명",
     description: (
       <>
-        무너진 사람 앞에서 무릎을 꿇으셨고,
+        부서진 사람 앞에서 무릎을 꿇으셨고,
         <br />
         사랑으로 그 마음을 회복시키셨습니다.
       </>
@@ -192,7 +192,7 @@ export default function GreetingPage() {
         <div className="section-shell">
           <div className="flex max-w-[980px] flex-col items-start gap-8 md:gap-10">
             <motion.p
-              className={`${originalSurfer.className} type-eyebrow tracking-[0.04em] text-[#1a2744] md:text-[2rem]`}
+              className={`${originalSurfer.className} type-eyebrow tracking-[0.04em] text-[#1a2744]`}
               variants={slideInLeft}
               initial="hidden"
               animate={welcome.isInView ? "visible" : "hidden"}
@@ -209,7 +209,7 @@ export default function GreetingPage() {
               custom={0.15}
             >
               <div
-                className={`${nanumMyeongjo.className} type-lead space-y-1 font-bold tracking-[0.01em] text-[#1a2744] md:text-[1.375rem]`}
+                className={`${nanumMyeongjo.className} type-lead space-y-1 font-bold tracking-[0.01em] text-[#1a2744]`}
               >
                 <p>솔직히 교회가 힘들었던 적 있으신가요?</p>
                 <p>기대했다가 상처받고, 지쳐서 떠났다가,</p>
@@ -220,7 +220,7 @@ export default function GreetingPage() {
             </motion.div>
 
             <motion.p
-              className="type-body font-bold tracking-[0.04em] text-[#1a2744] md:text-[1.25rem]"
+              className="type-body-strong font-bold tracking-[0.04em] text-[#000000]"
               variants={fadeUp}
               initial="hidden"
               animate={welcome.isInView ? "visible" : "hidden"}
@@ -274,11 +274,9 @@ export default function GreetingPage() {
                   custom={0.25}
                 >
                   <p className="type-lead tracking-[0.01em] text-white/92">
-                    예수님은 평생 세 가지 일을 하셨어요.<br className="md:hidden" />
+                    예수님은 평생 세 가지 일을 하셨어요.<br />
                     가르치고, 치유하고,
                     복음을 전하셨습니다.
-                    <br />
-                    The 제자교회도 그렇게 하고 싶습니다.
                   </p>
                 </motion.div>
               </div>
@@ -297,7 +295,7 @@ export default function GreetingPage() {
                 >
                   <div className="flex max-w-[252px] flex-col gap-[18px] md:max-w-[272px] md:gap-[20px]">
                     <div className="flex flex-col gap-[14px] md:gap-[16px]">
-                      <p className="type-label tracking-[0.24em] text-black/80 md:text-[0.6875rem]">
+                      <p className="type-label tracking-[0.24em] text-black/80">
                         {card.eyebrow}
                       </p>
                       <h3
@@ -307,7 +305,7 @@ export default function GreetingPage() {
                       </h3>
                     </div>
 
-                    <p className="type-body-small max-w-[236px] tracking-[0.01em] text-black/85 md:max-w-[264px] md:leading-[1.82]">
+                    <p className="type-body-small max-w-[236px] tracking-[0.01em] text-black/85 md:max-w-[264px]">
                       {card.description}
                     </p>
                   </div>
@@ -328,7 +326,13 @@ export default function GreetingPage() {
               animate={mission.isInView ? "visible" : "hidden"}
               custom={0.8}
             >
-              거창하지 않아도 됩니다.<br className="md:hidden" /> 예수님이 하신 것처럼,<br className="md:hidden" />그냥 그렇게요.
+              The 제자교회도 그렇게 하고 싶습니다.
+              <br />
+              말씀으로 가르치고, 사랑으로 치유하고, 삶으로 복음을 전하는 것..
+
+              <br />
+
+              거창하지 않아도 됩니다.<br className="md:hidden" /> 예수님이 하신 것처럼,<br className="md:hidden" /> 그냥 그렇게요.
             </motion.p>
           </div>
         </div>
@@ -434,8 +438,9 @@ export default function GreetingPage() {
                 </div>
 
                 <div className="type-lead tracking-[0.01em] text-black/88">
+                  <p>청소년, 청년들. 두 문화 사이에서 자란 다문화 가정과 MK, TCK. 이 땅에서 열심히 살아가는 이주민 이웃들. 그리고 교회에 상처받아 떠났지만 아직 하나님을 포기하지 못한 분들.</p>
+                  <p className="mt-6">이 모두가 저희 교회가 꿈꾸는 가족입니다.</p>
                   <p>하나님 나라엔 국적도, 언어도, 배경도 <br className="md:hidden" />따로 없으니까요.</p>
-                  <p className="mt-1">이 모두가 저희 교회가 꿈꾸는 가족입니다.</p>
                 </div>
               </motion.div>
             </div>
@@ -520,7 +525,7 @@ export default function GreetingPage() {
                 animate={openDoor.isInView ? "visible" : "hidden"}
                 custom={0.35}
               >
-                <div className={`${nanumMyeongjo.className} type-lead font-bold tracking-[0.01em] text-black md:text-[1.375rem]`}>
+                <div className={`${nanumMyeongjo.className} type-lead font-bold tracking-[0.01em] text-black`}>
                   <p>지쳤다면, 여기서 쉬어가세요.</p>
                   <p className="mt-1">다시 시작하고 싶다면, 함께 걸어가요.</p>
                 </div>

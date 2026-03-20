@@ -143,10 +143,10 @@ function PastorHeroSection() {
             <div>
               <div className="flex items-center gap-3 text-[#d5b25c]">
                 <span className="h-px w-10 bg-current md:w-12" />
-                <p className="type-label font-semibold tracking-[0.18em] md:text-sm">담임목사 소개</p>
+                <p className="type-label font-semibold tracking-[0.18em]">담임목사 소개</p>
               </div>
 
-              <h1 className={`${gowunBatang.className} mt-8 text-[3.3rem] leading-[1.08] tracking-[0.02em] md:mt-10 md:text-[5rem] lg:mt-7 lg:text-[4.5rem]`}>
+              <h1 className={`${gowunBatang.className} type-page-title mt-8 font-bold leading-[1.08] tracking-[0.02em] md:mt-10 lg:mt-7`}>
                 이진욱 목사
               </h1>
 
@@ -162,8 +162,8 @@ function PastorHeroSection() {
               </div> */}
             </div>
 
-            <div className="type-body-strong mt-10 flex flex-col gap-9 tracking-[-0.01em] text-white/92 md:mt-12 md:text-[1.36rem] lg:mt-0 lg:max-w-[390px] lg:text-[1.05rem] lg:leading-[1.55]">
-              <p className="leading-[1.5]">
+            <div className="type-body-strong mt-10 flex flex-col gap-9 tracking-[-0.01em] text-white/92 md:mt-12 lg:mt-0 lg:max-w-[390px]">
+              <p>
                 솔직히, 목사 소개 페이지는 좀 어색하죠.
                 <br />
                 자랑처럼 보일 것 같고, 너무 거룩하게 써 놓으면
@@ -211,18 +211,18 @@ function PastorMissionSection() {
     <section className="w-full bg-white">
       <div className="mx-auto w-full max-w-[1120px] px-4 py-16 md:px-8 md:py-20 lg:min-h-[474px] lg:px-8 lg:py-[72px] xl:px-0">
         <div className="pt-2 md:pt-3 lg:pt-1">
-          <p className="type-label font-[var(--font-serif)] font-semibold uppercase tracking-[0.28em] text-[#cda74d] md:text-sm">
+          <p className="type-label font-[var(--font-serif)] font-semibold uppercase tracking-[0.28em] text-[#cda74d]">
             PHILIPPINES · 2009 - 2025
           </p>
 
-          <h2 className={`${gowunBatang.className} type-section-title mt-3 font-bold tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.25rem]`}>
+          <h2 className={`${gowunBatang.className} type-section-title mt-3 font-bold tracking-[-0.03em] text-[#22345c] md:mt-4`}>
             산타로사에서의 17년
           </h2>
         </div>
 
         <div className="mt-12 grid gap-10 md:mt-14 md:gap-12 lg:mt-16 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] lg:gap-[84px]">
           <div className="border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:flex lg:items-center lg:pl-8">
-            <div className="type-lead font-serif flex flex-col gap-2 tracking-[-0.03em] text-[#22345c] md:text-[1.35rem] lg:gap-2 lg:text-[1.4rem] lg:leading-[1]">
+            <div className="type-lead font-serif flex flex-col gap-2 tracking-[-0.03em] text-[#22345c] lg:gap-2">
               {pastorSectionTwoLeadLines.map((line, index) => (
                 <p
                   key={line}
@@ -234,7 +234,7 @@ function PastorMissionSection() {
             </div>
           </div>
 
-          <div className="type-body-strong flex flex-col gap-8 tracking-[-0.02em] text-[#000000] md:text-[1.18rem] lg:gap-5 lg:text-[1.05rem] lg:leading-[1.9]">
+          <div className="type-body-strong flex flex-col gap-8 tracking-[-0.02em] text-[#000000] lg:gap-5">
             <p>
               기독교한국침례회 해외선교회 파송으로 17년간 필리핀에서 선교했습니다.<br className="hidden md:block" />
               산타로사, 그 작은 도시에서 4가정으로 시작한 교회가 120여 명의 공동체로 자라는 것을 지켜봤습니다.
@@ -255,23 +255,23 @@ function PastorSectionThree() {
     <section className="w-full bg-[rgb(255,253,248)]">
       <div className="mx-auto w-full max-w-[1120px] px-4 py-16 md:px-8 md:py-20 lg:relative lg:h-[508px] lg:px-8 lg:py-[78px] xl:px-0">
         <div>
-          <p className="type-label font-[var(--font-serif)] font-semibold uppercase tracking-[0.28em] text-[#cda74d] md:text-sm">
+          <p className="type-label font-[var(--font-serif)] font-semibold uppercase tracking-[0.28em] text-[#cda74d]">
             JOURNEY OF LEARNING
           </p>
 
-          <h2 className={`${gowunBatang.className} type-section-title mt-3 font-bold tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.25rem]`}>
+          <h2 className={`${gowunBatang.className} type-section-title mt-3 font-bold tracking-[-0.03em] text-[#22345c] md:mt-4`}>
             더 잘 섬기고 싶어서
           </h2>
         </div>
 
         <div className="mt-12 border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:mt-[56px] lg:max-w-[560px] lg:pl-4">
-          <div className="type-lead font-serif tracking-[-0.03em] text-[#22345c] md:text-[1.35rem] lg:text-[1.4rem] lg:leading-[1.55]">
+          <div className="type-lead font-serif tracking-[-0.03em] text-[#22345c]">
             <p>뭔가를 이루려는 게 아니라,</p>
             <p className="text-[#cda74d]">더 잘 섬기고 싶어서입니다.</p>
           </div>
         </div>
 
-        <div className="type-body-strong mt-10 flex max-w-[860px] flex-col tracking-[-0.02em] text-[#000000] md:mt-12 md:text-[1.18rem] lg:mt-[44px] lg:max-w-[900px] lg:text-[1.05rem] lg:leading-[1.9]">
+        <div className="type-body-strong mt-10 flex max-w-[860px] flex-col tracking-[-0.02em] text-[#000000] md:mt-12 lg:mt-[44px] lg:max-w-[900px]">
           {pastorSectionThreeBodyLines.map((line) => (
             <p key={line}>{line}</p>
           ))}
@@ -287,11 +287,11 @@ function PastorSectionFour() {
     <section className="w-full bg-[rgb(250,248,244)]">
       <div className="mx-auto w-full max-w-[1120px] px-4 py-16 md:px-8 md:py-20 lg:min-h-[508px] lg:px-8 lg:py-[52px] xl:px-0">
         <div>
-          <p className="type-label font-[var(--font-serif)] font-semibold uppercase tracking-[0.28em] text-[#cda74d] md:text-sm">
+          <p className="type-label font-[var(--font-serif)] font-semibold uppercase tracking-[0.28em] text-[#cda74d]">
             WHO HE IS
           </p>
 
-          <h2 className={`${gowunBatang.className} type-section-title mt-3 font-bold tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.25rem]`}>
+          <h2 className={`${gowunBatang.className} type-section-title mt-3 font-bold tracking-[-0.03em] text-[#22345c] md:mt-4`}>
             삶에서 나온 말을 합니다
           </h2>
         </div>
@@ -306,11 +306,11 @@ function PastorSectionFour() {
                 {card.number}
               </p>
 
-              <h3 className="type-card-title mt-5 font-bold tracking-[-0.03em] text-black md:text-[1.5rem] lg:mt-4 lg:text-[1.35rem]">
+              <h3 className="type-card-title mt-5 font-bold tracking-[-0.03em] text-black lg:mt-4">
                 {card.title}
               </h3>
 
-              <p className="type-body mt-4 tracking-[-0.02em] text-black/90 md:text-[1.12rem] lg:mt-5 lg:text-[1rem] lg:leading-[1.8]">
+              <p className="type-body mt-4 tracking-[-0.02em] text-black/90 lg:mt-5">
                 {card.body}
               </p>
             </article>
@@ -347,7 +347,7 @@ function PastorSectionFiveColumn({
     <div>
       <div className="flex items-center gap-4 md:gap-6">
         <span
-          className={`type-lead inline-flex min-h-[42px] min-w-[72px] items-center justify-center rounded-full px-5 font-semibold tracking-[-0.03em] lg:text-[1.1rem] ${pillClassName}`}
+          className={`type-body-strong inline-flex min-h-[42px] min-w-[72px] items-center justify-center rounded-full px-5 font-semibold tracking-[-0.03em] ${pillClassName}`}
         >
           {label}
         </span>
@@ -367,14 +367,14 @@ function PastorSectionFiveColumn({
 
             <div>
               {item.eyebrow ? (
-                <p className={`type-body-small font-semibold tracking-[0.12em] lg:text-[0.95rem] ${eyebrowClassName}`}>
+                <p className={`type-body-small font-semibold tracking-[0.12em] ${eyebrowClassName}`}>
                   {item.eyebrow}
                 </p>
               ) : null}
-              <h3 className={`type-card-title font-bold leading-[1.45] tracking-[-0.03em] text-[#22345c] lg:text-[1.45rem] ${item.eyebrow ? "mt-2" : ""}`}>
+              <h3 className={`type-card-title font-bold leading-[1.45] tracking-[-0.03em] text-[#22345c] ${item.eyebrow ? "mt-2" : ""}`}>
                 {item.title}
               </h3>
-              <p className="type-body mt-2 font-medium leading-[1.6] tracking-[-0.02em] text-[#a7adba] lg:text-[1rem]">
+              <p className="type-body mt-2 font-medium leading-[1.6] tracking-[-0.02em] text-[#a7adba]">
                 {item.subtitle}
               </p>
             </div>
@@ -392,12 +392,12 @@ function PastorSectionFive() {
         <div>
           <div className="flex items-center gap-3 text-[#cda74d]">
             <span className="h-px w-10 bg-current md:w-12" />
-            <p className="type-label font-[var(--font-serif)] font-semibold tracking-[0.18em] md:text-sm">
+            <p className="type-label font-[var(--font-serif)] font-semibold tracking-[0.18em]">
               학력 및 사역
             </p>
           </div>
 
-          <h2 className={`${gowunBatang.className} type-section-title mt-6 font-bold tracking-[-0.04em] text-[#22345c] md:text-[2.25rem]`}>
+          <h2 className={`${gowunBatang.className} type-section-title mt-6 font-bold tracking-[-0.04em] text-[#22345c]`}>
             걸어온 길
           </h2>
         </div>
@@ -418,13 +418,13 @@ function PastorFinalSection() {
         <div className="flex flex-col gap-4 md:hidden">
           <Link
             href="/about/location"
-            className="inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl bg-[#e2c47a] px-6 text-[1.1rem] font-semibold tracking-[-0.02em] text-[#22345c] transition-colors duration-200 hover:bg-[#f4d486]"
+            className="type-body-strong inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl bg-[#e2c47a] px-6 font-semibold tracking-[-0.02em] text-[#22345c] transition-colors duration-200 hover:bg-[#f4d486]"
           >
             오시는 길 →
           </Link>
           <Link
             href="/about/location#contact-info"
-            className="inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl border border-white/30 bg-[#26345d] px-6 text-[1.1rem] font-semibold tracking-[-0.02em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a]"
+            className="type-body-strong inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl border border-white/30 bg-[#26345d] px-6 font-semibold tracking-[-0.02em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a]"
           >
             문의하기
           </Link>
@@ -433,11 +433,11 @@ function PastorFinalSection() {
         <div className="hidden rounded-[40px] bg-[#26345d] px-10 py-12 md:block lg:px-[40px] lg:py-[30px]">
           <div className="flex items-center justify-between gap-8 lg:gap-10">
             <div className="max-w-[580px]">
-              <h2 className={`${gowunBatang.className} type-section-title font-bold tracking-[-0.04em] text-white lg:text-[2.1rem]`}>
+              <h2 className={`${gowunBatang.className} type-section-title font-bold tracking-[-0.04em] text-white`}>
                 처음 방문을 환영합니다
               </h2>
 
-              <p className="type-body mt-5 tracking-[-0.02em] text-white/60 lg:leading-[1.6]">
+              <p className="type-body mt-5 tracking-[-0.02em] text-white/60">
                 궁금한 것이 있으시거나 교회에 대해 더 알고 싶으시다면
                 <br className="hidden lg:block" />
                 언제든지 연락 주세요. 기다리고 있겠습니다.
@@ -447,13 +447,13 @@ function PastorFinalSection() {
             <div className="flex shrink-0 items-center gap-5">
               <Link
                 href="/about/location"
-                className="inline-flex min-h-[60px] min-w-[150px] items-center justify-center rounded-xl bg-[#e2c47a] px-8 text-[1rem] font-semibold tracking-[-0.03em] text-[#22345c] transition-colors duration-200 hover:bg-[#f4d486] lg:min-h-[50px] lg:min-w-[170px]"
+                className="type-body inline-flex min-h-[60px] min-w-[150px] items-center justify-center rounded-xl bg-[#e2c47a] px-8 font-semibold tracking-[-0.03em] text-[#22345c] transition-colors duration-200 hover:bg-[#f4d486] lg:min-h-[50px] lg:min-w-[170px]"
               >
                 오시는 길 →
               </Link>
               <Link
                 href="/about/location#contact-info"
-                className="inline-flex min-h-[60px] min-w-[150px] items-center justify-center rounded-xl border border-white/30 px-8 text-[1rem] font-semibold tracking-[-0.03em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a] lg:min-h-[50px] lg:min-w-[170px]"
+                className="type-body inline-flex min-h-[60px] min-w-[150px] items-center justify-center rounded-xl border border-white/30 px-8 font-semibold tracking-[-0.03em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a] lg:min-h-[50px] lg:min-w-[170px]"
               >
                 문의하기
               </Link>

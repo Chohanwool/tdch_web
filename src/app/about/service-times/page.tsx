@@ -16,10 +16,10 @@ function SectionHeading({
 }) {
   return (
     <div className="mb-5">
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-cedar/70">
+      <p className="type-label mb-2 font-semibold uppercase tracking-[0.2em] text-cedar/70">
         {subtitle}
       </p>
-      <h2 className="text-3xl font-bold text-ink">{title}</h2>
+      <h2 className="type-section-title font-bold text-ink">{title}</h2>
     </div>
   );
 }
@@ -40,8 +40,8 @@ function MobileServiceCard({
 }) {
   return (
     <article className="rounded-[20px] border border-cedar/10 bg-white px-5 py-5 shadow-[0_8px_24px_rgba(16,33,63,0.06)]">
-      <h3 className="text-lg font-bold text-ink">{title}</h3>
-      <dl className="mt-4 space-y-3 text-sm">
+      <h3 className="type-card-title font-bold text-ink">{title}</h3>
+      <dl className="type-body-small mt-4 space-y-3">
         <div className="flex items-start justify-between gap-4 border-b border-cedar/10 pb-3">
           <dt className="shrink-0 font-semibold text-cedar/70">시간</dt>
           <dd className="text-right font-medium text-ink/80">{schedule}</dd>
@@ -67,10 +67,10 @@ export default function ServiceTimesPage() {
     <div className="section-shell space-y-14 pt-10 md:pt-16 pb-20">
       <section>
         <div className="mb-8">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-cedar/70">
+          <p className="type-label mb-2 font-semibold uppercase tracking-[0.2em] text-cedar/70">
             Service Times
           </p>
-          <h2 className="text-4xl font-bold tracking-[-0.03em] text-ink">
+          <h2 className="type-page-title font-bold tracking-[-0.03em] text-ink">
             예배 시간 안내
           </h2>
         </div>
@@ -90,13 +90,13 @@ export default function ServiceTimesPage() {
           <table className="w-full min-w-[680px] table-fixed border-collapse text-left lg:min-w-[760px]">
             <thead>
               <tr className="border-b border-cedar/15 bg-[#fafcff]">
-                <th className="w-[38%] border-r border-cedar/15 px-4 py-4 text-center text-base font-bold text-ink lg:px-6 lg:py-5 lg:text-lg">
+                <th className="type-body-strong w-[38%] border-r border-cedar/15 px-4 py-4 text-center font-bold text-ink lg:px-6 lg:py-5">
                   구분
                 </th>
-                <th className="w-[37%] border-r border-cedar/15 px-4 py-4 text-center text-base font-bold text-ink lg:px-6 lg:py-5 lg:text-lg">
+                <th className="type-body-strong w-[37%] border-r border-cedar/15 px-4 py-4 text-center font-bold text-ink lg:px-6 lg:py-5">
                   시간
                 </th>
-                <th className="w-[25%] px-4 py-4 text-center text-base font-bold text-ink lg:px-6 lg:py-5 lg:text-lg">
+                <th className="type-body-strong w-[25%] px-4 py-4 text-center font-bold text-ink lg:px-6 lg:py-5">
                   장소
                 </th>
               </tr>
@@ -104,16 +104,16 @@ export default function ServiceTimesPage() {
             <tbody>
               {mainLocationServices.map((svc, index) => (
                 <tr key={svc.name} className="border-b border-cedar/15 last:border-b-0">
-                  <td className="border-r border-cedar/15 px-4 py-5 text-center text-lg font-bold text-ink lg:px-6 lg:py-6 lg:text-xl">
+                  <td className="type-body-strong border-r border-cedar/15 px-4 py-5 text-center font-bold text-ink lg:px-6 lg:py-6">
                     {svc.name}
                   </td>
-                  <td className="border-r border-cedar/15 px-4 py-5 text-center text-lg font-medium text-ink/80 lg:px-6 lg:py-6 lg:text-xl">
+                  <td className="type-body border-r border-cedar/15 px-4 py-5 text-center font-medium text-ink/80 lg:px-6 lg:py-6">
                     {formatSchedule(svc.day, svc.time, svc.ampm)}
                   </td>
                   {index === 0 ? (
                     <td
                       rowSpan={mainLocationServices.length}
-                      className="px-4 py-5 text-center align-middle text-base font-medium leading-[1.5] text-ink/80 lg:px-6 lg:py-6 lg:text-xl"
+                      className="type-body px-4 py-5 text-center align-middle font-medium text-ink/80 lg:px-6 lg:py-6"
                     >
                       나인아트홀(지하1층)
                     </td>
@@ -122,13 +122,13 @@ export default function ServiceTimesPage() {
               ))}
               {otherLocationServices.map((svc) => (
                 <tr key={svc.name} className="border-b border-cedar/15 last:border-b-0">
-                  <td className="border-r border-cedar/15 px-4 py-5 text-center text-lg font-bold text-ink lg:px-6 lg:py-6 lg:text-xl">
+                  <td className="type-body-strong border-r border-cedar/15 px-4 py-5 text-center font-bold text-ink lg:px-6 lg:py-6">
                     {svc.name}
                   </td>
-                  <td className="border-r border-cedar/15 px-4 py-5 text-center text-lg font-medium text-ink/80 lg:px-6 lg:py-6 lg:text-xl">
+                  <td className="type-body border-r border-cedar/15 px-4 py-5 text-center font-medium text-ink/80 lg:px-6 lg:py-6">
                     {formatSchedule(svc.day, svc.time, svc.ampm)}
                   </td>
-                  <td className="px-4 py-5 text-center align-middle text-base font-medium leading-[1.5] text-ink/80 lg:px-6 lg:py-6 lg:text-xl">
+                  <td className="type-body px-4 py-5 text-center align-middle font-medium text-ink/80 lg:px-6 lg:py-6">
                     {svc.location}
                   </td>
                 </tr>
@@ -139,7 +139,7 @@ export default function ServiceTimesPage() {
 
         <div className="mt-10 px-5 md:px-0">
           <SectionHeading title="안내" subtitle="Notice" />
-          <ul className="space-y-3 text-base leading-7 text-ink/75 md:text-lg">
+          <ul className="type-body space-y-3 text-ink/75">
             <li className="flex gap-3">
               <span className="mt-[11px] h-2 w-2 shrink-0 rounded-full bg-themeBlue" />
               <span>모든 주일 예배는 온라인 송출을 병행합니다.</span>
