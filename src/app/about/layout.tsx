@@ -11,7 +11,6 @@ export default function AboutLayout({
 }) {
   const pathname = usePathname();
   const hidePageHeader = pathname?.startsWith("/about/greeting") || pathname?.startsWith("/about/pastor");
-  const hideAboutLnb = pathname?.startsWith("/about/greeting") || pathname?.startsWith("/about/pastor");
 
   return (
     <div className="flex w-full flex-col">
@@ -22,7 +21,7 @@ export default function AboutLayout({
           backgroundImageUrl="/images/main_bg/main_bg_sec1.png"
         />
       )}
-      <Breadcrumb hideLnb={hideAboutLnb} />
+      <Breadcrumb />
       <main className="flex-1 w-full">{children}</main>
     </div>
   );
