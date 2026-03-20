@@ -146,7 +146,7 @@ function PastorHeroSection() {
                 <p className="text-sm font-semibold tracking-[0.18em]">담임목사 소개</p>
               </div>
 
-              <h1 className={`${gowunBatang.className} mt-8 text-[3.3rem] leading-[1.08] tracking-[0.02em] md:mt-10 md:text-[5rem] lg:mt-7 lg:text-[4.55rem]`}>
+              <h1 className={`${gowunBatang.className} mt-8 text-[3.3rem] leading-[1.08] tracking-[0.02em] md:mt-10 md:text-[5rem] lg:mt-7 lg:text-[4.5rem]`}>
                 이진욱 목사
               </h1>
 
@@ -155,14 +155,14 @@ function PastorHeroSection() {
               </p>
 
               <div className="mt-8 inline-flex min-h-[62px] items-center whitespace-nowrap rounded-2xl border border-[#d5b25c] px-5 py-4 text-[#e0bd67] md:mt-10 md:px-8 lg:mt-8 lg:min-h-[56px] lg:px-7 lg:py-3">
-                <p className="whitespace-nowrap font-[var(--font-serif)] text-[0.95rem] font-semibold uppercase tracking-[0.09em] md:text-[1rem] lg:text-[1.05rem]">
+                <p className="whitespace-nowrap font-[var(--font-serif)] text-[0.95rem] font-semibold uppercase tracking-[0.09em] md:text-[1rem] lg:text-[1rem]">
                   <span className="mr-3 text-[1.2em] align-[-0.08em]">†</span>
                   THE DISCIPLES CHURCH · SENIOR PASTOR
                 </p>
               </div>
             </div>
 
-            <div className="mt-10 flex flex-col gap-9 text-[1.08rem] leading-[1.95] tracking-[-0.01em] text-white/92 md:mt-12 md:text-[1.36rem] lg:mt-0 lg:max-w-[390px] lg:text-[1.1rem] lg:leading-[1]">
+            <div className="mt-10 flex flex-col gap-9 text-[1.08rem] leading-[1.95] tracking-[-0.01em] text-white/92 md:mt-12 md:text-[1.36rem] lg:mt-0 lg:max-w-[390px] lg:text-[1.05rem] lg:leading-[1.55]">
               <p className="leading-[1.5]">
                 솔직히, 목사 소개 페이지는 좀 어색하죠.
                 <br />
@@ -174,7 +174,7 @@ function PastorHeroSection() {
             </div>
           </div>
 
-          <div className="relative z-10 mx-auto flex w-full max-w-[560px] justify-center self-end lg:hidden">
+          {/* <div className="relative z-10 mx-auto flex w-full max-w-[560px] justify-center self-end lg:hidden">
             <div className="relative w-full max-w-[560px]">
               <Image
                 src="/images/about/senior_pastor.png"
@@ -185,7 +185,7 @@ function PastorHeroSection() {
                 className="h-auto w-full object-contain object-bottom"
               />
             </div>
-          </div>
+          </div> */}
 
           <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden lg:block w-[58%]">
             <div className="absolute bottom-[-350px] right-[-130px] w-[990px] max-w-none">
@@ -234,7 +234,7 @@ function PastorMissionSection() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-8 text-[1.08rem] leading-[1.5] tracking-[-0.02em] text-[#000000] md:text-[1.18rem] lg:gap-5 lg:text-[1.1rem] lg:leading-[1.95]">
+          <div className="flex flex-col gap-8 text-[1.08rem] leading-[1.5] tracking-[-0.02em] text-[#000000] md:text-[1.18rem] lg:gap-5 lg:text-[1.05rem] lg:leading-[1.9]">
             <p>
               기독교한국침례회 해외선교회 파송으로 17년간 필리핀에서 선교했습니다.<br className="hidden md:block" />
               산타로사, 그 작은 도시에서 4가정으로 시작한 교회가 120여 명의 공동체로 자라는 것을 지켜봤습니다.
@@ -271,7 +271,7 @@ function PastorSectionThree() {
           </div>
         </div>
 
-        <div className="mt-10 flex max-w-[860px] flex-col text-[1.08rem] leading-[1.5] tracking-[-0.02em] text-[#000000] md:mt-12 md:text-[1.18rem] lg:mt-[44px] lg:max-w-[900px] lg:text-[1.1rem] lg:leading-[1.95]">
+        <div className="mt-10 flex max-w-[860px] flex-col text-[1.08rem] leading-[1.5] tracking-[-0.02em] text-[#000000] md:mt-12 md:text-[1.18rem] lg:mt-[44px] lg:max-w-[900px] lg:text-[1.05rem] lg:leading-[1.9]">
           {pastorSectionThreeBodyLines.map((line) => (
             <p key={line}>{line}</p>
           ))}
@@ -306,11 +306,11 @@ function PastorSectionFour() {
                 {card.number}
               </p>
 
-              <h3 className="mt-5 text-[1.5rem] font-bold leading-[1.4] tracking-[-0.03em] text-black md:text-[1.5rem] lg:mt-4 lg:text-[1.3rem]">
+              <h3 className="mt-5 text-[1.5rem] font-bold leading-[1.4] tracking-[-0.03em] text-black md:text-[1.5rem] lg:mt-4 lg:text-[1.35rem]">
                 {card.title}
               </h3>
 
-              <p className="mt-4 text-[1.02rem] leading-[1.95] tracking-[-0.02em] text-black/90 md:text-[1.12rem] lg:mt-5 lg:text-[1.1rem] lg:leading-[1.8]">
+              <p className="mt-4 text-[1.02rem] leading-[1.95] tracking-[-0.02em] text-black/90 md:text-[1.12rem] lg:mt-5 lg:text-[1rem] lg:leading-[1.8]">
                 {card.body}
               </p>
             </article>
@@ -347,7 +347,7 @@ function PastorSectionFiveColumn({
     <div>
       <div className="flex items-center gap-4 md:gap-6">
         <span
-          className={`inline-flex min-h-[42px] min-w-[72px] items-center justify-center rounded-full px-5 text-[1.3rem] font-semibold tracking-[-0.03em] ${pillClassName}`}
+          className={`inline-flex min-h-[42px] min-w-[72px] items-center justify-center rounded-full px-5 text-[1.3rem] font-semibold tracking-[-0.03em] lg:text-[1.1rem] ${pillClassName}`}
         >
           {label}
         </span>
@@ -367,14 +367,14 @@ function PastorSectionFiveColumn({
 
             <div>
               {item.eyebrow ? (
-                <p className={`text-[0.95rem] font-semibold tracking-[0.12em] ${eyebrowClassName}`}>
+                <p className={`text-[0.95rem] font-semibold tracking-[0.12em] lg:text-[0.95rem] ${eyebrowClassName}`}>
                   {item.eyebrow}
                 </p>
               ) : null}
-              <h3 className={`text-[1.55rem] font-bold leading-[1.45] tracking-[-0.03em] text-[#22345c] ${item.eyebrow ? "mt-2" : ""}`}>
+              <h3 className={`text-[1.55rem] font-bold leading-[1.45] tracking-[-0.03em] text-[#22345c] lg:text-[1.45rem] ${item.eyebrow ? "mt-2" : ""}`}>
                 {item.title}
               </h3>
-              <p className="mt-2 text-[1.18rem] font-medium leading-[1.6] tracking-[-0.02em] text-[#a7adba]">
+              <p className="mt-2 text-[1.18rem] font-medium leading-[1.6] tracking-[-0.02em] text-[#a7adba] lg:text-[1rem]">
                 {item.subtitle}
               </p>
             </div>
@@ -433,7 +433,7 @@ function PastorFinalSection() {
         <div className="hidden rounded-[40px] bg-[#26345d] px-10 py-12 md:block lg:px-[40px] lg:py-[30px]">
           <div className="flex items-center justify-between gap-8 lg:gap-10">
             <div className="max-w-[580px]">
-              <h2 className={`${gowunBatang.className} text-[2rem] font-bold leading-[1.16] tracking-[-0.04em] text-white`}>
+              <h2 className={`${gowunBatang.className} text-[2rem] font-bold leading-[1.16] tracking-[-0.04em] text-white lg:text-[2.1rem]`}>
                 처음 방문을 환영합니다
               </h2>
 
