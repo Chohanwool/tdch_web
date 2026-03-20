@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Gowun_Batang } from "next/font/google";
 
 const gowunBatang = Gowun_Batang({
@@ -357,9 +358,8 @@ function PastorSectionFiveColumn({
         {items.map((item, index) => (
           <article
             key={`${label}-${item.title}`}
-            className={`grid grid-cols-[24px_minmax(0,1fr)] gap-4 py-6 md:grid-cols-[32px_minmax(0,1fr)] md:gap-6 md:py-7 ${
-              index > 0 ? "border-t border-black/10" : ""
-            }`}
+            className={`grid grid-cols-[24px_minmax(0,1fr)] gap-4 py-6 md:grid-cols-[32px_minmax(0,1fr)] md:gap-6 md:py-7 ${index > 0 ? "border-t border-black/10" : ""
+              }`}
           >
             <div className="flex justify-center pt-1">
               <span className={`block h-4 w-4 rounded-full ring-4 ${bulletClassName} ${bulletRingClassName}`} />
@@ -411,6 +411,60 @@ function PastorSectionFive() {
   );
 }
 
+function PastorFinalSection() {
+  return (
+    <section className="w-full bg-[rgb(247,248,252)]">
+      <div className="mx-auto w-full max-w-[1120px] px-4 py-12 md:px-8 md:py-16 lg:px-8 lg:py-[52px] xl:px-0">
+        <div className="flex flex-col gap-4 md:hidden">
+          <Link
+            href="/about/location"
+            className="inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl bg-[#e2c47a] px-6 text-[1.1rem] font-semibold tracking-[-0.02em] text-[#22345c] transition-colors duration-200 hover:bg-[#f4d486]"
+          >
+            오시는 길 →
+          </Link>
+          <Link
+            href="/contact#contact-info"
+            className="inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl border border-white/30 bg-[#26345d] px-6 text-[1.1rem] font-semibold tracking-[-0.02em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a]"
+          >
+            문의하기
+          </Link>
+        </div>
+
+        <div className="hidden rounded-[40px] bg-[#26345d] px-10 py-12 md:block lg:px-[40px] lg:py-[30px]">
+          <div className="flex items-center justify-between gap-8 lg:gap-10">
+            <div className="max-w-[580px]">
+              <h2 className={`${gowunBatang.className} text-[2rem] font-bold leading-[1.16] tracking-[-0.04em] text-white`}>
+                처음 방문을 환영합니다
+              </h2>
+
+              <p className="mt-5 text-[1rem] leading-[1.6] tracking-[-0.02em] text-white/60">
+                궁금한 것이 있으시거나 교회에 대해 더 알고 싶으시다면
+                <br className="hidden lg:block" />
+                언제든지 연락 주세요. 기다리고 있겠습니다.
+              </p>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-5">
+              <Link
+                href="/about/location"
+                className="inline-flex min-h-[60px] min-w-[150px] items-center justify-center rounded-xl bg-[#e2c47a] px-8 text-[1rem] font-semibold tracking-[-0.03em] text-[#22345c] transition-colors duration-200 hover:bg-[#f4d486] lg:min-h-[50px] lg:min-w-[170px]"
+              >
+                오시는 길 →
+              </Link>
+              <Link
+                href="/contact#contact-info"
+                className="inline-flex min-h-[60px] min-w-[150px] items-center justify-center rounded-xl border border-white/30 px-8 text-[1rem] font-semibold tracking-[-0.03em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a] lg:min-h-[50px] lg:min-w-[170px]"
+              >
+                문의하기
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function PastorPage() {
   return (
     <div className="w-full bg-white">
@@ -419,6 +473,7 @@ export default function PastorPage() {
       <PastorSectionThree />
       <PastorSectionFour />
       <PastorSectionFive />
+      <PastorFinalSection />
     </div>
   );
 }
