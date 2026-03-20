@@ -27,6 +27,13 @@ const pastorSectionTwoLeadLines = [
   "그렇게 17년이 지났습니다."
 ] as const;
 
+const pastorSectionThreeBodyLines = [
+  "공부도 참 다양하게 했습니다. 청소년을 이해하고 싶어서 청소년지도를 공부했고,",
+  "상처 입은 사람 곁에 제대로 있어주고 싶어서 치유상담을 배웠고,",
+  "말씀을 더 깊이 다루고 싶어서 신학을 팠습니다.",
+  "지금은 필리핀 크리스찬 대학교에서 박사과정 중이에요."
+] as const;
+
 // 섹션1(담임목사 소개)
 function PastorHeroSection() {
   return (
@@ -180,11 +187,44 @@ function PastorMissionSection() {
   );
 }
 
+function PastorSectionThree() {
+  return (
+    <section className="w-full bg-[rgb(255,253,248)]">
+      <div className="mx-auto w-full max-w-[1120px] px-4 py-16 md:px-8 md:py-20 lg:relative lg:h-[508px] lg:px-8 lg:py-[78px] xl:px-0">
+        <div>
+          <p className="font-[var(--font-serif)] text-xs font-semibold uppercase tracking-[0.28em] text-[#cda74d] md:text-sm">
+            JOURNEY OF LEARNING
+          </p>
+
+          <h2 className={`${gowunBatang.className} mt-3 text-[2rem] font-bold leading-[1.2] tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.8rem] lg:text-[3.25rem]`}>
+            더 잘 섬기고 싶어서
+          </h2>
+        </div>
+
+        <div className="mt-12 border-l-[4px] border-[#cda74d] pl-6 md:pl-8 lg:mt-[56px] lg:max-w-[560px] lg:pl-4">
+          <div className="font-serif text-[1.45rem] leading-[1.6] tracking-[-0.03em] text-[#22345c] md:text-[1.85rem] lg:text-[1.4rem] lg:leading-[1.55]">
+            <p>뭔가를 이루려는 게 아니라,</p>
+            <p className="text-[#cda74d]">더 잘 섬기고 싶어서입니다.</p>
+          </div>
+        </div>
+
+        <div className="mt-10 flex max-w-[860px] flex-col text-[1.08rem] leading-[1.5] tracking-[-0.02em] text-[#000000] md:mt-12 md:text-[1.18rem] lg:mt-[44px] lg:max-w-[900px] lg:text-[1.1rem] lg:leading-[1.95]">
+          {pastorSectionThreeBodyLines.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
 export default function PastorPage() {
   return (
     <div className="w-full bg-white">
       <PastorHeroSection />
       <PastorMissionSection />
+      <PastorSectionThree />
     </div>
   );
 }
