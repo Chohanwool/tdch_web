@@ -28,6 +28,7 @@ html {
   max-width: 100%;
   background-color: var(--color-background);
   overflow-x: hidden;
+  font-size: 100%;
 }
 
 body {
@@ -38,6 +39,98 @@ body {
   overflow-x: hidden;
   background: var(--color-background);
   color: var(--color-ink);
+}
+
+/* 타이포 정책 */
+@layer components {
+  .type-page-title {
+    font-size: 2.125rem;
+    line-height: 1.15;
+  }
+
+  .type-section-title {
+    font-size: 1.75rem;
+    line-height: 1.28;
+  }
+
+  .type-card-title {
+    font-size: 1.125rem;
+    line-height: 1.35;
+  }
+
+  .type-lead {
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+
+  .type-body {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .type-body-strong {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+
+  .type-body-small {
+    font-size: 0.9375rem;
+    line-height: 1.76;
+  }
+
+  .type-label {
+    font-size: 0.75rem;
+    line-height: 1.2;
+  }
+
+  .type-eyebrow {
+    font-size: 1.125rem;
+    line-height: 1;
+  }
+
+  .type-display-number {
+    font-size: 7rem;
+    line-height: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .type-page-title {
+    font-size: 3rem;
+    line-height: 1.16;
+  }
+
+  .type-section-title {
+    font-size: 1.875rem;
+    line-height: 1.32;
+  }
+
+  .type-card-title {
+    font-size: 1.375rem;
+  }
+
+  .type-lead {
+    font-size: 1.1875rem;
+  }
+
+  .type-label {
+    font-size: 0.9375rem;
+  }
+
+  .type-eyebrow {
+    font-size: 1.25rem;
+  }
+
+  .type-display-number {
+    font-size: 7.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .type-section-title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
 }
 
 a {

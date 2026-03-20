@@ -73,6 +73,66 @@ docker compose up -d --build
 - 컴포넌트 색상 클래스는 Tailwind 팔레트(`ink`, `cedar`, `clay` 등) 사용
 - 기존 클래스 호환을 위해 레거시 별칭(`ivory`, `ink`, `cedar`, `moss`, `clay`, `gold`) 유지
 
+## 타이포 기준
+
+이 프로젝트는 당분간 `clamp()` 기반 fluid typography 대신, 고정 `rem` + `md`/`lg` 브레이크포인트 조합을 사용합니다.
+
+루트 기준:
+
+- `html` 루트 `font-size`는 기본값 `100%`를 유지합니다.
+- 별도 지정이 없으므로 현재 기준은 `1rem = 16px`입니다.
+- `62.5%` 루트 스케일은 사용하지 않습니다.
+- 이유: Tailwind 기본 spacing, gap, radius, text scale이 전부 `rem` 기반이라 루트만 `62.5%`로 바꾸면 사이트 전체 크기가 의도와 다르게 축소됩니다.
+
+운영 원칙:
+
+- 타이포는 의미 단위로 관리합니다. 숫자값을 페이지마다 임의로 새로 만들지 않습니다.
+- 본문은 가능한 한 좁은 범위의 고정 `rem` 값을 사용합니다.
+- 제목은 `base`, `md`, 필요 시 `lg`에서만 단계적으로 키웁니다.
+- `clamp()`, `vw`, `zoom`, 브라우저 자동 스케일에 의존한 타이포는 새 코드에서 기본 전략으로 사용하지 않습니다.
+- 한 페이지 안에서는 동일한 역할의 텍스트가 같은 축을 사용해야 합니다.
+
+권장 타입 스케일:
+
+- `display`: `2.125rem` / `md: 3rem`
+- `h1`: `1.75rem` / `md: 1.875rem` / `lg: 2.5rem`
+- `h2`: `1.5rem` / `md: 2rem` / `lg: 2.5rem`
+- `h3`: `1.125rem` / `md: 1.375rem`
+- `lead`: `1.125rem` / `md: 1.1875rem`
+- `body`: `1rem`
+- `body-strong`: `1.0625rem`
+- `body-small`: `0.9375rem`
+- `label`: `0.75rem` / `md: 0.9375rem`
+- `eyebrow`: `1.125rem` / `md: 1.25rem`
+
+전역 타입 토큰:
+
+- `.type-page-title`: 페이지 대표 타이틀
+- `.type-section-title`: 섹션 타이틀
+- `.type-card-title`: 카드/블록 제목
+- `.type-lead`: 강조 본문
+- `.type-body`: 기본 본문
+- `.type-body-strong`: 조금 더 큰 본문
+- `.type-body-small`: 보조 본문 / 메타 정보
+- `.type-label`: 작은 라벨
+- `.type-eyebrow`: 큰 섹션 overline
+- `.type-display-number`: 큰 배경 숫자
+
+권장 적용 예시:
+
+- 페이지 대표 타이틀: `className="type-page-title ..."`
+- 섹션 타이틀: `className="type-section-title ..."`
+- 카드 제목: `className="type-card-title ..."`
+- 본문: `className="type-body ..."`
+- 강조 본문: `className="type-lead ..."`
+- 라벨: `className="type-label ..."`
+
+지양 예시:
+
+- 같은 역할의 제목인데 페이지마다 `1.68rem`, `1.82rem`, `1.91rem`처럼 제각각 쓰는 패턴
+- 루트 `font-size`를 바꿔 Tailwind 전체 scale을 흔드는 방식
+- 본문에 과도한 fluid typography를 넣어 읽기 기준이 흔들리는 패턴
+
 ## 반응형 기준
 
 이 프로젝트는 Tailwind 기본 브레이크포인트를 사용하지만, 운영 원칙은 아래 3단계를 기준으로 맞춥니다.

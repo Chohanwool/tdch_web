@@ -62,14 +62,14 @@ const communityFocus = [
 ];
 
 const sectionNumberClass =
-  `${originalSurfer.className} pointer-events-none absolute left-[-10px] top-[-28px] text-[112px] leading-none tracking-normal md:text-[116px]`;
+  `${originalSurfer.className} type-display-number pointer-events-none absolute left-[-10px] top-[-28px] tracking-normal`;
 const sectionOneNumberClass = "left-[10px] top-[-35px] md:left-[-9px] md:top-[-35px]";
 const sectionTwoNumberClass = "top-[-75px] md:left-[-40px] md:top-[-80px]";
 const sectionThreeNumberClass = "top-[-75px] md:left-[-40px] md:top-[-80px]";
 const sectionEyebrowClass =
-  `${originalSurfer.className} text-[18px] leading-none tracking-[0.08em] text-[#caa643] md:text-[20px]`;
+  `${originalSurfer.className} type-eyebrow tracking-[0.08em] text-[#caa643]`;
 const sectionTitleClass =
-  `${nanumMyeongjo.className} text-[28px] font-bold leading-[1.28] tracking-[0.01em] md:text-[30px] md:leading-[1.32]`;
+  `${nanumMyeongjo.className} type-section-title font-bold tracking-[0.01em]`;
 const sectionIntroGroupClass = "flex flex-col gap-[14px]";
 const sectionCopyStackClass = "relative z-10 flex flex-col gap-[24px]";
 
@@ -162,7 +162,7 @@ export default function GreetingPage() {
           <div className="section-shell w-full">
             <div className="max-w-[417px] text-white">
               <motion.p
-                className={`${originalSurfer.className} text-[11px] uppercase tracking-[0.28em] text-white/80 md:text-[15px] md:tracking-[0.14em]`}
+                className={`${originalSurfer.className} type-label uppercase tracking-[0.24em] text-white/80 md:tracking-[0.14em]`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={hero.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
@@ -170,7 +170,7 @@ export default function GreetingPage() {
                 Pastor&apos;s Greeting
               </motion.p>
               <motion.h1
-                className={`${nanumMyeongjo.className} mt-4 text-[34px] font-extrabold leading-[1.15] tracking-[0.02em] md:mt-[18px] md:text-[48px] md:leading-[1.16]`}
+                className={`${nanumMyeongjo.className} type-page-title mt-4 font-extrabold tracking-[0.02em] md:mt-[18px]`}
                 initial={{ opacity: 0, y: 30 }}
                 animate={hero.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.8, delay: 0.55, ease: [0.25, 0.46, 0.45, 0.94] as const }}
@@ -192,7 +192,7 @@ export default function GreetingPage() {
         <div className="section-shell">
           <div className="flex max-w-[980px] flex-col items-start gap-8 md:gap-10">
             <motion.p
-              className={`${originalSurfer.className} text-[24px] leading-[1] tracking-[0.04em] text-[#1a2744] md:text-[32px]`}
+              className={`${originalSurfer.className} type-eyebrow tracking-[0.04em] text-[#1a2744] md:text-[2rem]`}
               variants={slideInLeft}
               initial="hidden"
               animate={welcome.isInView ? "visible" : "hidden"}
@@ -209,7 +209,7 @@ export default function GreetingPage() {
               custom={0.15}
             >
               <div
-                className={`${nanumMyeongjo.className} space-y-1 text-[18px] font-bold leading-[1.78] tracking-[0.01em] text-[#1a2744]`}
+                className={`${nanumMyeongjo.className} type-lead space-y-1 font-bold tracking-[0.01em] text-[#1a2744] md:text-[1.375rem]`}
               >
                 <p>솔직히 교회가 힘들었던 적 있으신가요?</p>
                 <p>기대했다가 상처받고, 지쳐서 떠났다가,</p>
@@ -220,7 +220,7 @@ export default function GreetingPage() {
             </motion.div>
 
             <motion.p
-              className="text-base font-bold leading-[1.8] tracking-[0.04em] text-[#1a2744] md:text-[20px]"
+              className="type-body font-bold tracking-[0.04em] text-[#1a2744] md:text-[1.25rem]"
               variants={fadeUp}
               initial="hidden"
               animate={welcome.isInView ? "visible" : "hidden"}
@@ -273,7 +273,7 @@ export default function GreetingPage() {
                   animate={mission.isInView ? "visible" : "hidden"}
                   custom={0.25}
                 >
-                  <p className="text-[18px] leading-[1.8] tracking-[0.01em] text-white/92">
+                  <p className="type-lead tracking-[0.01em] text-white/92">
                     예수님은 평생 세 가지 일을 하셨어요.<br className="md:hidden" />
                     가르치고, 치유하고,
                     복음을 전하셨습니다.
@@ -297,23 +297,23 @@ export default function GreetingPage() {
                 >
                   <div className="flex max-w-[252px] flex-col gap-[18px] md:max-w-[272px] md:gap-[20px]">
                     <div className="flex flex-col gap-[14px] md:gap-[16px]">
-                      <p className="text-[10px] leading-none tracking-[0.24em] text-black/80 md:text-[11px]">
+                      <p className="type-label tracking-[0.24em] text-black/80 md:text-[0.6875rem]">
                         {card.eyebrow}
                       </p>
                       <h3
-                        className={`${nanumMyeongjo.className} text-[18px] font-bold leading-[1.15] tracking-[0.01em] text-black md:text-[22px]`}
+                        className={`${nanumMyeongjo.className} type-card-title font-bold leading-[1.15] tracking-[0.01em] text-black`}
                       >
                         {card.title}
                       </h3>
                     </div>
 
-                    <p className="max-w-[236px] text-[15px] leading-[1.76] tracking-[0.01em] text-black/85 md:max-w-[264px] md:text-[15px] md:leading-[1.82]">
+                    <p className="type-body-small max-w-[236px] tracking-[0.01em] text-black/85 md:max-w-[264px] md:leading-[1.82]">
                       {card.description}
                     </p>
                   </div>
 
                   <span
-                    className={`${nanumMyeongjo.className} absolute right-[24px] top-[12px] text-[54px] leading-none tracking-[-0.02em] text-[#B2B2B2] md:right-[28px] md:top-[14px] md:text-[60px]`}
+                    className={`${nanumMyeongjo.className} absolute right-[24px] top-[12px] text-[3.375rem] leading-none tracking-[-0.02em] text-[#B2B2B2] md:right-[28px] md:top-[14px] md:text-[3.75rem]`}
                   >
                     {card.letter}
                   </span>
@@ -322,7 +322,7 @@ export default function GreetingPage() {
             </div>
 
             <motion.p
-              className="mt-[34px] text-[18px] leading-[1.8] tracking-[0.01em] text-white/92"
+              className="type-lead mt-[34px] tracking-[0.01em] text-white/92"
               variants={fadeUp}
               initial="hidden"
               animate={mission.isInView ? "visible" : "hidden"}
@@ -433,7 +433,7 @@ export default function GreetingPage() {
                   </h2>
                 </div>
 
-                <div className="text-[18px] leading-[1.8] tracking-[0.01em] text-black/88">
+                <div className="type-lead tracking-[0.01em] text-black/88">
                   <p>하나님 나라엔 국적도, 언어도, 배경도 <br className="md:hidden" />따로 없으니까요.</p>
                   <p className="mt-1">이 모두가 저희 교회가 꿈꾸는 가족입니다.</p>
                 </div>
@@ -445,7 +445,7 @@ export default function GreetingPage() {
               {communityFocus.map((item, i) => (
                 <motion.span
                   key={item}
-                  className="inline-flex items-center rounded-full bg-[#1a2639] px-[18px] py-[12px] text-[14px] font-medium tracking-[0.03em] text-white md:text-[15px]"
+                  className="type-body-small inline-flex items-center rounded-full bg-[#1a2639] px-[18px] py-[12px] font-medium tracking-[0.03em] text-white"
                   variants={scaleUp}
                   initial="hidden"
                   animate={community.isInView ? "visible" : "hidden"}
@@ -499,7 +499,7 @@ export default function GreetingPage() {
                   </h2>
                 </div>
 
-                <div className="space-y-[18px] text-[18px] leading-[1.8] tracking-[0.01em] text-black/88">
+                <div className="type-lead space-y-[18px] tracking-[0.01em] text-black/88">
                   <p>
                     The 제자교회는 완벽한 사람들이 모인 곳이 아닙니다.
                     <br />
@@ -520,7 +520,7 @@ export default function GreetingPage() {
                 animate={openDoor.isInView ? "visible" : "hidden"}
                 custom={0.35}
               >
-                <div className={`${nanumMyeongjo.className} font-bold text-[18px] leading-[1.78] tracking-[0.01em] text-black`}>
+                <div className={`${nanumMyeongjo.className} type-lead font-bold tracking-[0.01em] text-black md:text-[1.375rem]`}>
                   <p>지쳤다면, 여기서 쉬어가세요.</p>
                   <p className="mt-1">다시 시작하고 싶다면, 함께 걸어가요.</p>
                 </div>
