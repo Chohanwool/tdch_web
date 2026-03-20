@@ -18,6 +18,16 @@ const pastorHeroEllipses = [
   }
 ] as const;
 
+const pastorSectionTwoLeadLines = [
+  "화려한 선교가 아니었습니다.",
+  "그냥,",
+  "사람들 곁에 있었고,",
+  "같이 울었고,",
+  "같이 웃었습니다.",
+  "그렇게 17년이 지났습니다."
+] as const;
+
+// 섹션1(담임목사 소개)
 function PastorHeroSection() {
   return (
     <section className="relative overflow-hidden bg-[#111c36]">
@@ -125,10 +135,57 @@ function PastorHeroSection() {
   );
 }
 
+// 섹션2(산타로사에서의 17년)
+function PastorMissionSection() {
+  return (
+    <section className="w-full bg-white">
+      <div className="mx-auto w-full max-w-[1120px] px-4 py-16 md:px-8 md:py-20 lg:min-h-[474px] lg:px-0 lg:py-[72px]">
+        <div className="pt-2 md:pt-3 lg:pt-1">
+          <p className="font-[var(--font-serif)] text-xs font-semibold uppercase tracking-[0.28em] text-[#cda74d] md:text-sm">
+            PHILIPPINES · 2009 - 2025
+          </p>
+
+          <h2 className={`${gowunBatang.className} mt-3 text-[2rem] font-bold leading-[1.2] tracking-[-0.03em] text-[#22345c] md:mt-4 md:text-[2.8rem] lg:text-[3.4rem]`}>
+            산타로사에서의 17년
+          </h2>
+        </div>
+
+        <div className="mt-12 grid gap-10 md:mt-14 md:gap-12 lg:mt-16 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] lg:gap-[84px]">
+          <div className="border-l-[4px] border-[#cda74d] pl-6 md:pl-8 lg:pl-8">
+            <div className="flex flex-col gap-2 text-[1.2rem] leading-[1] tracking-[-0.03em] text-[#22345c] md:text-[1.35rem] lg:gap-2 lg:text-[1.4rem]">
+              {pastorSectionTwoLeadLines.map((line, index) => (
+                <p
+                  key={line}
+                  className={index === pastorSectionTwoLeadLines.length - 1 ? "mt-3 font-semibold lg:mt-5" : ""}
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-8 text-[1.08rem] leading-[1.5] tracking-[-0.02em] text-[#2c3f6d] md:text-[1.18rem] lg:gap-10 lg:pt-6 lg:text-[1.1rem] lg:leading-[1.95]">
+            <p>
+              기독교한국침례회 해외선교회 파송으로 17년간 필리핀에서 선교했습니다.
+              산타로사, 그 작은 도시에서 4가정으로 시작한 교회가 120여 명의 공동체로
+              자라는 것을 지켜봤습니다.
+            </p>
+            <p>
+              2025년 12월, 그 땅을 다음 세대 목회자에게 넘기고 한국으로 돌아왔습니다.
+              선교는 끝난 게 아니라, 지금 이 땅에서 다시 시작되고 있습니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function PastorPage() {
   return (
     <div className="w-full bg-white">
       <PastorHeroSection />
+      <PastorMissionSection />
     </div>
   );
 }
