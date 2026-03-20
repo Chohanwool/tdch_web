@@ -466,12 +466,12 @@ export default function GreetingPage() {
       {/* ━━━ OPEN DOOR (03) ━━━ */}
       <section
         ref={openDoor.ref}
-        className="relative z-20 w-full border-b border-black/20 bg-[#fcfbf8] py-14 md:min-h-[584px] md:py-[35px]"
+        className="relative z-20 w-full border-b border-black/20 bg-[#fcfbf8] py-14 md:min-h-[584px] md:py-[70px]"
         data-section="open-door"
       >
         <div className="section-shell">
           <div className="relative flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
-            <div className="relative z-10 flex w-full max-w-[430px] flex-col md:max-w-[448px] md:self-center">
+            <div className="relative z-10 flex min-w-0 w-full max-w-[430px] flex-col md:max-w-[clamp(248px,31vw,360px)] md:self-center lg:max-w-[448px]">
               <motion.span
                 className={`${sectionNumberClass} ${sectionThreeNumberClass} text-[#ece8e2]`}
                 variants={fadeIn}
