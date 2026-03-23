@@ -246,7 +246,32 @@ a {
   }
 }
 
+@keyframes image-fade-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(28px) scale(1.04);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
 .animate-header-item {
   opacity: 0;
   animation: header-fade-down 0.8s ease forwards;
+}
+
+.animate-image-fade-in-right {
+  opacity: 0;
+  animation: image-fade-in-right 1.1s ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-header-item,
+  .animate-image-fade-in-right {
+    opacity: 1;
+    animation: none;
+  }
 }

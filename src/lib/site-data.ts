@@ -23,10 +23,11 @@ export const navMenuGroups: NavMenuGroup[] = [
   },
   {
     href: "/sermons",
-    label: "예배",
+    label: "말씀",
     items: [
-      { href: "/sermons/messages", label: "말씀/설교 영상" },
-      { href: "/sermons/setlist", label: "찬양 셋리스트" }
+      { href: "/sermons/messages", label: "말씀/설교" },
+      { href: "/sermons/better-devotion", label: "더 좋은 묵상" },
+      { href: "/sermons/its-okay", label: "그래도 괜찮아" }
     ]
   },
   {

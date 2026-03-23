@@ -9,8 +9,8 @@ export default function SermonsLayout({
   return (
     <div className="flex w-full flex-col pb-20">
       <PageHeader
-        title="예배"
-        subtitle="WORSHIP"
+        title="말씀"
+        subtitle="MESSAGE"
         backgroundImageUrl="/images/main_bg/main_bg_sec1.png"
       />
       <Breadcrumb />

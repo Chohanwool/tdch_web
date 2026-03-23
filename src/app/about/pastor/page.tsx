@@ -138,8 +138,8 @@ function PastorHeroSection() {
       </div>
 
       <div className="relative mx-auto w-full max-w-[1120px] px-4 py-10 md:px-8 md:py-14 lg:px-8 lg:py-0 xl:px-0">
-        <div className="relative grid min-h-[620px] items-end gap-8 px-2 pb-0 pt-10 md:min-h-[540px] md:px-2 md:pt-14 lg:h-[424px] lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,0.98fr)] lg:items-start lg:gap-2 lg:px-0 lg:py-[36px]">
-          <div className="z-10 max-w-[460px] self-start pb-4 pt-4 text-white md:pb-6 md:pt-4 lg:flex lg:h-full lg:max-w-[420px] lg:self-stretch lg:flex-col lg:justify-between lg:py-[15px]">
+        <div className="relative grid min-h-[620px] items-end gap-8 px-2 pb-0 pt-10 md:min-h-[540px] md:px-2 md:pt-14 lg:h-[392px] lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,0.98fr)] lg:items-start lg:gap-2 lg:px-0 lg:py-[28px]">
+          <div className="z-10 max-w-[460px] self-start pb-4 pt-4 text-white md:pb-6 md:pt-4 lg:flex lg:h-full lg:max-w-[420px] lg:self-stretch lg:flex-col lg:justify-between lg:py-[75px]">
             <div>
               <div className="flex items-center gap-3 text-[#d5b25c]">
                 <span className="h-px w-10 bg-current md:w-12" />
@@ -174,10 +174,10 @@ function PastorHeroSection() {
             </div>
           </div>
 
-          <div className="relative z-10 mx-auto flex w-full max-w-[560px] justify-center self-end lg:hidden">
+          {/* <div className="relative z-10 mx-auto flex w-full max-w-[560px] justify-center self-end lg:hidden">
             <div className="relative w-full max-w-[560px]">
               <Image
-                src="/images/about/senior_pastor_sm.png"
+                src="/images/about/senior_pastor_new.png"
                 alt="담임목사 이진욱 목사"
                 width={602}
                 height={530}
@@ -185,12 +185,12 @@ function PastorHeroSection() {
                 className="h-auto w-full object-contain object-bottom"
               />
             </div>
-          </div>
+          </div> */}
 
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden lg:block w-[58%]">
-            <div className="absolute bottom-[-350px] right-[-130px] w-[990px] max-w-none">
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-[58%] lg:flex lg:items-end">
+            <div className="w-full">
               <Image
-                src="/images/about/senior_pastor.png"
+                src="/images/about/senior_pastor_new.png"
                 alt="담임목사 이진욱 목사"
                 width={1189}
                 height={1205}

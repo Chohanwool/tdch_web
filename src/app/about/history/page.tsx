@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -65,14 +66,29 @@ function TimelineItem({ item }: { item: HistoryItem }) {
 
 export default function HistoryPage() {
   return (
-    <div className="section-shell space-y-14 pt-10 md:pt-16 pb-20">
+    <div className="relative w-full overflow-hidden bg-white">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="section-shell relative h-full">
+          <div className="animate-image-fade-in-right absolute inset-y-0 left-[28%] right-0 hidden [mask-image:linear-gradient(to_right,transparent_0%,black_16%,black_88%,transparent_100%)] md:block md:left-[60%]">
+            <div className="absolute inset-0 opacity-25 md:opacity-100">
+              <Image
+                src="/images/history/history_bg.jpg"
+                alt="교회 연혁 배경 이미지"
+                fill
+                className="object-cover object-[center_24%] blur-[1.5px] md:blur-[1px]"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 페이지 제목 */}
-      <section>
+      <section className="section-shell relative z-10 space-y-14 pb-20 pt-10 md:pt-16">
         <div className="mb-10 md:mb-14">
           <p className="type-label mb-2 font-semibold uppercase tracking-[0.2em] text-cedar/70">
             Church History
           </p>
-          <h2 className="type-page-title font-bold tracking-[-0.03em] text-ink">
+          <h2 className="type-section-title font-bold tracking-[-0.03em] text-ink">
             교회 연혁
           </h2>
         </div>
@@ -86,30 +102,39 @@ export default function HistoryPage() {
       </section>
 
       {/* 미래를 기대하는 메시지 */}
-      <section className="relative overflow-hidden rounded-2xl border border-cedar/10 bg-gradient-to-br from-[#f8faff] to-[#eef3fb] px-8 py-12 shadow-[0_8px_32px_rgba(16,33,63,0.06)] md:px-14 md:py-16">
-        {/* 배경 장식 */}
-        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-themeBlue/5 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-themeBlue/5 blur-3xl" />
-
-        <div className="relative space-y-5 text-center">
-          <p className="type-label font-semibold uppercase tracking-[0.2em] text-themeBlue/70">
-            The Story Continues
-          </p>
-          <h3 className="text-xl font-bold leading-snug text-ink md:text-2xl">
-            아직 쓰이지 않은 이야기,
-            <br className="hidden sm:block" />
-            함께 채워갈 은혜의 페이지가 기다리고 있습니다.
-          </h3>
-          <p className="mx-auto max-w-lg type-body leading-relaxed text-ink/65">
-            2026년 1월, 수원 인계동에 작은 씨앗 하나가 심겨졌습니다.
-            <br />
-            이곳에서 더 많은 제자가 세워지고, 더 깊은 예배가 드려지며,
-            <br className="hidden md:block" />
-            더 넓은 사랑이 흘러가는 역사를 함께 써 내려가길 소망합니다.
-          </p>
-          <p className="pt-2 text-sm font-medium italic text-cedar/50">
-            "여호와께서 시온을 위하여 큰 일을 행하셨도다" — 시편 126:3
-          </p>
+      <section className="relative z-10 -mt-8 overflow-hidden pt-8 md:-mt-12 md:pt-12">
+        <div className="section-shell relative py-16 md:py-20 lg:py-24">
+          <div className="flex justify-start">
+            <div className="max-w-[34rem] space-y-5 text-left text-ink">
+              <p className="type-label font-semibold uppercase tracking-[0.2em] text-themeBlue/72">
+                The Story Continues
+              </p>
+              <h3 className="type-card-title font-bold leading-[1.24] text-ink">
+                <span className="md:hidden">
+                  아직 쓰이지 않은 이야기,
+                  <br />
+                  함께 채워갈 은혜의 페이지가
+                  <br />
+                  기다리고 있습니다.
+                </span>
+                <span className="hidden md:inline">
+                  아직 쓰이지 않은 이야기,
+                  <br />
+                  함께 채워갈 은혜의 페이지가 기다리고 있습니다.
+                </span>
+              </h3>
+              <p className="type-body text-ink/78">
+                2026년 1월, 수원 인계동에 작은 씨앗 하나가 심겨졌습니다.
+                <br />
+                이곳에서 더 많은 제자가 세워지고, 더 깊은 예배가 드려지며,
+                <br />
+                더 넓은 사랑이 흘러가는 역사를 함께 써 내려가길 소망합니다.
+              </p>
+              <p className="type-body-small pt-2 font-medium italic text-cedar/62">
+                &quot;여호와께서 시온을 위하여 큰 일을 행하셨도다&quot; - 시편 126:3
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </div>

@@ -28,10 +28,10 @@ export default function MessagesPage() {
       {/* 섹션 헤더 */}
       <div>
         <h2 className="font-serif text-3xl font-bold text-ink md:text-4xl">
-          말씀 / 설교 영상
+          말씀 / 설교
         </h2>
         <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-cedar/60">
-          Sermon Videos
+          Sermon Messages
         </p>
       </div>
 
