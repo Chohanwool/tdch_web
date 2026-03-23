@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Gowun_Batang } from "next/font/google";
 
@@ -6,18 +5,6 @@ const gowunBatang = Gowun_Batang({
   subsets: ["latin"],
   weight: ["400", "700"]
 });
-
-const pastorHeroEllipses = [
-  {
-    className: "right-[-120px] top-[-100px] h-[260px] w-[260px] md:right-[-140px] md:top-[-120px] md:h-[420px] md:w-[420px] lg:right-[-110px] lg:top-[-160px] lg:h-[540px] lg:w-[540px]"
-  },
-  {
-    className: "right-[14%] top-[12%] h-[240px] w-[240px] md:right-[13%] md:top-[8%] md:h-[380px] md:w-[380px] lg:right-[15%] lg:top-[2%] lg:h-[720px] lg:w-[720px]"
-  },
-  {
-    className: "right-[-20px] bottom-[6%] h-[210px] w-[210px] md:right-[-40px] md:bottom-[4%] md:h-[340px] md:w-[340px] lg:right-[-20px] lg:bottom-[2%] lg:h-[640px] lg:w-[640px]"
-  }
-] as const;
 
 const pastorSectionTwoLeadLines = [
   "화려한 선교가 아니었습니다.",
@@ -109,38 +96,10 @@ function PastorHeroSection() {
         }}
       />
 
-      <div className="absolute inset-y-0 right-0 hidden w-[60%] lg:block">
-        {pastorHeroEllipses.map((ellipse) => (
-          <div
-            key={ellipse.className}
-            className={`absolute rounded-full ${ellipse.className}`}
-            style={{
-              background:
-                "radial-gradient(circle, rgba(109,127,168,0.24) 0%, rgba(109,127,168,0) 100%)",
-              filter: "blur(120px)"
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="absolute inset-0 lg:hidden">
-        {pastorHeroEllipses.map((ellipse) => (
-          <div
-            key={`mobile-${ellipse.className}`}
-            className={`absolute rounded-full ${ellipse.className}`}
-            style={{
-              background:
-                "radial-gradient(circle, rgba(109,127,168,0.2) 0%, rgba(109,127,168,0) 100%)",
-              filter: "blur(96px)"
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="section-shell section-shell--narrow relative py-10 md:py-14 lg:py-0">
-        <div className="relative grid min-h-[620px] items-end gap-8 px-2 pb-0 pt-10 md:min-h-[540px] md:px-2 md:pt-14 lg:h-[392px] lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,0.98fr)] lg:items-start lg:gap-2 lg:px-0 lg:py-[28px]">
-          <div className="z-10 max-w-[460px] self-start pb-4 pt-4 text-white md:pb-6 md:pt-4 lg:flex lg:h-full lg:max-w-[420px] lg:self-stretch lg:flex-col lg:justify-between lg:py-[75px]">
-            <div>
+      <div className="section-shell section-shell--narrow relative py-8 md:py-0 lg:py-0">
+        <div className="relative min-h-[420px] px-2 pb-8 pt-8 md:min-h-[460px] md:px-2 md:pb-10 md:pt-8 lg:min-h-[440px] lg:px-0 lg:pb-10 lg:pt-5">
+          <div className="z-10 max-w-[460px] self-start pb-4 pt-4 text-white md:max-w-[420px] md:pt-0">
+            <div className="md:pl-1 md:pt-[40px] lg:pl-2 lg:pt-[46px] xl:pt-[54px]">
               <div className="flex items-center gap-3 text-[#d5b25c]">
                 <span className="h-px w-10 bg-current md:w-12" />
                 <p className="type-label font-semibold tracking-[0.18em]">담임목사 소개</p>
@@ -162,7 +121,7 @@ function PastorHeroSection() {
               </div> */}
             </div>
 
-            <div className="type-body-strong mt-10 flex flex-col gap-9 tracking-[-0.01em] text-white/92 md:mt-12 lg:mt-0 lg:max-w-[390px]">
+            <div className="type-body-strong mt-10 flex flex-col gap-9 tracking-[-0.01em] text-white/92 md:max-w-[320px] md:pl-1 lg:max-w-[390px] lg:pl-2">
               <p>
                 솔직히, 목사 소개 페이지는 좀 어색하죠.
                 <br />
@@ -171,32 +130,6 @@ function PastorHeroSection() {
                 오히려 멀게 느껴지고..
               </p>
               <p>그래서 그냥 있는 그대로 써보려고 합니다.</p>
-            </div>
-          </div>
-
-          {/* <div className="relative z-10 mx-auto flex w-full max-w-[560px] justify-center self-end lg:hidden">
-            <div className="relative w-full max-w-[560px]">
-              <Image
-                src="/images/about/senior_pastor_new.png"
-                alt="담임목사 이진욱 목사"
-                width={602}
-                height={530}
-                priority
-                className="h-auto w-full object-contain object-bottom"
-              />
-            </div>
-          </div> */}
-
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-[58%] lg:flex lg:items-end">
-            <div className="w-full">
-              <Image
-                src="/images/about/senior_pastor_new.png"
-                alt="담임목사 이진욱 목사"
-                width={1189}
-                height={1205}
-                priority
-                className="h-auto w-full object-contain"
-              />
             </div>
           </div>
         </div>
