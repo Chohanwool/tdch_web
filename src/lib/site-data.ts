@@ -19,7 +19,8 @@ export const navMenuGroups: NavMenuGroup[] = [
       { href: "/about/pastor", label: "담임목사 소개" },
       { href: "/about/service-times", label: "예배 시간 안내" },
       { href: "/about/location", label: "오시는 길" },
-      { href: "/about/history", label: "교회연혁" }
+      { href: "/about/history", label: "교회연혁" },
+      { href: "/giving", label: "헌금 안내" }
     ]
   },
   {
@@ -47,11 +48,6 @@ export const navMenuGroups: NavMenuGroup[] = [
       { href: "/about/location#map", label: "지도" },
       { href: "/about/location#contact-info", label: "연락처" },
     ]
-  },
-  {
-    href: "/giving",
-    label: "헌금 안내",
-    items: [{ href: "/giving", label: "헌금 안내" }]
   },
   {
     href: "/news",

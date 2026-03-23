@@ -18,9 +18,14 @@ export default function PageHeader({
   const pathname = usePathname();
 
   // Find the sub-menu item based on the current pathname
-  const menuGroup = navMenuGroups.find(
-    (g) => pathname === g.href || pathname.startsWith(`${g.href}/`)
-  );
+  const menuGroup = navMenuGroups.find((group) => {
+    const matchesGroup = pathname === group.href || pathname.startsWith(`${group.href}/`);
+    const matchesItem = group.items.some(
+      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`)
+    );
+
+    return matchesGroup || matchesItem;
+  });
 
   // PageHeader banner always shows the top-level menu label.
   const displayTitle = menuGroup?.label || defaultTitle;

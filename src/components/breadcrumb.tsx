@@ -15,9 +15,14 @@ export default function Breadcrumb({
   const pathname = usePathname();
 
   // 현재 경로에 맞는 메뉴 그룹 찾기
-  const menuGroup = navMenuGroups.find(
-    (g) => pathname === g.href || pathname.startsWith(`${g.href}/`)
-  );
+  const menuGroup = navMenuGroups.find((group) => {
+    const matchesGroup = pathname === group.href || pathname.startsWith(`${group.href}/`);
+    const matchesItem = group.items.some(
+      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`)
+    );
+
+    return matchesGroup || matchesItem;
+  });
 
   // 현재 경로에 맞는 하위 아이템 찾기
   const currentItem = menuGroup?.items.find(
