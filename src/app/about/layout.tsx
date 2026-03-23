@@ -11,13 +11,23 @@ export default function AboutLayout({
 }) {
   const pathname = usePathname();
   const hidePageHeader = pathname?.startsWith("/about/greeting") || pathname?.startsWith("/about/pastor");
+  const aboutHeaderSubtitle =
+    pathname?.startsWith("/about/service-times")
+      ? "SERVICE TIMES"
+      : pathname?.startsWith("/about/location")
+        ? "LOCATION"
+        : pathname?.startsWith("/about/history")
+          ? "CHURCH HISTORY"
+          : pathname?.startsWith("/about/giving")
+            ? "ONLINE OFFERING GUIDE"
+            : "THE DISCIPLES CHURCH";
 
   return (
     <div className="flex w-full flex-col">
       {!hidePageHeader && (
         <PageHeader
           title="교회소개"
-          subtitle="THE DISCIPLES CHURCH"
+          subtitle={aboutHeaderSubtitle}
           backgroundImageUrl="/images/main_bg/main_bg_sec1.png"
         />
       )}
