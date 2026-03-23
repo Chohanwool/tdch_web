@@ -12,15 +12,27 @@ npm run dev
 
 개발 서버: `http://localhost:3000`
 
-## 단계 2) 페이지 구조 (IA)
+## 단계 2) 현재 페이지 구조
 
 - `/` 홈
-- `/about` 교회소개
-- `/sermons` 말씀/설교
-- `/news` 교회소식
-- `/newcomer` 새가족안내
-- `/contact` 오시는 길/문의
-- `/giving` 헌금안내
+- `/about` 교회소개 진입 경로 (`/about/greeting` 으로 리다이렉트)
+- `/about/greeting` 인사말/비전
+- `/about/pastor` 담임목사 소개
+- `/about/service-times` 예배 시간 안내
+- `/about/location` 오시는 길/문의
+- `/about/history` 교회 연혁
+- `/sermons/messages` 말씀/설교
+- `/sermons/better-devotion` 더 좋은 묵상
+- `/sermons/its-okay` 그래도 괜찮아
+- `/newcomer` 새가족 안내
+- `/newcomer/care` 새가족 양육
+- `/newcomer/curriculum` 교육 과정
+- `/giving` 헌금 안내
+
+메모:
+
+- 헤더의 `교회 소식` 메뉴는 현재 숨김 상태입니다.
+- `/news`, `/contact` 라우트는 현재 구현되어 있지 않습니다.
 
 ## 단계 3) 인프라 세팅 (Docker + Caddy)
 
@@ -51,6 +63,24 @@ docker compose up -d --build
 
 - 연락처/계좌/링크: `.env`
 - 예배시간/설교/공지 기본 데이터: `src/lib/site-data.ts`
+
+지도/연락처 관련 주요 환경변수:
+
+- `NEXT_PUBLIC_CHURCH_PHONE`
+- `NEXT_PUBLIC_CHURCH_EMAIL`
+- `NEXT_PUBLIC_CHURCH_ADDRESS`
+- `NEXT_PUBLIC_NAVER_MAP_URL`
+- `NEXT_PUBLIC_KAKAO_MAP_URL`
+- `NEXT_PUBLIC_CHURCH_LAT`
+- `NEXT_PUBLIC_CHURCH_LNG`
+- `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID`: 브라우저 동적 지도 SDK용 공개 키
+- `NAVER_MAP_CLIENT_ID`
+- `NAVER_MAP_CLIENT_SECRET`
+
+운영 원칙:
+
+- 브라우저에서 직접 쓰는 동적 지도 키는 `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID` 를 사용합니다.
+- 서버에서 정적 지도 이미지를 호출할 때만 `NAVER_MAP_CLIENT_ID`, `NAVER_MAP_CLIENT_SECRET` 를 사용합니다.
 
 이후 단계로 CMS 도입(예: Sanity/Notion API) 또는 관리자 페이지를 연결할 수 있습니다.
 
@@ -224,7 +254,7 @@ docker compose up -d --build
 현재 적용 예시:
 
 - `narrow`: `src/app/newcomer/page.tsx`, `src/app/giving/page.tsx`
-- `wide`: `src/app/about/location/page.tsx`, `src/app/about/service-times/page.tsx`, `src/app/sermons/layout.tsx`
+- `wide`: `src/app/sermons/layout.tsx`
 
 ## 새 화면 체크리스트
 

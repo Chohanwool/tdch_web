@@ -81,7 +81,9 @@ export default function LocationPage() {
   const naverMapUrl = process.env.NEXT_PUBLIC_NAVER_MAP_URL ?? naverMapFallback;
   const latitude = process.env.NEXT_PUBLIC_CHURCH_LAT ?? latitudeFallback;
   const longitude = process.env.NEXT_PUBLIC_CHURCH_LNG ?? longitudeFallback;
-  const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID ?? process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID;
+  const naverMapClientId =
+    process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID ??
+    process.env.NAVER_MAP_CLIENT_ID;
   const kakaoMapUrl =
     process.env.NEXT_PUBLIC_KAKAO_MAP_URL ??
     `https://map.kakao.com/link/search/${encodeURIComponent(address)}`;
