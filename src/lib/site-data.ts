@@ -12,7 +12,7 @@ export interface NavMenuGroup {
 export const navMenuGroups: NavMenuGroup[] = [
   {
     href: "/about", // 메인 클릭 시 /about/greeting 으로 리다이렉트 처리 예정
-    label: "교회소개",
+    label: "교회 소개",
     items: [
       { href: "/about/greeting", label: "인사말/비전" },
       { href: "/about/pastor", label: "담임목사 소개" },
@@ -23,7 +23,7 @@ export const navMenuGroups: NavMenuGroup[] = [
   },
   {
     href: "/sermons",
-    label: "말씀",
+    label: "예배 영상",
     items: [
       { href: "/sermons/messages", label: "말씀/설교" },
       { href: "/sermons/better-devotion", label: "더 좋은 묵상" },
@@ -31,18 +31,12 @@ export const navMenuGroups: NavMenuGroup[] = [
     ]
   },
   {
-    href: "/news",
-    label: "교회소식",
-    items: [
-      { href: "/news#notice", label: "공지" },
-      { href: "/news#bulletin", label: "주보" }
-    ]
-  },
-  {
     href: "/newcomer",
-    label: "새가족안내",
+    label: "제자 양육",
     items: [
-      { href: "/newcomer", label: "새가족 안내" }
+      { href: "/newcomer", label: "새가족 안내" },
+      { href: "/newcomer/care", label: "새가족 양육" },
+      { href: "/newcomer/curriculum", label: "교육 과정" }
     ]
   },
   {
@@ -55,8 +49,16 @@ export const navMenuGroups: NavMenuGroup[] = [
   },
   {
     href: "/giving",
-    label: "헌금안내",
-    items: [{ href: "/giving", label: "헌금안내" }]
+    label: "헌금 안내",
+    items: [{ href: "/giving", label: "헌금 안내" }]
+  },
+  {
+    href: "/news",
+    label: "교회 소식",
+    items: [
+      { href: "/news#notice", label: "공지" },
+      { href: "/news#bulletin", label: "주보" }
+    ]
   }
 ];
 
