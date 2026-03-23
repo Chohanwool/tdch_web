@@ -75,7 +75,7 @@ const sectionThreeNumberClass = "top-[-75px] md:left-[-40px] md:top-[-80px]";
 const sectionEyebrowClass =
   `${originalSurfer.className} type-eyebrow tracking-[0.08em] text-[#caa643]`;
 const sectionTitleClass =
-  `${nanumMyeongjo.className} type-section-title font-bold tracking-[0.01em] md:text-[2rem]`;
+  `${nanumMyeongjo.className} type-section-title font-bold tracking-[0.01em]`;
 const sectionIntroGroupClass = "flex flex-col gap-[14px]";
 const sectionCopyStackClass = "relative z-10 flex flex-col gap-[24px]";
 
@@ -200,7 +200,7 @@ export default function GreetingPage() {
             <div className="flex w-full flex-col gap-3 md:gap-10">
               <div className={sectionIntroGroupClass}>
                 <motion.p
-                  className={`${originalSurfer.className} type-eyebrow tracking-[0.04em] text-[#1a2744]`}
+                  className={sectionEyebrowClass}
                   variants={slideInLeft}
                   initial="hidden"
                   animate={welcome.isInView ? "visible" : "hidden"}
@@ -232,18 +232,18 @@ export default function GreetingPage() {
                   >
                     <div className="flex items-start gap-2 px-5 md:gap-3 md:px-8">
                       <span
-                        className={`${nanumMyeongjo.className} shrink-0 text-[1.9rem] leading-[0.9] text-[#caa643] md:text-[2.2rem]`}
+                        className={`${nanumMyeongjo.className} type-lead shrink-0 text-[#caa643]`}
                       >
                         &ldquo;
                       </span>
                       <div className="flex items-start gap-1 md:gap-2">
                         <p
-                          className={`${nanumMyeongjo.className} pt-1 text-[1rem] leading-[1.2] text-[#1a2744] md:text-[1.2rem]`}
+                          className={`${nanumMyeongjo.className} type-lead pt-1 text-[#1a2744]`}
                         >
                           {question}
                         </p>
                         <span
-                          className={`${nanumMyeongjo.className} shrink-0 pt-1 text-[1.9rem] leading-[0.9] text-[#caa643] md:text-[2.2rem]`}
+                          className={`${nanumMyeongjo.className} type-lead shrink-0 pt-1 text-[#caa643]`}
                         >
                           &rdquo;
                         </span>
@@ -583,13 +583,10 @@ export default function GreetingPage() {
                   <p>지쳤다면, 여기서 쉬어가세요.</p>
                   <p className="mt-1">다시 시작하고 싶다면, 함께 걸어가요.</p>
 
-                  <p className="mt-5 text-right text-[0.95rem] font-normal text-black/72 md:text-[1rem]">
+                  <p className="type-body-small mt-5 text-right font-normal text-black/72">
                     "성령으로 제자 삼는 교회"
                   </p>
-                  <p className="text-right text-[0.95rem] font-normal text-black/72 md:text-[1rem]">
-                    마 28:19–20
-                  </p>
-                  <p className="mt-2 text-right text-[0.95rem] font-normal text-black/72 md:text-[1rem]">
+                  <p className="type-body-small mt-2 text-right font-normal text-black/72">
                     The 제자교회 담임목사 이진욱 드림
                   </p>
                 </div>
