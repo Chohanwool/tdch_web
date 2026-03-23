@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Gowun_Batang } from "next/font/google";
+import Reveal from "./components/reveal";
 
 const gowunBatang = Gowun_Batang({
   subsets: ["latin"],
@@ -99,7 +100,11 @@ function PastorHeroSection() {
 
       <div className="section-shell section-shell--narrow relative py-8 md:py-0 lg:py-0">
         {/* Mobile: anchor the portrait to the section shell so inner padding does not create visual gaps. */}
-        <div className="pointer-events-none absolute bottom-0 -right-4 z-0 aspect-[553/738] w-[42%] min-w-[165px] md:hidden">
+        <Reveal
+          className="pointer-events-none absolute bottom-0 -right-4 z-0 aspect-[553/738] w-[42%] min-w-[165px] md:hidden"
+          origin="right"
+          delay={0.18}
+        >
           <Image
             src="/images/about/pastor_sm.png"
             alt="이진욱 목사 모바일 프로필 이미지"
@@ -108,10 +113,14 @@ function PastorHeroSection() {
             sizes="(max-width: 767px) 42vw, 240px"
             className="origin-[110%_100%] object-contain object-bottom-right scale-[1.4]"
           />
-        </div>
+        </Reveal>
 
         {/* Tablet only: keep the image pinned to the shell edge, matching the mobile anchoring logic. */}
-        <div className="pointer-events-none absolute bottom-0 hidden -right-8 z-0 aspect-[719/771] w-[46%] min-w-[290px] md:block lg:hidden">
+        <Reveal
+          className="pointer-events-none absolute bottom-0 hidden -right-8 z-0 aspect-[719/771] w-[46%] min-w-[290px] md:block lg:hidden"
+          origin="right"
+          delay={0.2}
+        >
           <Image
             src="/images/about/pastor.png"
             alt="이진욱 목사 프로필 이미지"
@@ -120,10 +129,14 @@ function PastorHeroSection() {
             sizes="(min-width: 768px) 46vw, 100vw"
             className="origin-[110%_100%] object-contain object-bottom-right scale-[1.3]"
           />
-        </div>
+        </Reveal>
 
         <div className="relative min-h-[420px] px-2 pb-8 pt-8 md:grid md:min-h-[460px] md:grid-cols-2 md:items-end md:gap-6 md:px-2 md:pb-0 md:pt-8 lg:min-h-[440px] lg:grid-cols-2 lg:gap-10 lg:px-0 lg:pt-5">
-          <div className="z-10 max-w-[460px] self-start pb-4 pt-4 text-white md:max-w-[360px] md:pt-0 lg:max-w-[420px]">
+          <Reveal
+            className="z-10 max-w-[460px] self-start pb-4 pt-4 text-white md:max-w-[360px] md:pt-0 lg:max-w-[420px]"
+            origin="up"
+            delay={0.05}
+          >
             <div className="md:pl-1 md:pt-[40px] lg:pl-2 lg:pt-[46px] xl:pt-[54px]">
               <div className="flex items-center gap-3 text-[#d5b25c]">
                 <span className="h-px w-10 bg-current md:w-12" />
@@ -156,10 +169,14 @@ function PastorHeroSection() {
               </p>
               <p>그래서 그냥 <br className="md:hidden" />있는 그대로 써보려고 합니다.</p>
             </div>
-          </div>
+          </Reveal>
 
           {/* Desktop+: render the portrait inside the right grid column instead of shell-level absolute positioning. */}
-          <div className="relative hidden h-full min-h-[340px] lg:block lg:min-h-[405px]">
+          <Reveal
+            className="relative hidden h-full min-h-[340px] lg:block lg:min-h-[405px]"
+            origin="right"
+            delay={0.18}
+          >
             <Image
               src="/images/about/pastor.png"
               alt="이진욱 목사 프로필 이미지"
@@ -168,7 +185,7 @@ function PastorHeroSection() {
               sizes="(min-width: 1280px) 490px, (min-width: 768px) calc(50vw - 32px), 100vw"
               className="origin-[110%_100%] object-contain object-bottom-right scale-[1.3]"
             />
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -180,7 +197,7 @@ function PastorMissionSection() {
   return (
     <section className="w-full bg-white">
       <div className="section-shell section-shell--narrow py-16 md:py-20 lg:min-h-[474px] lg:py-[72px]">
-        <div className="pt-2 md:pt-3 lg:pt-1">
+        <Reveal className="pt-2 md:pt-3 lg:pt-1" origin="up">
           <p className="type-label font-[var(--font-serif)] font-semibold uppercase tracking-[0.28em] text-[#cda74d]">
             PHILIPPINES · 2009 - 2025
           </p>
@@ -188,10 +205,14 @@ function PastorMissionSection() {
           <h2 className={`${gowunBatang.className} type-section-title mt-3 font-bold tracking-[-0.03em] text-[#22345c] md:mt-4`}>
             산타로사에서의 17년
           </h2>
-        </div>
+        </Reveal>
 
         <div className="mt-12 grid gap-10 md:mt-14 md:gap-12 lg:mt-16 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] lg:gap-[84px]">
-          <div className="border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:flex lg:items-center lg:pl-8">
+          <Reveal
+            className="border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:flex lg:items-center lg:pl-8"
+            origin="left"
+            delay={0.1}
+          >
             <div className="type-lead font-serif flex flex-col gap-2 tracking-[-0.03em] text-[#22345c] lg:gap-2">
               {pastorSectionTwoLeadLines.map((line, index) => (
                 <p
@@ -202,9 +223,13 @@ function PastorMissionSection() {
                 </p>
               ))}
             </div>
-          </div>
+          </Reveal>
 
-          <div className="type-body-strong flex flex-col gap-8 tracking-[-0.02em] text-[#000000] lg:gap-5">
+          <Reveal
+            className="type-body-strong flex flex-col gap-8 tracking-[-0.02em] text-[#000000] lg:gap-5"
+            origin="up"
+            delay={0.16}
+          >
             <p>
               기독교한국침례회 해외선교회 파송으로 17년간 필리핀에서 선교했습니다.<br className="hidden md:block" />
               산타로사, 그 작은 도시에서 4가정으로 시작한 교회가 등록 교인 약 120여 명의 공동체로 자라는 것을 지켜봤습니다.
@@ -213,7 +238,7 @@ function PastorMissionSection() {
               2025년 12월, 그 땅을 다음 세대 목회자에게 넘기고 한국으로 돌아왔습니다.
               선교는 끝난 게 아니라, 지금 이 땅에서 다시 시작되고 있습니다.
             </p>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -224,7 +249,7 @@ function PastorSectionThree() {
   return (
     <section className="w-full bg-[rgb(255,253,248)]">
       <div className="section-shell section-shell--narrow py-16 md:py-20 lg:relative lg:h-[508px] lg:py-[78px]">
-        <div>
+        <Reveal origin="up">
           <p className="type-label font-[var(--font-serif)] font-semibold uppercase tracking-[0.28em] text-[#cda74d]">
             JOURNEY OF LEARNING
           </p>
@@ -232,20 +257,28 @@ function PastorSectionThree() {
           <h2 className={`${gowunBatang.className} type-section-title mt-3 font-bold tracking-[-0.03em] text-[#22345c] md:mt-4`}>
             더 잘 섬기고 싶어서
           </h2>
-        </div>
+        </Reveal>
 
-        <div className="mt-12 border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:mt-[56px] lg:max-w-[560px] lg:pl-4">
+        <Reveal
+          className="mt-12 border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:mt-[56px] lg:max-w-[560px] lg:pl-4"
+          origin="left"
+          delay={0.1}
+        >
           <div className="type-lead font-serif tracking-[-0.03em] text-[#22345c]">
             <p>뭔가를 이루려는 게 아니라,</p>
             <p className="text-[#cda74d]">더 잘 섬기고 싶어서입니다.</p>
           </div>
-        </div>
+        </Reveal>
 
-        <div className="type-body-strong mt-10 flex max-w-[860px] flex-col tracking-[-0.02em] text-[#000000] md:mt-12 lg:mt-[44px] lg:max-w-[900px]">
+        <Reveal
+          className="type-body-strong mt-10 flex max-w-[860px] flex-col tracking-[-0.02em] text-[#000000] md:mt-12 lg:mt-[44px] lg:max-w-[900px]"
+          origin="up"
+          delay={0.16}
+        >
           {pastorSectionThreeBodyLines.map((line) => (
             <p key={line}>{line}</p>
           ))}
-        </div>
+        </Reveal>
 
       </div>
     </section>
@@ -256,7 +289,7 @@ function PastorSectionFour() {
   return (
     <section className="w-full bg-[rgb(250,248,244)]">
       <div className="section-shell section-shell--narrow py-16 md:py-20 lg:min-h-[508px] lg:py-[52px]">
-        <div>
+        <Reveal origin="up">
           <p className="type-label font-[var(--font-serif)] font-semibold uppercase tracking-[0.28em] text-[#cda74d]">
             WHO HE IS
           </p>
@@ -264,26 +297,30 @@ function PastorSectionFour() {
           <h2 className={`${gowunBatang.className} type-section-title mt-3 font-bold tracking-[-0.03em] text-[#22345c] md:mt-4`}>
             삶에서 나온 말을 합니다
           </h2>
-        </div>
+        </Reveal>
 
         <div className="mt-10 grid gap-6 md:mt-12 md:gap-8 lg:mt-[44px] lg:grid-cols-3 lg:gap-6">
-          {pastorSectionFourCards.map((card) => (
-            <article
+          {pastorSectionFourCards.map((card, index) => (
+            <Reveal
               key={card.number}
-              className="rounded-[22px] border border-black/6 bg-white px-6 py-7 shadow-[0_8px_18px_rgba(0,0,0,0.12)] md:px-8 md:py-8 lg:min-h-[322px] lg:px-6 lg:py-7"
+              className="h-full"
+              origin="up"
+              delay={0.08 * index}
             >
-              <p className="font-[var(--font-serif)] text-[3rem] font-semibold leading-none tracking-[-0.05em] text-[#d9d9d9]/75 md:text-[4rem] lg:text-[4rem]">
-                {card.number}
-              </p>
+              <article className="rounded-[22px] border border-black/6 bg-white px-6 py-7 shadow-[0_8px_18px_rgba(0,0,0,0.12)] md:px-8 md:py-8 lg:min-h-[322px] lg:px-6 lg:py-7">
+                <p className="font-[var(--font-serif)] text-[3rem] font-semibold leading-none tracking-[-0.05em] text-[#d9d9d9]/75 md:text-[4rem] lg:text-[4rem]">
+                  {card.number}
+                </p>
 
-              <h3 className="type-card-title mt-5 font-bold tracking-[-0.03em] text-black lg:mt-4">
-                {card.title}
-              </h3>
+                <h3 className="type-card-title mt-5 font-bold tracking-[-0.03em] text-black lg:mt-4">
+                  {card.title}
+                </h3>
 
-              <p className="type-body mt-4 tracking-[-0.02em] text-black/90 lg:mt-5">
-                {card.body}
-              </p>
-            </article>
+                <p className="type-body mt-4 tracking-[-0.02em] text-black/90 lg:mt-5">
+                  {card.body}
+                </p>
+              </article>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -359,7 +396,7 @@ function PastorSectionFive() {
   return (
     <section className="w-full bg-white">
       <div className="section-shell section-shell--narrow py-16 md:py-20 lg:min-h-[508px] lg:py-[72px]">
-        <div>
+        <Reveal origin="up">
           <div className="flex items-center gap-3 text-[#cda74d]">
             <span className="h-px w-10 bg-current md:w-12" />
             <p className="type-label font-[var(--font-serif)] font-semibold tracking-[0.18em]">
@@ -370,11 +407,15 @@ function PastorSectionFive() {
           <h2 className={`${gowunBatang.className} type-section-title mt-6 font-bold tracking-[-0.04em] text-[#22345c]`}>
             걸어온 길
           </h2>
-        </div>
+        </Reveal>
 
         <div className="mt-12 grid gap-10 md:mt-14 md:grid-cols-2 lg:mt-[58px] lg:gap-[72px]">
-          <PastorSectionFiveColumn label="학력" tone="navy" items={pastorEducationItems} />
-          <PastorSectionFiveColumn label="사역" tone="gold" items={pastorMinistryItems} />
+          <Reveal origin="left" delay={0.08}>
+            <PastorSectionFiveColumn label="학력" tone="navy" items={pastorEducationItems} />
+          </Reveal>
+          <Reveal origin="right" delay={0.12}>
+            <PastorSectionFiveColumn label="사역" tone="gold" items={pastorMinistryItems} />
+          </Reveal>
         </div>
       </div>
     </section>
@@ -385,22 +426,27 @@ function PastorFinalSection() {
   return (
     <section className="w-full bg-white">
       <div className="section-shell section-shell--narrow py-12 md:py-16 lg:py-[52px]">
-        <div className="flex flex-col gap-4 md:hidden">
-          <Link
-            href="/about/location"
-            className="type-body-strong inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl bg-[#e2c47a] px-6 font-semibold tracking-[-0.02em] text-[#22345c] transition-colors duration-200 hover:bg-[#f4d486]"
-          >
-            오시는 길 →
-          </Link>
-          <Link
-            href="/about/location#contact-info"
-            className="type-body-strong inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl border border-white/30 bg-[#26345d] px-6 font-semibold tracking-[-0.02em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a]"
-          >
-            문의하기
-          </Link>
-        </div>
+        <Reveal className="md:hidden" origin="up">
+          <div className="flex flex-col gap-4">
+            <Link
+              href="/about/location"
+              className="type-body-strong inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl bg-[#e2c47a] px-6 font-semibold tracking-[-0.02em] text-[#22345c] transition-colors duration-200 hover:bg-[#f4d486]"
+            >
+              오시는 길 →
+            </Link>
+            <Link
+              href="/about/location#contact-info"
+              className="type-body-strong inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl border border-white/30 bg-[#26345d] px-6 font-semibold tracking-[-0.02em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a]"
+            >
+              문의하기
+            </Link>
+          </div>
+        </Reveal>
 
-        <div className="hidden rounded-[40px] bg-[#26345d] px-10 py-12 md:block lg:px-[40px] lg:py-[30px]">
+        <Reveal
+          className="hidden rounded-[40px] bg-[#26345d] px-10 py-12 md:block lg:px-[40px] lg:py-[30px]"
+          origin="scale"
+        >
           <div className="flex items-center justify-between gap-8 lg:gap-10">
             <div className="max-w-[580px]">
               <h2 className={`${gowunBatang.className} type-section-title font-bold tracking-[-0.04em] text-white`}>
@@ -429,7 +475,7 @@ function PastorFinalSection() {
               </Link>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
