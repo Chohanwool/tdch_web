@@ -27,7 +27,7 @@ npm run dev
 - `/newcomer` 새가족 안내
 - `/newcomer/care` 새가족 양육
 - `/newcomer/curriculum` 교육 과정
-- `/giving` 헌금 안내
+- `/about/giving` 헌금 안내
 
 메모:
 
@@ -253,7 +253,7 @@ docker compose up -d --build
 
 현재 적용 예시:
 
-- `narrow`: `src/app/newcomer/page.tsx`, `src/app/giving/page.tsx`
+- `narrow`: `src/app/newcomer/page.tsx`, `src/app/about/giving/page.tsx`
 - `wide`: `src/app/sermons/layout.tsx`
 
 ## 새 화면 체크리스트

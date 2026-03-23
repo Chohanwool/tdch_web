@@ -20,7 +20,7 @@ export const navMenuGroups: NavMenuGroup[] = [
       { href: "/about/service-times", label: "예배 시간 안내" },
       { href: "/about/location", label: "오시는 길" },
       { href: "/about/history", label: "교회연혁" },
-      { href: "/giving", label: "헌금 안내" }
+      { href: "/about/giving", label: "헌금 안내" }
     ]
   },
   {
@@ -47,6 +47,13 @@ export const navMenuGroups: NavMenuGroup[] = [
     items: [
       { href: "/about/location#map", label: "지도" },
       { href: "/about/location#contact-info", label: "연락처" },
+    ]
+  },
+  {
+    href: "/about/giving",
+    label: "헌금 안내",
+    items: [
+      { href: "/about/giving", label: "온라인 헌금방법" },
     ]
   },
   {
