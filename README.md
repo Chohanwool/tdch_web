@@ -33,6 +33,7 @@ npm run dev
 
 - 헤더의 `교회 소식` 메뉴는 현재 숨김 상태입니다.
 - `/news`, `/contact` 라우트는 현재 구현되어 있지 않습니다.
+- `/about`, `/sermons` 기본 진입 경로는 메뉴 데이터의 `defaultLandingHref` 기준으로 결정됩니다.
 
 ## 단계 3) 인프라 세팅 (Docker + Caddy)
 
@@ -63,6 +64,8 @@ docker compose up -d --build
 
 - 연락처/계좌/링크: `.env`
 - 예배시간/공지 기본 데이터: `src/lib/site-data.ts`
+- 사이트 메뉴 원본: 백엔드 `site_navigation_item` + `GET /api/v1/navigation`
+- 프론트 fallback 메뉴: `src/lib/site-data.ts` 의 `fallbackNavigationResponse`
 - 설교/미디어 데이터: `MEDIA_API_BASE_URL` 로 연결된 백엔드 API
 
 지도/연락처 관련 주요 환경변수:
@@ -85,6 +88,11 @@ docker compose up -d --build
 - 서버에서 정적 지도 이미지를 호출할 때만 `NAVER_MAP_CLIENT_ID`, `NAVER_MAP_CLIENT_SECRET` 를 사용합니다.
 
 이후 단계로 CMS 도입(예: Sanity/Notion API) 또는 관리자 페이지를 연결할 수 있습니다.
+
+## 메뉴 문서
+
+- [Navigation Operations](docs/navigation-operations.md)
+- [Navigation Admin API Draft](docs/navigation-admin-api-draft.md)
 
 ## 디자인 팔레트
 
