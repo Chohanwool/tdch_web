@@ -1,6 +1,8 @@
 import "server-only";
 import type { SermonCardData } from "@/lib/site-data";
 
+export type SermonSiteKey = "messages" | "better-devotion" | "its-okay";
+
 export interface MediaItemDto {
   youtubeVideoId: string;
   title: string;
@@ -38,6 +40,23 @@ export interface HomeMediaResponse {
   latestShorts: MediaItemDto[];
 }
 
+export interface VideoDetailResponse {
+  youtubeVideoId: string;
+  title: string;
+  displayTitle: string;
+  description: string;
+  thumbnailUrl: string;
+  youtubeUrl: string;
+  embedUrl: string;
+  contentKind: "LONG_FORM" | "SHORT";
+  publishedAt: string;
+  preacher: string | null;
+  scripture: string | null;
+  serviceType: string | null;
+  summary: string | null;
+  tags: string[];
+}
+
 const DEFAULT_MEDIA_API_BASE_URL = "http://localhost:8080";
 const mediaApiBaseUrl =
   process.env.MEDIA_API_BASE_URL ??
@@ -69,7 +88,7 @@ export async function getHomeMedia(): Promise<HomeMediaResponse | null> {
 }
 
 export async function getMediaList(
-  siteKey: "messages" | "better-devotion" | "its-okay",
+  siteKey: SermonSiteKey,
   size = 24,
 ): Promise<MediaListResponse | null> {
   try {
@@ -82,6 +101,19 @@ export async function getMediaList(
   }
 }
 
+export async function getMediaDetail(youtubeVideoId: string): Promise<VideoDetailResponse | null> {
+  try {
+    return await fetchMedia<VideoDetailResponse>(`/api/v1/media/videos/${youtubeVideoId}`);
+  } catch (error) {
+    console.error(`Failed to fetch media detail for ${youtubeVideoId}.`, error);
+    return null;
+  }
+}
+
+export function buildMediaDetailPath(siteKey: SermonSiteKey, youtubeVideoId: string): string {
+  return `/sermons/${siteKey}/${youtubeVideoId}`;
+}
+
 export function toHomeSermonCards(
   items: MediaItemDto[] | undefined,
   fallbackCards: SermonCardData[],
@@ -91,7 +123,7 @@ export function toHomeSermonCards(
   }
 
   return items.slice(0, 2).map((item) => ({
-    href: item.youtubeUrl,
+    href: buildMediaDetailPath("messages", item.youtubeVideoId),
     thumbnail: item.thumbnailUrl,
     thumbnailAlt: item.displayTitle,
     category: item.contentKind === "SHORT" ? "쇼츠" : "말씀",
@@ -110,4 +142,8 @@ export function buildMediaMeta(item: MediaItemDto): string {
   }
 
   return item.contentKind === "SHORT" ? "짧은 영상 콘텐츠" : "예배 영상";
+}
+
+export function formatDisplayDate(dateText: string): string {
+  return dateText.replaceAll("-", ".");
 }

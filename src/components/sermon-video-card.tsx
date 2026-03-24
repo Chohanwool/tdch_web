@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 
 interface SermonVideoCardProps {
@@ -9,6 +10,7 @@ interface SermonVideoCardProps {
   title: string;
   meta: string;
   date: string;
+  external?: boolean;
 }
 
 export default function SermonVideoCard({
@@ -20,14 +22,13 @@ export default function SermonVideoCard({
   title,
   meta,
   date,
+  external = false,
 }: SermonVideoCardProps) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="group overflow-hidden rounded-3xl border border-cedar/14 bg-white shadow-[0_16px_34px_rgba(16,33,63,0.13)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(16,33,63,0.18)]"
-    >
+  const className =
+    "group overflow-hidden rounded-3xl border border-cedar/14 bg-white shadow-[0_16px_34px_rgba(16,33,63,0.13)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(16,33,63,0.18)]";
+
+  const content = (
+    <>
       <div className="relative aspect-[16/10] w-full overflow-hidden">
         <Image
           src={thumbnail}
@@ -56,6 +57,28 @@ export default function SermonVideoCard({
           <p className="shrink-0 font-medium text-ink/40">{date}</p>
         </div>
       </div>
-    </a>
+    </>
+  );
+
+  if (external) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className={className}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      className={className}
+    >
+      {content}
+    </Link>
   );
 }
