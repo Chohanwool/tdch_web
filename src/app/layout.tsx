@@ -7,6 +7,8 @@ import "./globals.css";
 import BackToTopFab from "@/components/back-to-top-fab";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
+import { NavigationProvider } from "@/lib/navigation-context";
+import { getNavigationResponse } from "@/lib/navigation-api";
 
 const sans = Noto_Sans_KR({
   subsets: ["latin"],
@@ -47,26 +49,30 @@ export const viewport: Viewport = {
   colorScheme: "light"
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const navigation = await getNavigationResponse();
+
   return (
     <html lang="ko" suppressHydrationWarning>
       <body suppressHydrationWarning className={`${sans.variable} ${serif.variable} ${yeongwol.variable} font-[var(--font-sans)] antialiased`}>
         <Script src="https://cdn.lordicon.com/lordicon.js" strategy="afterInteractive" />
-        <div className="relative flex min-h-screen flex-col [overflow-x:clip]">
-          <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-            <div className="absolute -left-20 top-20 h-72 w-72 rounded-full bg-gold/20 blur-3xl" />
-            <div className="absolute right-0 top-1/3 h-80 w-80 rounded-full bg-clay/15 blur-3xl" />
-            <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-moss/10 blur-3xl" />
+        <NavigationProvider navigation={navigation}>
+          <div className="relative flex min-h-screen flex-col [overflow-x:clip]">
+            <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+              <div className="absolute -left-20 top-20 h-72 w-72 rounded-full bg-gold/20 blur-3xl" />
+              <div className="absolute right-0 top-1/3 h-80 w-80 rounded-full bg-clay/15 blur-3xl" />
+              <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-moss/10 blur-3xl" />
+            </div>
+            <SiteHeader />
+            <main className="flex-1">{children}</main>
+            <BackToTopFab />
+            <SiteFooter />
           </div>
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <BackToTopFab />
-          <SiteFooter />
-        </div>
+        </NavigationProvider>
       </body>
     </html>
   );

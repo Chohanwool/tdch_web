@@ -22,6 +22,10 @@ export default async function BetterDevotionPage() {
       emptyDescription="재생목록에 영상이 쌓이면 이 페이지에 자동으로 노출됩니다."
       response={response}
       showIntroCard={false}
+      showLatestEmbed
+      showPlaylistRows
+      playlistTitle="묵상 목록"
+      playlistSubtitle="PLAYLIST"
     />
   );
 }

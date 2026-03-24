@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navMenuGroups } from "@/lib/site-data";
+import { useNavigation } from "@/lib/navigation-context";
+import { findMatchedNavigationGroup, findMatchedNavigationItem } from "@/lib/navigation-utils";
 
 // Breadscrumb(브레드크럼) 과 LNB 목록
 // Breadscrumb: 현재 위치의 계층 표시
@@ -12,22 +13,10 @@ export default function Breadcrumb({
 }: {
   hideLnb?: boolean;
 }) {
-  const pathname = usePathname();
-
-  // 현재 경로에 맞는 메뉴 그룹 찾기
-  const menuGroup = navMenuGroups.find((group) => {
-    const matchesGroup = pathname === group.href || pathname.startsWith(`${group.href}/`);
-    const matchesItem = group.items.some(
-      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`)
-    );
-
-    return matchesGroup || matchesItem;
-  });
-
-  // 현재 경로에 맞는 하위 아이템 찾기
-  const currentItem = menuGroup?.items.find(
-    (item) => pathname === item.href || pathname.startsWith(`${item.href}/`)
-  );
+  const pathname = usePathname() ?? "";
+  const { navMenuGroups } = useNavigation();
+  const menuGroup = findMatchedNavigationGroup(pathname, navMenuGroups);
+  const currentItem = findMatchedNavigationItem(pathname, menuGroup);
 
   return (
     <div className="w-full flex flex-col bg-[#f8fafd]">
@@ -45,7 +34,7 @@ export default function Breadcrumb({
           </li>
 
           {/* 구분자 + 메뉴 그룹 */}
-          {menuGroup && (
+          {menuGroup && !menuGroup.hiddenInBreadcrumb && (
             <>
               <li className="text-ink/25" aria-hidden="true">
                 <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -83,14 +72,14 @@ export default function Breadcrumb({
       </nav>
 
       {/* 2. LNB (Local Navigation Bar) - 소메뉴 목록 */}
-      {!hideLnb && menuGroup && menuGroup.items && menuGroup.items.length > 0 && (
+      {!hideLnb && menuGroup && menuGroup.items.some((item) => !item.hiddenInLnb) && (
         <nav className="w-full border-b border-cedar/8 bg-white overflow-x-auto no-scrollbar" aria-label="LNB">
           <ul className="section-shell flex items-center justify-start md:justify-center gap-1 min-w-max px-4">
-            {menuGroup.items.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            {menuGroup.items.filter((item) => !item.hiddenInLnb).map((item) => {
+              const isActive = item === currentItem;
 
               return (
-                <li key={item.label}>
+                <li key={item.key}>
                   <Link
                     href={item.href}
                     className={`type-body-small block whitespace-nowrap border-b-[2.5px] px-3 py-3.5 font-medium transition-colors md:px-4 ${isActive

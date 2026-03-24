@@ -1,6 +1,8 @@
 import SermonVideoCard from "@/components/sermon-video-card";
 import type { MediaItemDto, MediaListResponse, SermonSiteKey } from "@/lib/media-api";
 import { buildMediaDetailPath, buildMediaMeta } from "@/lib/media-api";
+import Image from "next/image";
+import Link from "next/link";
 
 interface SermonArchivePageProps {
   title: string;
@@ -11,6 +13,12 @@ interface SermonArchivePageProps {
   siteKey: SermonSiteKey;
   response: MediaListResponse | null;
   showIntroCard?: boolean;
+  showLatestEmbed?: boolean;
+  latestEmbedTitle?: string;
+  latestEmbedSubtitle?: string;
+  showPlaylistRows?: boolean;
+  playlistTitle?: string;
+  playlistSubtitle?: string;
 }
 
 function getItemCategory(item: MediaItemDto, fallbackName: string): string {
@@ -38,9 +46,16 @@ export default function SermonArchivePage({
   siteKey,
   response,
   showIntroCard = true,
+  showLatestEmbed = false,
+  latestEmbedTitle,
+  latestEmbedSubtitle,
+  showPlaylistRows = false,
+  playlistTitle,
+  playlistSubtitle,
 }: SermonArchivePageProps) {
   const items = response?.items ?? [];
   const menuName = response?.menu.name ?? title;
+  const latestItem = items[0];
 
   return (
     <section className="space-y-8">
@@ -75,7 +90,69 @@ export default function SermonArchivePage({
         </div>
       ) : null}
 
+      {showLatestEmbed && latestItem ? (
+        <div className="section-shell section-shell--narrow">
+          {(latestEmbedTitle || latestEmbedSubtitle) ? (
+            <div className="mb-4">
+              {latestEmbedSubtitle ? (
+                <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-cedar/70">
+                  {latestEmbedSubtitle}
+                </p>
+              ) : null}
+              {latestEmbedTitle ? (
+                <h2 className="mt-2 type-section-title font-bold text-ink">
+                  {latestEmbedTitle}
+                </h2>
+              ) : null}
+            </div>
+          ) : null}
+          <div className="aspect-video w-full overflow-hidden bg-black">
+            <iframe
+              src={latestItem.embedUrl}
+              title={latestItem.displayTitle}
+              className="h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      ) : null}
+
       {items.length > 0 ? (
+        showPlaylistRows ? (
+          <div className="section-shell section-shell--narrow">
+            <div className="space-y-7 border-y border-black/10 py-7 md:space-y-9 md:py-9">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-cedar/70">
+                    {playlistSubtitle ?? "PLAYLIST"}
+                  </p>
+                  <h2 className="type-section-title font-bold text-ink">
+                    {playlistTitle ?? `${menuName} 목록`}
+                  </h2>
+                </div>
+                <div className="flex h-12 min-w-12 items-center justify-center rounded-full bg-[#f2f4fb] px-4 text-xl font-medium text-cedar/55">
+                  {response?.totalElements ?? items.length}편
+                </div>
+              </div>
+
+              <div className="grid gap-x-10 gap-y-8 lg:grid-cols-2">
+                {items.map((item) => (
+                  <PlaylistRow
+                    key={item.youtubeVideoId}
+                    href={buildMediaDetailPath(siteKey, item.youtubeVideoId)}
+                    thumbnail={item.thumbnailUrl}
+                    thumbnailAlt={item.displayTitle}
+                    label={getPlaylistLabel(item)}
+                    title={item.displayTitle}
+                    meta={buildPlaylistMeta(item)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {items.map((item) => (
             <SermonVideoCard
@@ -91,6 +168,7 @@ export default function SermonArchivePage({
             />
           ))}
         </div>
+        )
       ) : (
         <div className="rounded-[32px] border border-dashed border-cedar/20 bg-white px-8 py-12 text-center shadow-[0_20px_60px_rgba(16,33,63,0.06)]">
           <p className="type-label font-semibold uppercase tracking-[0.2em] text-cedar/70">Media Pending</p>
@@ -101,5 +179,69 @@ export default function SermonArchivePage({
         </div>
       )}
     </section>
+  );
+}
+
+function getPlaylistLabel(item: MediaItemDto): string {
+  return item.serviceType ?? item.scripture ?? "";
+}
+
+function buildPlaylistMeta(item: MediaItemDto): string {
+  const meta = [item.displayDate.replaceAll("-", "."), item.preacher].filter(Boolean);
+  return meta.join("   ");
+}
+
+interface PlaylistRowProps {
+  href: string;
+  thumbnail: string;
+  thumbnailAlt: string;
+  label: string;
+  title: string;
+  meta: string;
+}
+
+function PlaylistRow({
+  href,
+  thumbnail,
+  thumbnailAlt,
+  label,
+  title,
+  meta,
+}: PlaylistRowProps) {
+  return (
+    <Link
+      href={href}
+      className="group flex items-center gap-5 bg-transparent py-1 transition"
+    >
+      <div className="relative h-[112px] w-[192px] shrink-0 overflow-hidden rounded-[6px] bg-[#243a62]">
+        <Image
+          src={thumbnail}
+          alt={thumbnailAlt}
+          fill
+          className="object-cover object-center transition duration-500 group-hover:scale-[1.03]"
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/16 shadow-[0_8px_20px_rgba(7,16,32,0.2)] backdrop-blur-sm">
+            <svg className="ml-1 h-6 w-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div className="min-w-0">
+        {label ? (
+          <p className="text-sm font-medium tracking-[0.01em] text-cedar/46 md:text-[0.95rem]">
+            {label}
+          </p>
+        ) : null}
+        <h3 className="mt-2 line-clamp-2 text-[1.12rem] font-bold leading-[1.32] tracking-[-0.01em] text-ink md:text-[1.2rem]">
+          {title}
+        </h3>
+        <p className="mt-3 text-[0.98rem] font-medium tracking-[0.01em] text-cedar/42 md:text-[1.05rem]">
+          {meta}
+        </p>
+      </div>
+    </Link>
   );
 }

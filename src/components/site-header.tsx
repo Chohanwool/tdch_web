@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import MobileNav from "@/components/mobile-nav";
-
-import { navMenuGroups } from "@/lib/site-data";
+import { useNavigation } from "@/lib/navigation-context";
 
 export default function SiteHeader() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isCondensed, setIsCondensed] = useState(false);
+  const { navMenuGroups } = useNavigation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,7 +87,7 @@ export default function SiteHeader() {
           >
             {navMenuGroups.filter((menu) => !menu.hiddenInHeader).map((menu) => (
               <div
-                key={menu.label}
+                key={menu.key}
                 className="group/menu relative pb-2 -mb-2"
               >
                 <Link
@@ -103,9 +103,9 @@ export default function SiteHeader() {
                     <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-cedar/60">
                       {menu.label}
                     </p>
-                    {menu.items.map((item) => (
+                    {menu.items.filter((item) => !item.hiddenInHeader).map((item) => (
                       <Link
-                        key={`${menu.label}-${item.href}`}
+                        key={item.key}
                         href={item.href}
                         className="block rounded-xl px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-cedar/5 hover:text-themeBlue"
                       >

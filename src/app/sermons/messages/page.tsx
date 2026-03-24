@@ -22,6 +22,12 @@ export default async function MessagesPage() {
       emptyDescription="백엔드 sync 후 이 영역에서 최신 설교 목록이 자동으로 노출됩니다."
       response={response}
       showIntroCard={false}
+      showLatestEmbed
+      latestEmbedTitle="주일 예배"
+      latestEmbedSubtitle="SUNDAY WORSHIP"
+      showPlaylistRows
+      playlistTitle="설교 목록"
+      playlistSubtitle="PLAYLIST"
     />
   );
 }

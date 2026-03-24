@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navMenuGroups } from "@/lib/site-data";
 import { createPortal } from "react-dom";
+import { useNavigation } from "@/lib/navigation-context";
 
 export default function MobileNav({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (val: boolean) => void }) {
   const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
+  const { navMenuGroups } = useNavigation();
 
   useEffect(() => {
     setMounted(true);
@@ -94,8 +95,8 @@ export default function MobileNav({ isOpen, setIsOpen }: { isOpen: boolean, setI
           {/* 스크롤 가능한 메뉴 영역 */}
           <nav className="flex-1 overflow-y-auto px-6 pb-20 pt-10">
             <ul className="space-y-10 md:space-y-0 md:grid md:grid-cols-5 md:gap-x-4 lg:gap-x-8">
-              {navMenuGroups.filter((menu) => !menu.hiddenInHeader).map((menu) => (
-                <li key={menu.label} className="flex flex-col">
+              {navMenuGroups.filter((menu) => !menu.hiddenInMobile).map((menu) => (
+                <li key={menu.key} className="flex flex-col">
                   {/* 대분류 이름 (태블릿에서는 폰트 크기 조절 및 밑줄) */}
                   <div className="mb-5 md:mb-6 md:border-b md:border-cedar/10 md:pb-4">
                     <Link
@@ -108,8 +109,8 @@ export default function MobileNav({ isOpen, setIsOpen }: { isOpen: boolean, setI
                   
                   {/* 소분류 링크들 (태블릿에서는 좌측 테두리 제거) */}
                   <ul className="grid gap-y-4 pl-4 border-l-2 border-cedar/10 md:pl-0 md:border-none">
-                    {menu.items.map((item) => (
-                      <li key={`${menu.label}-${item.href}`}>
+                    {menu.items.filter((item) => !item.hiddenInMobile).map((item) => (
+                      <li key={item.key}>
                         <Link
                           href={item.href}
                           className="block text-xl font-semibold text-ink/65 transition hover:text-themeBlue hover:translate-x-1 duration-200"

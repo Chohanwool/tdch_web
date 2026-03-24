@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { navMenuGroups } from "@/lib/site-data";
+import { useNavigation } from "@/lib/navigation-context";
+import { findMatchedNavigationGroup } from "@/lib/navigation-utils";
 
 interface PageHeaderProps {
   title: string;
@@ -15,17 +16,9 @@ export default function PageHeader({
   subtitle,
   backgroundImageUrl = "/images/main_bg/main_bg_sec1.png"
 }: PageHeaderProps) {
-  const pathname = usePathname();
-
-  // Find the sub-menu item based on the current pathname
-  const menuGroup = navMenuGroups.find((group) => {
-    const matchesGroup = pathname === group.href || pathname.startsWith(`${group.href}/`);
-    const matchesItem = group.items.some(
-      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`)
-    );
-
-    return matchesGroup || matchesItem;
-  });
+  const pathname = usePathname() ?? "";
+  const { navMenuGroups } = useNavigation();
+  const menuGroup = findMatchedNavigationGroup(pathname, navMenuGroups);
 
   // PageHeader banner always shows the top-level menu label.
   const displayTitle = menuGroup?.label || defaultTitle;

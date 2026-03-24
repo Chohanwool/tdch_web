@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
+import { getNavigationGroupByKey } from "@/lib/navigation-api";
 
-export default function SermonsPage() {
-  redirect("/sermons/messages");
+export default async function SermonsPage() {
+  const group = await getNavigationGroupByKey("sermons");
+  redirect(group?.defaultLandingHref ?? "/sermons/messages");
 }
