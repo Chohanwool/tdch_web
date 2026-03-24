@@ -15,7 +15,7 @@ export default function ShortsDetailPage({
 }: ShortsDetailPageProps) {
   if (!detail) {
     return (
-      <section className="h-[calc(100svh-88px)] overflow-hidden px-4 py-6 text-ink md:h-[calc(100svh-92px)] md:px-8 md:py-8">
+      <section className="h-[100dvh] overflow-hidden px-0 py-0 text-ink md:h-[calc(100svh-92px)] md:px-8 md:py-8">
         <div className="mx-auto flex h-full max-w-[1520px] items-center">
           <div className="w-full rounded-[28px] border border-white/10 bg-white/5 px-6 py-10 backdrop-blur">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/45">Shorts</p>
@@ -63,7 +63,7 @@ export default function ShortsDetailPage({
       ];
 
   return (
-    <section className="h-[calc(100svh-88px)] overflow-hidden px-4 py-4 text-ink md:h-[calc(100svh-92px)] md:px-8 md:py-6">
+    <section className="h-[100dvh] overflow-hidden px-0 py-0 text-ink md:h-[calc(100svh-92px)] md:px-8 md:py-6">
       <div className="relative mx-auto flex h-full max-w-[1520px] items-center justify-center">
         <ShortsDetailViewer
           initialVideoId={detail.youtubeVideoId}

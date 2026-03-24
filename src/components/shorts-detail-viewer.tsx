@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type TouchEvent } from "react";
 
 interface ShortsPlaylistItem {
   youtubeVideoId: string;
@@ -42,6 +42,8 @@ export default function ShortsDetailViewer({
   const [isAnimating, setIsAnimating] = useState(false);
   const timerRef = useRef<number | null>(null);
   const wheelDeltaRef = useRef(0);
+  const touchStartYRef = useRef<number | null>(null);
+  const touchDeltaYRef = useRef(0);
 
   useEffect(() => {
     setActiveIndex(initialIndex);
@@ -54,6 +56,8 @@ export default function ShortsDetailViewer({
     }
 
     wheelDeltaRef.current = 0;
+    touchStartYRef.current = null;
+    touchDeltaYRef.current = 0;
   }, [initialIndex]);
 
   useEffect(() => {
@@ -89,6 +93,8 @@ export default function ShortsDetailViewer({
     }
 
     wheelDeltaRef.current = 0;
+    touchStartYRef.current = null;
+    touchDeltaYRef.current = 0;
     setDirection(nextDirection);
     setIncomingIndex(targetIndex);
     setIsAnimating(true);
@@ -123,14 +129,67 @@ export default function ShortsDetailViewer({
     }
   }
 
+  function handleTouchStart(event: TouchEvent<HTMLDivElement>) {
+    if (isAnimating) {
+      return;
+    }
+
+    touchStartYRef.current = event.touches[0]?.clientY ?? null;
+    touchDeltaYRef.current = 0;
+  }
+
+  function handleTouchMove(event: TouchEvent<HTMLDivElement>) {
+    if (touchStartYRef.current === null || isAnimating) {
+      return;
+    }
+
+    const currentY = event.touches[0]?.clientY;
+    if (typeof currentY !== "number") {
+      return;
+    }
+
+    touchDeltaYRef.current = currentY - touchStartYRef.current;
+
+    if (Math.abs(touchDeltaYRef.current) > 8) {
+      event.preventDefault();
+    }
+  }
+
+  function handleTouchEnd() {
+    if (touchStartYRef.current === null || isAnimating) {
+      return;
+    }
+
+    const deltaY = touchDeltaYRef.current;
+    touchStartYRef.current = null;
+    touchDeltaYRef.current = 0;
+
+    if (Math.abs(deltaY) < 42) {
+      return;
+    }
+
+    if (deltaY < 0) {
+      handleMove(nextIndex, "down");
+    } else {
+      handleMove(previousIndex, "up");
+    }
+  }
+
   const incomingItem = incomingIndex !== null ? items[incomingIndex] : null;
 
   return (
-    <div className="contents" onWheel={handleWheel}>
+    <div
+      className="relative h-full w-full touch-none"
+      onWheel={handleWheel}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+    >
       <div className="flex h-full w-full justify-center">
-        <div className="relative h-full w-full max-w-[calc((100svh-2rem)*9/16)] md:max-w-[calc((100svh-3rem)*9/16)]">
+        <div className="relative h-full w-full max-w-[calc(100dvh*9/16)] md:max-w-[calc((100svh-3rem)*9/16)]">
           <div className="relative overflow-hidden rounded-[16px] bg-black">
-            <div className="mx-auto h-[calc(100svh-2rem-88px)] w-full md:h-[calc(100svh-3rem-92px)]">
+            <div className="mx-auto h-[100dvh] w-full md:h-[calc(100svh-3rem-92px)]">
               <VideoLayer
                 key={activeItem.youtubeVideoId}
                 title={activeItem.displayTitle}

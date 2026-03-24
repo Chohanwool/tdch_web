@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import MobileNav from "@/components/mobile-nav";
 import { useNavigation } from "@/lib/navigation-context";
 
@@ -10,6 +11,8 @@ export default function SiteHeader() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isCondensed, setIsCondensed] = useState(false);
   const { navMenuGroups } = useNavigation();
+  const pathname = usePathname() ?? "";
+  const hideOnMobile = /^\/sermons\/its-okay\/[^/]+$/.test(pathname);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,7 +40,7 @@ export default function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg animate-header-item transition-[box-shadow,background-color] duration-300 ${isCondensed ? "shadow-[0_10px_30px_rgba(16,33,63,0.08)]" : ""
+      className={`${hideOnMobile ? "hidden md:block" : ""} sticky top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg animate-header-item transition-[box-shadow,background-color] duration-300 ${isCondensed ? "shadow-[0_10px_30px_rgba(16,33,63,0.08)]" : ""
         }`}
     >
       <div
