@@ -67,7 +67,7 @@ export default async function RootLayout({
               <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-moss/10 blur-3xl" />
             </div>
             <SiteHeader />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 pt-[var(--site-header-height,0px)] lg:pt-0">{children}</main>
             <RootLayoutAccessories />
           </div>
         </NavigationProvider>

@@ -66,6 +66,8 @@ export default function ShortsDetailViewer({
   const [isMuted, setIsMuted] = useState(true);
   const [hasUnlockedAudio, setHasUnlockedAudio] = useState(false);
   const [transitionSnapshot, setTransitionSnapshot] = useState<TransitionSnapshot | null>(null);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDraggingPreview, setIsDraggingPreview] = useState(false);
   const [viewportHeight, setViewportHeight] = useState("100svh");
   const timerRef = useRef<number | null>(null);
   const wheelDeltaRef = useRef(0);
@@ -83,6 +85,8 @@ export default function ShortsDetailViewer({
     setIsMuted(true);
     setHasUnlockedAudio(false);
     setTransitionSnapshot(null);
+    setDragOffset(0);
+    setIsDraggingPreview(false);
 
     if (timerRef.current) {
       window.clearTimeout(timerRef.current);
@@ -159,23 +163,15 @@ export default function ShortsDetailViewer({
   const activeItem = items[activeIndex] ?? items[0];
   const previousIndex = activeIndex > 0 ? activeIndex - 1 : null;
   const nextIndex = activeIndex < items.length - 1 ? activeIndex + 1 : null;
+  const viewportHeightPx = Number.parseInt(viewportHeight, 10) || 0;
+  const initialPlayerItem = items[initialIndex] ?? items[0];
 
-  function handleMove(targetIndex: number | null, nextDirection: Direction) {
-    if (targetIndex === null || isTransitioning || !items[targetIndex]) {
+  function finishVideoChange(targetIndex: number) {
+    const targetItem = items[targetIndex];
+    if (!targetItem) {
       return;
     }
 
-    const targetItem = items[targetIndex];
-    wheelDeltaRef.current = 0;
-    pointerStartYRef.current = null;
-    pointerDeltaYRef.current = 0;
-    pointerIdRef.current = null;
-    setTransitionSnapshot({
-      from: activeItem,
-      to: targetItem,
-      direction: nextDirection,
-    });
-    setIsTransitioning(true);
     setIsPlaying(true);
     setIsMuted(true);
     setActiveIndex(targetIndex);
@@ -194,11 +190,61 @@ export default function ShortsDetailViewer({
         }, 320);
       }
     }
+  }
+
+  function settleTransition(targetIndex: number | null, direction: Direction, nextOffset: number) {
+    if (targetIndex === null || !items[targetIndex]) {
+      return;
+    }
+
+    setIsTransitioning(true);
+    setIsDraggingPreview(false);
+    window.setTimeout(() => {
+      setDragOffset(nextOffset);
+    }, 0);
+
+    timerRef.current = window.setTimeout(() => {
+      finishVideoChange(targetIndex);
+      setIsTransitioning(false);
+      setTransitionSnapshot(null);
+      setDragOffset(0);
+    }, 280);
+  }
+
+  function cancelDragTransition() {
+    setIsTransitioning(true);
+    setIsDraggingPreview(false);
+    window.setTimeout(() => {
+      setDragOffset(0);
+    }, 0);
 
     timerRef.current = window.setTimeout(() => {
       setIsTransitioning(false);
       setTransitionSnapshot(null);
-    }, 280);
+      setDragOffset(0);
+    }, 220);
+  }
+
+  function handleMove(targetIndex: number | null, nextDirection: Direction) {
+    if (targetIndex === null || isTransitioning || !items[targetIndex]) {
+      return;
+    }
+
+    wheelDeltaRef.current = 0;
+    pointerStartYRef.current = null;
+    pointerDeltaYRef.current = 0;
+    pointerIdRef.current = null;
+    setTransitionSnapshot({
+      from: activeItem,
+      to: items[targetIndex],
+      direction: nextDirection,
+    });
+    setDragOffset(0);
+    settleTransition(
+      targetIndex,
+      nextDirection,
+      nextDirection === "down" ? -viewportHeightPx : viewportHeightPx,
+    );
   }
 
   function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
@@ -227,6 +273,7 @@ export default function ShortsDetailViewer({
       return;
     }
 
+    setIsDraggingPreview(false);
     pointerIdRef.current = event.pointerId;
     pointerStartYRef.current = event.clientY;
     pointerDeltaYRef.current = 0;
@@ -243,10 +290,41 @@ export default function ShortsDetailViewer({
     }
 
     pointerDeltaYRef.current = event.clientY - pointerStartYRef.current;
+    const nextDirection = pointerDeltaYRef.current < 0 ? "down" : "up";
+    const previewIndex = nextDirection === "down" ? nextIndex : previousIndex;
 
     if (Math.abs(pointerDeltaYRef.current) > 8) {
       event.preventDefault();
     }
+
+    if (previewIndex === null) {
+      setTransitionSnapshot(null);
+      setDragOffset(0);
+      setIsDraggingPreview(false);
+      return;
+    }
+
+    const previewItem = items[previewIndex];
+    if (!previewItem) {
+      return;
+    }
+
+    setTransitionSnapshot((prev) => {
+      if (
+        prev?.to.youtubeVideoId === previewItem.youtubeVideoId &&
+        prev.direction === nextDirection
+      ) {
+        return prev;
+      }
+
+      return {
+        from: activeItem,
+        to: previewItem,
+        direction: nextDirection,
+      };
+    });
+    setIsDraggingPreview(true);
+    setDragOffset(pointerDeltaYRef.current);
   }
 
   function resetPointerState() {
@@ -267,24 +345,32 @@ export default function ShortsDetailViewer({
     const deltaY = pointerDeltaYRef.current;
     resetPointerState();
 
+    if (transitionSnapshot && Math.abs(deltaY) < 42) {
+      cancelDragTransition();
+      return;
+    }
+
     if (Math.abs(deltaY) < 12) {
       togglePlayback();
       return;
     }
 
-    if (Math.abs(deltaY) < 42) {
-      return;
-    }
-
     if (deltaY < 0) {
-      handleMove(nextIndex, "down");
+      if (nextIndex !== null) {
+        settleTransition(nextIndex, "down", -viewportHeightPx);
+      }
     } else {
-      handleMove(previousIndex, "up");
+      if (previousIndex !== null) {
+        settleTransition(previousIndex, "up", viewportHeightPx);
+      }
     }
   }
 
   function handlePointerCancel() {
     resetPointerState();
+    if (transitionSnapshot) {
+      cancelDragTransition();
+    }
   }
   const viewportStyle = {
     ["--shorts-viewport-height" as string]: viewportHeight,
@@ -352,39 +438,35 @@ export default function ShortsDetailViewer({
           <div className="relative h-full overflow-hidden bg-black md:rounded-[16px]">
             <div className="mx-auto h-full w-full">
               <VideoLayer
-                title={activeItem.displayTitle}
-                embedUrl={activeItem.embedUrl}
+                title={initialPlayerItem.displayTitle}
+                embedUrl={initialPlayerItem.embedUrl}
                 iframeRef={activeIframeRef}
                 onLoad={handlePlayerLoad}
                 className="translate-y-0"
+                style={{
+                  transform: transitionSnapshot ? `translateY(${dragOffset}px)` : undefined,
+                  transitionDuration: isDraggingPreview ? "0ms" : undefined,
+                }}
               />
             </div>
             {transitionSnapshot ? (
               <div className="pointer-events-none absolute inset-0 z-[5] overflow-hidden bg-black">
                 <TransitionFrame
                   item={transitionSnapshot.from}
-                  className={
-                    isTransitioning
-                      ? transitionSnapshot.direction === "down"
-                        ? "-translate-y-full"
-                        : "translate-y-full"
-                      : "translate-y-0"
-                  }
+                  style={{
+                    transform: `translateY(${dragOffset}px)`,
+                    transitionDuration: isDraggingPreview ? "0ms" : undefined,
+                  }}
                 />
                 <TransitionFrame
                   item={transitionSnapshot.to}
-                  className={
-                    isTransitioning
-                      ? "translate-y-0"
-                      : transitionSnapshot.direction === "down"
-                        ? "translate-y-full"
-                        : "-translate-y-full"
-                  }
-                  initialClass={
-                    transitionSnapshot.direction === "down"
-                      ? "translate-y-full"
-                      : "-translate-y-full"
-                  }
+                  style={{
+                    transform:
+                      transitionSnapshot.direction === "down"
+                        ? `translateY(calc(100% + ${dragOffset}px))`
+                        : `translateY(calc(-100% + ${dragOffset}px))`,
+                    transitionDuration: isDraggingPreview ? "0ms" : undefined,
+                  }}
                 />
               </div>
             ) : null}
@@ -429,9 +511,10 @@ interface VideoLayerProps {
   className: string;
   iframeRef?: RefObject<HTMLIFrameElement | null>;
   onLoad?: () => void;
+  style?: CSSProperties;
 }
 
-function VideoLayer({ title, embedUrl, className, iframeRef, onLoad }: VideoLayerProps) {
+function VideoLayer({ title, embedUrl, className, iframeRef, onLoad, style }: VideoLayerProps) {
   const [mounted, setMounted] = useState(false);
   const [iframeSrc, setIframeSrc] = useState<string | null>(null);
 
@@ -446,6 +529,7 @@ function VideoLayer({ title, embedUrl, className, iframeRef, onLoad }: VideoLaye
         "absolute inset-0 transition-transform duration-300 ease-out",
         mounted ? className : className,
       ].join(" ")}
+      style={style}
     >
       {iframeSrc ? (
         <iframe
@@ -512,26 +596,14 @@ function GestureZone({
 
 interface TransitionFrameProps {
   item: ShortsPlaylistItem;
-  className: string;
-  initialClass?: string;
+  style?: CSSProperties;
 }
 
-function TransitionFrame({ item, className, initialClass }: TransitionFrameProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    return () => {
-      setMounted(false);
-    };
-  }, []);
-
+function TransitionFrame({ item, style }: TransitionFrameProps) {
   return (
     <div
-      className={[
-        "absolute inset-0 overflow-hidden bg-black transition-transform duration-300 ease-out",
-        mounted ? className : (initialClass ?? className),
-      ].join(" ")}
+      className="absolute inset-0 overflow-hidden bg-black transition-transform duration-300 ease-out"
+      style={style}
     >
       <div
         className="absolute inset-0 scale-110 bg-cover bg-center opacity-80 blur-md"

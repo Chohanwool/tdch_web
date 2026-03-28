@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,13 +10,20 @@ import { useNavigation } from "@/lib/navigation-context";
 export default function SiteHeader() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isCondensed, setIsCondensed] = useState(false);
+  const [isHiddenOnMobile, setIsHiddenOnMobile] = useState(false);
   const { navMenuGroups } = useNavigation();
   const pathname = usePathname() ?? "";
   const hideOnMobile = /^\/sermons\/its-okay\/[^/]+$/.test(pathname);
+  const previousScrollYRef = useRef(0);
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const previousScrollY = previousScrollYRef.current;
+      const scrollDelta = currentScrollY - previousScrollY;
+      const isMobileViewport = window.innerWidth < 1024;
+
       setIsCondensed((prev) => {
         if (currentScrollY <= 0) {
           return false;
@@ -28,23 +35,76 @@ export default function SiteHeader() {
 
         return prev;
       });
+
+      if (!isMobileViewport || isMobileNavOpen || currentScrollY <= 8) {
+        setIsHiddenOnMobile(false);
+      } else if (scrollDelta > 8) {
+        setIsHiddenOnMobile(true);
+      } else if (scrollDelta < -8) {
+        setIsHiddenOnMobile(false);
+      }
+
+      previousScrollYRef.current = currentScrollY;
     };
 
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsHiddenOnMobile(false);
+      }
+    };
+
+    previousScrollYRef.current = window.scrollY;
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isMobileNavOpen]);
+
+  useEffect(() => {
+    const headerElement = headerRef.current;
+
+    if (!headerElement) {
+      return;
+    }
+
+    const updateHeaderHeight = () => {
+      const root = document.documentElement;
+      const styles = window.getComputedStyle(headerElement);
+      const isHidden = styles.display === "none";
+      const isDesktopViewport = window.innerWidth >= 1024;
+      const headerHeight = isHidden || isDesktopViewport
+        ? 0
+        : headerElement.getBoundingClientRect().height;
+
+      root.style.setProperty("--site-header-height", `${headerHeight}px`);
+    };
+
+    const resizeObserver = new ResizeObserver(updateHeaderHeight);
+    resizeObserver.observe(headerElement);
+
+    updateHeaderHeight();
+    window.addEventListener("resize", updateHeaderHeight);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateHeaderHeight);
+      document.documentElement.style.removeProperty("--site-header-height");
+    };
+  }, [hideOnMobile]);
 
   return (
     <header
-      className={`${hideOnMobile ? "hidden md:block" : ""} sticky top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg animate-header-item transition-[box-shadow,background-color] duration-300 ${isCondensed ? "shadow-[0_10px_30px_rgba(16,33,63,0.08)]" : ""
+      ref={headerRef}
+      className={`${hideOnMobile ? "hidden md:block" : ""} fixed inset-x-0 top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg transition-[transform,box-shadow,background-color] duration-300 lg:sticky ${isHiddenOnMobile ? "-translate-y-full pointer-events-none lg:translate-y-0 lg:pointer-events-auto" : "translate-y-0"
+        } ${isCondensed ? "shadow-[0_10px_30px_rgba(16,33,63,0.08)]" : ""
         }`}
     >
       <div
-        className={`section-shell transition-[padding] duration-300 ${isCondensed ? "py-3 md:py-4" : "py-[25px]"
+        className={`section-shell animate-header-item transition-[padding] duration-300 ${isCondensed ? "py-3 md:py-4" : "py-[25px]"
           }`}
       >
         <div className="relative flex items-center justify-between gap-4 md:gap-6">
