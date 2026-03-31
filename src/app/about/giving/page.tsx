@@ -44,7 +44,7 @@ function normalizeGivingAccount(raw: string, ownerFallback: string) {
 
 const givingAccount = normalizeGivingAccount(
   process.env.NEXT_PUBLIC_GIVING_BANK ??
-    "하나은행 181-04-01160-381 예금주:이진욱(The제자교회)",
+  "하나은행 181-04-01160-381 예금주:이진욱(The제자교회)",
   process.env.NEXT_PUBLIC_GIVING_OWNER ?? "이진욱(The제자교회)"
 );
 
@@ -52,7 +52,7 @@ export default function GivingPage() {
   return (
     <div className="section-shell section-shell--narrow pt-10 pb-20 md:pt-16">
       <section className="mb-4 md:mb-8">
-        <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-cedar/70">
+        <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
           Online Offering Guide
         </p>
         <h2 className="type-section-title font-bold tracking-[0.01em] text-ink">
@@ -79,7 +79,7 @@ export default function GivingPage() {
             <span className="type-card-title inline-flex min-h-11 items-center rounded-[6px] bg-ink px-6 py-2 font-bold tracking-[-0.03em] text-white md:min-h-[54px] md:px-7">
               이름
             </span>
-            <span className="type-card-title font-light leading-none text-ink/35">
+            <span className="type-card-title font-light leading-none">
               +
             </span>
             <span className="type-card-title inline-flex min-h-11 items-center rounded-[6px] bg-ink px-6 py-2 font-bold tracking-[-0.03em] text-white md:min-h-[54px] md:px-7">

@@ -94,7 +94,7 @@ export default function HistoryPage() {
       {/* 페이지 제목 */}
       <section className="section-shell section-shell--narrow relative z-10 space-y-14 pb-20 pt-10 md:pt-16">
         <div className="mb-10 md:mb-14">
-          <p className="type-label mb-2 font-semibold uppercase tracking-[0.2em] text-cedar/70">
+          <p className="type-label mb-2 font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
             Church History
           </p>
           <h2 className="type-section-title font-bold tracking-[-0.03em] text-ink">
@@ -115,7 +115,7 @@ export default function HistoryPage() {
         <div className="section-shell section-shell--narrow relative py-16 md:py-20 lg:py-24">
           <div className="flex justify-start">
             <div className="max-w-[34rem] space-y-5 text-left text-ink">
-              <p className="type-label font-semibold uppercase tracking-[0.2em] text-themeBlue/72">
+              <p className="type-label font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
                 The Story Continues
               </p>
               <h3 className="type-card-title font-bold leading-[1.24] text-ink">

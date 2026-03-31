@@ -44,6 +44,14 @@
   - 섹션 타이틀
   - `1.5rem / md: 1.75rem / lg: 2.125rem`
 
+- `.type-subsection-title`
+  - 섹션 내 중간 제목
+  - `1.3125rem / md: 1.4375rem / lg: 1.5625rem`
+
+- `.type-block-title`
+  - 블록/아코디언/단계 제목
+  - `1.21875rem / md: 1.40625rem / lg: 1.5rem`
+
 - `.type-card-title`
   - 카드/블록 제목
   - `1.125rem / md: 1.375rem`
@@ -101,6 +109,22 @@
 ```tsx
 <h3 className="type-card-title font-bold text-black">
   상처가 뭔지 압니다
+</h3>
+```
+
+### 중간 제목
+
+```tsx
+<h3 className="type-subsection-title font-bold text-ink">
+  5대 핵심가치
+</h3>
+```
+
+### 블록 제목
+
+```tsx
+<h3 className="type-block-title font-bold text-ink">
+  새가족 환영
 </h3>
 ```
 

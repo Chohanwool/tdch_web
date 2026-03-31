@@ -141,6 +141,8 @@ docker compose up -d --build
 - `display`: `2.125rem` / `md: 3rem`
 - `h1`: `1.75rem` / `md: 1.875rem` / `lg: 2.5rem`
 - `h2`: `1.5rem` / `md: 1.75rem` / `lg: 2.125rem`
+- `subsection`: `1.3125rem` / `md: 1.4375rem` / `lg: 1.5625rem`
+- `block-title`: `1.21875rem` / `md: 1.40625rem` / `lg: 1.5rem`
 - `h3`: `1.125rem` / `md: 1.375rem`
 - `lead`: `1.125rem` / `md: 1.1875rem`
 - `body`: `1rem`
@@ -153,6 +155,8 @@ docker compose up -d --build
 
 - `.type-page-title`: 페이지 대표 타이틀
 - `.type-section-title`: 섹션 타이틀
+- `.type-subsection-title`: 섹션 내 중간 제목
+- `.type-block-title`: 블록/아코디언/단계 제목
 - `.type-card-title`: 카드/블록 제목
 - `.type-lead`: 강조 본문
 - `.type-body`: 기본 본문
@@ -166,6 +170,8 @@ docker compose up -d --build
 
 - 페이지 대표 타이틀: `className="type-page-title ..."`
 - 섹션 타이틀: `className="type-section-title ..."`
+- 중간 제목: `className="type-subsection-title ..."`
+- 블록 제목: `className="type-block-title ..."`
 - 카드 제목: `className="type-card-title ..."`
 - 본문: `className="type-body ..."`
 - 강조 본문: `className="type-lead ..."`

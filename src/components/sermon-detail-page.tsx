@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import type { MediaItemDto, SermonSiteKey, VideoDetailResponse } from "@/lib/media-api";
 import { formatDisplayDate } from "@/lib/media-api";
 import RelatedVideosList from "@/components/related-videos-list";
@@ -31,6 +32,11 @@ function buildDescription(detail: VideoDetailResponse): string {
   return summary || description || "운영 메타데이터가 준비되면 영상 요약과 상세 설명이 이 영역에 표시됩니다.";
 }
 
+function buildScriptureReference(detail: VideoDetailResponse): string | null {
+  const scripture = detail.scripture?.trim();
+  return scripture || null;
+}
+
 function buildMetaLines(detail: VideoDetailResponse): string[] {
   return [
     detail.preacher,
@@ -51,6 +57,33 @@ function buildAutoplayEmbedUrl(embedUrl: string): string {
     const separator = embedUrl.includes("?") ? "&" : "?";
     return `${embedUrl}${separator}autoplay=1&playsinline=1&rel=0`;
   }
+}
+
+interface CollapsibleSectionProps {
+  title: string;
+  meta: string[];
+  children: ReactNode;
+}
+
+function CollapsibleSection({ title, meta, children }: CollapsibleSectionProps) {
+  return (
+    <details className="group mt-5 rounded-[20px] bg-black/5 px-5 py-5 md:px-6">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-ink/78">
+        <span>{title}</span>
+        <span className="text-ink/44 transition group-open:rotate-180">⌃</span>
+      </summary>
+
+      {meta.length > 0 ? (
+        <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-ink/72">
+          {meta.map((item, index) => (
+            <span key={`${title}-${item}-${index}`}>{item}</span>
+          ))}
+        </div>
+      ) : null}
+
+      <div className="mt-4">{children}</div>
+    </details>
+  );
 }
 
 export default function SermonDetailPage({
@@ -94,6 +127,7 @@ export default function SermonDetailPage({
 
   const metaLines = buildMetaLines(detail);
   const description = buildDescription(detail);
+  const scriptureReference = buildScriptureReference(detail);
   const autoplayEmbedUrl = buildAutoplayEmbedUrl(detail.embedUrl);
 
   return (
@@ -128,18 +162,15 @@ export default function SermonDetailPage({
             </div>
           </div>
 
-          <details className="group mt-5 rounded-[20px] bg-black/5 px-5 py-5 md:px-6">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-ink/78">
-              <span>영상 설명</span>
-              <span className="text-ink/44 transition group-open:rotate-180">⌃</span>
-            </summary>
-
-            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-ink/72">
-              <span>{formatDisplayDate(detail.publishedAt.slice(0, 10))} 게시</span>
-              <span>{detail.serviceType ?? contentKindLabel[detail.contentKind]}</span>
-              {detail.scripture ? <span>{detail.scripture}</span> : null}
-            </div>
-            <p className="mt-4 whitespace-pre-line text-[0.98rem] leading-7 text-ink/82">
+          <CollapsibleSection
+            title="영상 설명"
+            meta={[
+              `${formatDisplayDate(detail.publishedAt.slice(0, 10))} 게시`,
+              detail.serviceType ?? contentKindLabel[detail.contentKind],
+              ...(scriptureReference ? [scriptureReference] : []),
+            ]}
+          >
+            <p className="whitespace-pre-line text-[0.98rem] leading-7 text-ink/82">
               {description}
             </p>
 
@@ -155,7 +186,33 @@ export default function SermonDetailPage({
                 ))}
               </div>
             ) : null}
-          </details>
+          </CollapsibleSection>
+
+          <CollapsibleSection
+            title="본문 말씀"
+            meta={[
+              detail.serviceType ?? contentKindLabel[detail.contentKind],
+              ...(scriptureReference ? [scriptureReference] : ["본문 정보 준비 중"]),
+            ]}
+          >
+            {scriptureReference ? (
+              <div className="rounded-[18px] bg-white/75 px-5 py-5 ring-1 ring-black/6">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-ink/44">
+                  Scripture
+                </p>
+                <p className="mt-2 text-[1.08rem] font-semibold leading-7 text-ink">
+                  {scriptureReference}
+                </p>
+                <p className="mt-4 text-[0.96rem] leading-7 text-ink/72">
+                  현재 페이지에는 본문 구절 참조만 연결되어 있습니다. 성경 본문 전문 데이터가 준비되면 이 영역에 함께 표시됩니다.
+                </p>
+              </div>
+            ) : (
+              <p className="text-[0.98rem] leading-7 text-ink/82">
+                운영 메타데이터에 본문 구절이 연결되면 이 영역에서 접고 펼쳐 확인하실 수 있습니다.
+              </p>
+            )}
+          </CollapsibleSection>
         </div>
 
         <aside className="min-w-0 rounded-[24px] border border-black/8 bg-[#f7f8fb] p-5 md:p-6">

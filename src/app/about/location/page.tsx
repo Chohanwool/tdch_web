@@ -63,7 +63,7 @@ function InfoSection({
 }) {
   return (
     <section>
-      <p className="type-label mb-2 font-semibold uppercase tracking-[0.2em] text-cedar/70">
+      <p className="type-label mb-2 font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
         {subtitle}
       </p>
       <h3 className="type-section-title font-bold text-ink">
@@ -92,13 +92,13 @@ export default function LocationPage() {
     <div className="w-full overflow-x-hidden bg-white">
       <section id="map" className="relative overflow-hidden scroll-mt-28">
         <div className="section-shell section-shell--narrow relative py-12 md:py-16">
-          <p className="type-label mb-2 font-semibold uppercase tracking-[0.2em] text-cedar/70">
+          <p className="type-label mb-2 font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
             LOCATION
           </p>
           <h2 className="type-section-title mb-6 font-bold text-ink md:mb-8">
             오시는 길
           </h2>
-          <div className="mt-10 overflow-hidden rounded-[34px] border border-cedar/12 bg-white">
+          <div className="mt-10 overflow-hidden border border-cedar/12 bg-white">
             <div className="relative aspect-[16/11] w-full overflow-hidden md:aspect-[16/8] lg:aspect-[16/7]">
               <NaverDynamicMap
                 clientId={naverMapClientId}
@@ -181,31 +181,31 @@ export default function LocationPage() {
           </InfoSection>
 
           <InfoSection title="버스 이용" subtitle="Bus">
-            <div className="overflow-hidden rounded-[24px] border border-cedar/10 bg-white">
-              <table className="w-full border-collapse text-left">
+            <div className="overflow-x-auto border-x border-b border-t-[3px] border-cedar/15 border-t-ink/90 bg-white">
+              <table className="w-full min-w-[680px] table-fixed border-collapse text-left lg:min-w-[760px]">
                 <thead>
-                  <tr className="border-b border-cedar/10 bg-[#eef4ff]">
-                    <th className="type-label w-[38%] px-4 py-3 font-semibold uppercase tracking-[0.16em] text-cedar/70 md:px-6">
+                  <tr className="border-b border-cedar/15 bg-[#fafcff]">
+                    <th className="type-label w-[28%] border-r border-cedar/15 px-4 py-4 text-center font-semibold tracking-[0.08em] text-ink/72 lg:px-6 lg:py-5">
                       노선
                     </th>
-                    <th className="type-label w-[22%] px-4 py-3 font-semibold uppercase tracking-[0.16em] text-cedar/70 md:px-6">
+                    <th className="type-label w-[24%] border-r border-cedar/15 px-4 py-4 text-center font-semibold tracking-[0.08em] text-ink/72 lg:px-6 lg:py-5">
                       승차
                     </th>
-                    <th className="type-label px-4 py-3 font-semibold uppercase tracking-[0.16em] text-cedar/70 md:px-6">
+                    <th className="type-label px-4 py-4 text-center font-semibold tracking-[0.08em] text-ink/72 lg:px-6 lg:py-5">
                       하차
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {busRoutes.map((item) => (
-                    <tr key={`${item.from}-${item.routes}`} className="border-b border-cedar/10 last:border-b-0">
-                      <td className="type-body-strong w-[38%] bg-[#f8fbff] px-4 py-4 font-semibold text-themeBlue md:px-6 md:py-5">
+                    <tr key={`${item.from}-${item.routes}`} className="border-b border-cedar/15 last:border-b-0">
+                      <td className="type-body-strong border-r border-cedar/15 px-4 py-5 text-center font-bold text-ink lg:px-6 lg:py-6">
                         {item.routes}
                       </td>
-                      <td className="type-body w-[22%] px-4 py-4 text-ink/72 md:px-6 md:py-5">
+                      <td className="type-body border-r border-cedar/15 px-4 py-5 text-center font-medium text-ink/80 lg:px-6 lg:py-6">
                         {item.from}
                       </td>
-                      <td className="type-body px-4 py-4 text-ink/72 md:px-6 md:py-5">
+                      <td className="type-body px-4 py-5 text-center font-medium text-ink/80 lg:px-6 lg:py-6">
                         {item.stop}
                       </td>
                     </tr>

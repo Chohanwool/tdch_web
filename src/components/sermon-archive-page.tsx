@@ -71,10 +71,10 @@ export default function SermonArchivePage({
       {showIntroCard ? (
         <div className="overflow-hidden rounded-[32px] border border-cedar/10 bg-white shadow-[0_20px_60px_rgba(16,33,63,0.08)]">
           <div className="bg-[linear-gradient(135deg,rgba(19,36,58,0.96),rgba(38,84,124,0.88))] px-8 py-12 text-ivory md:px-12">
-            <p className="type-label font-semibold uppercase tracking-[0.2em] text-ivory/65">
+            <p className="type-label font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
               {subtitle}
             </p>
-            <h2 className="mt-3 type-section-title font-serif font-bold">
+            <h2 className="mt-3 type-section-title font-bold">
               {title}
             </h2>
             <p className="mt-4 max-w-3xl type-body leading-8 text-ivory/78">
@@ -104,7 +104,7 @@ export default function SermonArchivePage({
           {(latestEmbedTitle || latestEmbedSubtitle) ? (
             <div className="mb-4">
               {latestEmbedSubtitle ? (
-                <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-cedar/70">
+                <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
                   {latestEmbedSubtitle}
                 </p>
               ) : null}
@@ -134,7 +134,7 @@ export default function SermonArchivePage({
             <div className="space-y-7 border-y border-black/10 py-7 md:space-y-9 md:py-9">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-cedar/70">
+                  <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
                     {playlistSubtitle ?? "PLAYLIST"}
                   </p>
                   <div className="flex flex-wrap items-center gap-3">
@@ -194,7 +194,7 @@ export default function SermonArchivePage({
         )
       ) : (
         <div className="rounded-[32px] border border-dashed border-cedar/20 bg-white px-8 py-12 text-center shadow-[0_20px_60px_rgba(16,33,63,0.06)]">
-          <p className="type-label font-semibold uppercase tracking-[0.2em] text-cedar/70">Media Pending</p>
+          <p className="type-label font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">Media Pending</p>
           <h3 className="mt-3 type-card-title font-bold text-ink">{emptyTitle}</h3>
           <p className="mx-auto mt-3 max-w-2xl type-body leading-8 text-ink/68">
             {emptyDescription}

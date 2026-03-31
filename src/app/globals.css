@@ -56,11 +56,25 @@ body {
   }
 
   .type-section-title {
+    font-family: var(--font-section-title);
     font-size: 1.5rem;
     line-height: 1.28;
   }
 
+  .type-subsection-title {
+    font-family: var(--font-section-title);
+    font-size: 1.3125rem;
+    line-height: 1.32;
+  }
+
+  .type-block-title {
+    font-family: var(--font-section-title);
+    font-size: 1.21875rem;
+    line-height: 1.34;
+  }
+
   .type-card-title {
+    font-family: var(--font-section-title);
     font-size: 1.125rem;
     line-height: 1.35;
   }
@@ -112,6 +126,16 @@ body {
     line-height: 1.32;
   }
 
+  .type-subsection-title {
+    font-size: 1.4375rem;
+    line-height: 1.34;
+  }
+
+  .type-block-title {
+    font-size: 1.40625rem;
+    line-height: 1.34;
+  }
+
   .type-card-title {
     font-size: 1.375rem;
   }
@@ -137,6 +161,16 @@ body {
   .type-section-title {
     font-size: 2.125rem;
     line-height: 1.2;
+  }
+
+  .type-subsection-title {
+    font-size: 1.5625rem;
+    line-height: 1.3;
+  }
+
+  .type-block-title {
+    font-size: 1.5rem;
+    line-height: 1.32;
   }
 }
 
@@ -306,6 +340,7 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .animate-header-item,
   .animate-image-fade-in-right {
     opacity: 1;
