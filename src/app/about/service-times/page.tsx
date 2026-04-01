@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import SectionHeading from "@/components/temp/section-heading";
 import { serviceTimes } from "@/lib/site-data";
 import MobileServiceCard from "./components/mobile-service-card";
-import SectionHeading from "./components/section-heading";
 import ServiceNotice from "./components/service-notice";
 import ServiceTimesTable from "./components/service-times-table";
 
@@ -36,27 +36,31 @@ export default function ServiceTimesPage() {
   return (
     <div className="section-shell section-shell--narrow space-y-14 pt-10 md:pt-16 pb-20">
       <section>
-        <SectionHeading title="예배 시간 안내" subtitle="Service Times" as="h1" />
+        <SectionHeading title="예배 시간 안내" label="Service Times" as="h1" />
 
-        <div className="space-y-4 md:hidden">
-          {serviceRows.map((service) => (
-            <MobileServiceCard
-              key={service.title}
-              title={service.title}
-              schedule={service.schedule}
-              location={service.location}
-            />
-          ))}
+        <div className="mt-10 md:mt-12">
+          <div className="space-y-4 md:hidden">
+            {serviceRows.map((service) => (
+              <MobileServiceCard
+                key={service.title}
+                title={service.title}
+                schedule={service.schedule}
+                location={service.location}
+              />
+            ))}
+          </div>
+
+          <ServiceTimesTable
+            mainLocationRows={mainLocationRows}
+            otherLocationRows={otherLocationRows}
+          />
         </div>
 
-        <ServiceTimesTable
-          mainLocationRows={mainLocationRows}
-          otherLocationRows={otherLocationRows}
-        />
-
         <div className="mt-10 px-5 md:px-0">
-          <SectionHeading title="안내" subtitle="Notice" />
-          <ServiceNotice items={noticeItems} />
+          <SectionHeading title="안내" label="Notice" />
+          <div className="mt-6">
+            <ServiceNotice items={noticeItems} />
+          </div>
         </div>
       </section>
     </div>

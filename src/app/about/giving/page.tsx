@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SectionHeading from "@/components/temp/section-heading";
 import CopyAccountButton from "./components/copy-account-button";
 
 export const metadata: Metadata = {
@@ -52,12 +53,7 @@ export default function GivingPage() {
   return (
     <div className="section-shell section-shell--narrow pt-10 pb-20 md:pt-16">
       <section className="mb-4 md:mb-8">
-        <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
-          Online Offering Guide
-        </p>
-        <h2 className="type-section-title font-bold tracking-[0.01em] text-ink">
-          온라인 헌금방법
-        </h2>
+        <SectionHeading as="h1" label="Online Offering Guide" title="온라인 헌금방법" />
         <ul className="type-body mt-5 space-y-3 text-ink/78">
           <li className="flex items-start gap-4">
             <span className="mt-2 block h-2.5 w-2.5 shrink-0 rounded-full bg-themeBlue" />

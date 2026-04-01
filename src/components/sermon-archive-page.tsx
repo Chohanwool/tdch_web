@@ -1,4 +1,5 @@
 import SermonVideoCard from "@/components/sermon-video-card";
+import SectionHeading from "@/components/temp/section-heading";
 import type { MediaItemDto, MediaListResponse, SermonSiteKey } from "@/lib/media-api";
 import { buildMediaDetailPath, buildMediaMeta } from "@/lib/media-api";
 import Image from "next/image";
@@ -103,15 +104,11 @@ export default function SermonArchivePage({
         <div className="w-full">
           {(latestEmbedTitle || latestEmbedSubtitle) ? (
             <div className="mb-4">
-              {latestEmbedSubtitle ? (
-                <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
-                  {latestEmbedSubtitle}
-                </p>
-              ) : null}
-              {latestEmbedTitle ? (
-                <h2 className="mt-2 type-section-title font-bold text-ink">
-                  {latestEmbedTitle}
-                </h2>
+              {latestEmbedTitle && latestEmbedSubtitle ? (
+                <SectionHeading
+                  label={latestEmbedSubtitle}
+                  title={latestEmbedTitle}
+                />
               ) : null}
             </div>
           ) : null}
@@ -134,14 +131,10 @@ export default function SermonArchivePage({
             <div className="space-y-7 border-y border-black/10 py-7 md:space-y-9 md:py-9">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="type-label mb-3 font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
-                    {playlistSubtitle ?? "PLAYLIST"}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="type-section-title font-bold text-ink">
-                      {playlistTitle ?? `${menuName} 목록`}
-                    </h2>
-                  </div>
+                  <SectionHeading
+                    label={playlistSubtitle ?? "PLAYLIST"}
+                    title={playlistTitle ?? `${menuName} 목록`}
+                  />
                 </div>
                 <a
                   href={youtubeChannelUrl}

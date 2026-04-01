@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
+import SectionHeading from "@/components/temp/section-heading";
 
 export const metadata: Metadata = {
   title: "교회 연혁 | The 제자교회",
@@ -94,12 +95,7 @@ export default function HistoryPage() {
       {/* 페이지 제목 */}
       <section className="section-shell section-shell--narrow relative z-10 space-y-14 pb-20 pt-10 md:pt-16">
         <div className="mb-10 md:mb-14">
-          <p className="type-label mb-2 font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
-            Church History
-          </p>
-          <h2 className="type-section-title font-bold tracking-[-0.03em] text-ink">
-            교회 연혁
-          </h2>
+          <SectionHeading as="h1" label="Church History" title="교회 연혁" />
         </div>
 
         {/* 타임라인 */}
