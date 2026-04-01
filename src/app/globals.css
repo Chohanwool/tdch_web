@@ -113,6 +113,25 @@ body {
     font-size: 7rem;
     line-height: 1;
   }
+
+  .list-bullet {
+    display: block;
+    height: 0.625rem;
+    width: 0.625rem;
+    border-radius: 9999px;
+    box-shadow: 0 0 0 3px var(--list-bullet-ring);
+    background: var(--list-bullet-fill);
+  }
+
+  .list-bullet--navy {
+    --list-bullet-fill: rgb(26 39 68);
+    --list-bullet-ring: rgb(237 238 240);
+  }
+
+  .list-bullet--gold {
+    --list-bullet-fill: rgb(201 168 76);
+    --list-bullet-ring: rgb(244 238 200);
+  }
 }
 
 @media (min-width: 768px) {

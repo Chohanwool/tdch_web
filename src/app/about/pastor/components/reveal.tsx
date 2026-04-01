@@ -30,7 +30,7 @@ export default function Reveal({
   origin = "up",
   delay = 0,
   amount = 0.25,
-  duration = 0.7,
+  duration = 0.8,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -49,7 +49,7 @@ export default function Reveal({
       variants={revealVariants[origin]}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
-      transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
       {children}
     </motion.div>

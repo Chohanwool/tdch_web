@@ -1,11 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Gowun_Batang } from "next/font/google";
+import { DM_Serif_Display, Gowun_Batang } from "next/font/google";
 import Reveal from "./components/reveal";
 
 const gowunBatang = Gowun_Batang({
   subsets: ["latin"],
   weight: ["400", "700"]
+});
+
+const dmSerifDisplay = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: "400"
 });
 
 const pastorSectionTwoLeadLines = [
@@ -209,15 +214,15 @@ function PastorMissionSection() {
 
         <div className="mt-12 grid gap-10 md:mt-14 md:gap-12 lg:mt-16 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] lg:gap-[84px]">
           <Reveal
-            className="border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:flex lg:items-center lg:pl-8"
+            className="border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:flex lg:h-full lg:items-start lg:pl-8"
             origin="left"
             delay={0.1}
           >
-            <div className="type-lead font-serif flex flex-col gap-2 tracking-[-0.03em] text-[#22345c] lg:gap-2">
+            <div className="type-lead font-serif flex flex-col tracking-[-0.03em] text-[#22345c] lg:h-full">
               {pastorSectionTwoLeadLines.map((line, index) => (
                 <p
                   key={line}
-                  className={index === pastorSectionTwoLeadLines.length - 1 ? "mt-3 font-semibold lg:mt-5" : ""}
+                  className={index === pastorSectionTwoLeadLines.length - 1 ? "mt-4 font-bold lg:mt-auto" : ""}
                 >
                   {line}
                 </p>
@@ -266,7 +271,7 @@ function PastorSectionThree() {
         >
           <div className="type-lead font-serif tracking-[-0.03em] text-[#22345c]">
             <p>뭔가를 이루려는 게 아니라,</p>
-            <p className="text-[#cda74d]">더 잘 섬기고 싶어서입니다.</p>
+            <p className="font-bold text-[#cda74d]">더 잘 섬기고 싶어서입니다.</p>
           </div>
         </Reveal>
 
@@ -307,16 +312,16 @@ function PastorSectionFour() {
               origin="up"
               delay={0.08 * index}
             >
-              <article className="rounded-[22px] border border-black/6 bg-white px-6 py-7 shadow-[0_8px_18px_rgba(0,0,0,0.12)] md:px-8 md:py-8 lg:min-h-[322px] lg:px-6 lg:py-7">
-                <p className="font-[var(--font-serif)] text-[3rem] font-semibold leading-none tracking-[-0.05em] text-[#d9d9d9]/75 md:text-[4rem] lg:text-[4rem]">
+              <article className="flex h-full min-h-[300px] flex-col rounded-[22px] border border-black/6 bg-white px-6 py-7 shadow-[0_8px_18px_rgba(0,0,0,0.12)] md:min-h-[320px] md:px-8 md:py-8 lg:h-[280px] lg:min-h-0 lg:px-6 lg:py-6">
+                <p className={`${dmSerifDisplay.className} text-[3rem] leading-none tracking-[-0.03em] text-[#d9d9d9]/75 md:text-[4rem] lg:text-[3.5rem]`}>
                   {card.number}
                 </p>
 
-                <h3 className="type-card-title mt-5 font-bold tracking-[-0.03em] text-black lg:mt-4">
+                <h3 className="mt-5 text-[1rem] font-bold leading-[1.4] tracking-[-0.03em] text-black md:text-[1.0625rem] lg:mt-4 lg:text-[1.125rem]">
                   {card.title}
                 </h3>
 
-                <p className="type-body mt-4 tracking-[-0.02em] text-black/90 lg:mt-5">
+                <p className="mt-4 text-[0.8125rem] leading-[1.8] tracking-[-0.02em] text-black/90 md:text-[0.875rem] lg:mt-4 lg:text-[0.875rem] lg:leading-[1.7]">
                   {card.body}
                 </p>
               </article>
@@ -341,9 +346,7 @@ function PastorSectionFiveColumn({
     subtitle: string;
   }>;
 }) {
-  const bulletClassName = tone === "gold" ? "bg-[rgb(201,168,76)]" : "bg-[rgb(26,39,68)]";
-  const bulletRingClassName =
-    tone === "gold" ? "ring-[rgb(244,238,200)]" : "ring-[rgb(237,238,240)]";
+  const bulletClassName = tone === "gold" ? "list-bullet list-bullet--gold" : "list-bullet list-bullet--navy";
   const eyebrowClassName = tone === "gold" ? "text-[#cda74d]" : "text-[#7f8aa3]";
   const pillClassName =
     tone === "gold"
@@ -369,7 +372,7 @@ function PastorSectionFiveColumn({
               }`}
           >
             <div className="flex justify-center pt-1.5">
-              <span className={`block h-2.5 w-2.5 rounded-full ring-[3px] ${bulletClassName} ${bulletRingClassName}`} />
+              <span className={bulletClassName} />
             </div>
 
             <div>
@@ -398,13 +401,12 @@ function PastorSectionFive() {
       <div className="section-shell section-shell--narrow py-16 md:py-20 lg:min-h-[508px] lg:py-[72px]">
         <Reveal origin="up">
           <div className="flex items-center gap-3 text-[#cda74d]">
-            <span className="h-px w-10 bg-current md:w-12" />
             <p className="type-label font-[var(--font-serif)] font-semibold tracking-[0.18em]">
-              학력 및 사역
+              EDUCATION & MINISTRY
             </p>
           </div>
 
-          <h2 className={`${gowunBatang.className} type-section-title mt-6 font-bold tracking-[-0.04em] text-[#22345c]`}>
+          <h2 className={`${gowunBatang.className} type-section-title mt-4 font-bold tracking-[-0.04em] text-[#22345c]`}>
             걸어온 길
           </h2>
         </Reveal>

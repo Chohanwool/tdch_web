@@ -62,7 +62,7 @@ export default function GreetingWelcomeSection() {
                 >
                   <div className="flex items-start gap-2 px-5 md:gap-3 md:px-8">
                     <span
-                      className={`${nanumMyeongjo.className} type-lead shrink-0 text-[#caa643]`}
+                      className={`${nanumMyeongjo.className} type-lead shrink-0 text-[#1a2744]`}
                     >
                       &ldquo;
                     </span>
@@ -73,7 +73,7 @@ export default function GreetingWelcomeSection() {
                         {question}
                       </p>
                       <span
-                        className={`${nanumMyeongjo.className} type-lead shrink-0 pt-1 text-[#caa643]`}
+                        className={`${nanumMyeongjo.className} type-lead shrink-0 pt-1 text-[#1a2744]`}
                       >
                         &rdquo;
                       </span>
