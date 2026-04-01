@@ -1,5 +1,5 @@
-import SermonVideoCard from "@/components/sermon-video-card";
-import SectionHeading from "@/components/temp/section-heading";
+import SectionHeading from "@/components/section-heading";
+import SermonVideoCard from "@/app/sermons/components/sermon-video-card";
 import type { MediaItemDto, MediaListResponse, SermonSiteKey } from "@/lib/media-api";
 import { buildMediaDetailPath, buildMediaMeta } from "@/lib/media-api";
 import Image from "next/image";

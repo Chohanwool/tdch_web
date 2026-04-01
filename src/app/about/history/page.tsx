@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import SectionHeading from "@/components/temp/section-heading";
+import SectionHeading from "@/components/section-heading";
 
 export const metadata: Metadata = {
   title: "교회 연혁 | The 제자교회",

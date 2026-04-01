@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type RefObject } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 interface ShortsPlaylistItem {
@@ -610,10 +611,12 @@ function TransitionFrame({ item, style }: TransitionFrameProps) {
         style={{ backgroundImage: `url(${buildThumbnailUrl(item.youtubeVideoId)})` }}
       />
       <div className="absolute inset-0 bg-black/28" />
-      <img
+      <Image
         src={buildThumbnailUrl(item.youtubeVideoId)}
         alt={item.displayTitle}
-        className="absolute inset-0 h-full w-full object-contain"
+        fill
+        sizes="100vw"
+        className="object-contain"
         draggable={false}
       />
     </div>

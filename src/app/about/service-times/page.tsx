@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import SectionHeading from "@/components/temp/section-heading";
+import SectionHeading from "@/components/section-heading";
 import { serviceTimes } from "@/lib/site-data";
 import MobileServiceCard from "./components/mobile-service-card";
 import ServiceNotice from "./components/service-notice";

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import SermonDetailPage from "@/components/sermon-detail-page";
+import SermonDetailPage from "@/app/sermons/components/sermon-detail-page";
 import { getMediaDetail, getMediaList, MediaNotFoundError } from "@/lib/media-api";
 
 interface BetterDevotionDetailPageProps {

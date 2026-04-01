@@ -7,7 +7,7 @@ import OverviewStat from "./components/overview-stat";
 import VerseCard from "./components/verse-card";
 import Breadcrumb from "@/components/breadcrumb";
 import PageHeader from "@/components/page-header";
-import SectionHeading from "@/components/temp/section-heading";
+import SectionHeading from "@/components/section-heading";
 
 const overviewStats = [
   { title: "5주", label: "기간" },

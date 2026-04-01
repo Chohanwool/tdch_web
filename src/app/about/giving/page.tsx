@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import SectionHeading from "@/components/temp/section-heading";
+import SectionHeading from "@/components/section-heading";
 import CopyAccountButton from "./components/copy-account-button";
 
 export const metadata: Metadata = {

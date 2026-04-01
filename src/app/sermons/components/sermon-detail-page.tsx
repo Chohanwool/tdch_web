@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { MediaItemDto, SermonSiteKey, VideoDetailResponse } from "@/lib/media-api";
 import { formatDisplayDate } from "@/lib/media-api";
-import RelatedVideosList from "@/components/related-videos-list";
+import RelatedVideosList from "@/app/sermons/components/related-videos-list";
 
 const youtubeChannelUrl =
   process.env.NEXT_PUBLIC_YOUTUBE_URL ??
@@ -176,6 +176,7 @@ export default function SermonDetailPage({
   const scriptureBody = buildScriptureBody(detail);
   const autoplayEmbedUrl = buildAutoplayEmbedUrl(detail.embedUrl);
   const showScriptureAside = siteKey === "messages";
+  const showScriptureSection = siteKey !== "better-devotion";
 
   return (
     <section className="mx-auto max-w-[1520px] px-4 pb-10 pt-4 md:px-8 md:pb-14 md:pt-6">
@@ -235,7 +236,7 @@ export default function SermonDetailPage({
             ) : null}
           </CollapsibleSection>
 
-          {showScriptureAside ? null : (
+          {!showScriptureSection || showScriptureAside ? null : (
             <CollapsibleSection
               title="본문 말씀"
               meta={[

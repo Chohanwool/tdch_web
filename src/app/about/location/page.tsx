@@ -1,5 +1,5 @@
 import NaverDynamicMap from "./components/naver-dynamic-map";
-import SectionHeading from "@/components/temp/section-heading";
+import SectionHeading from "@/components/section-heading";
 
 const churchName = "The 제자교회";
 const addressFallback = "경기도 수원시 팔달구 경수대로425 지하1층(나인아트홀)";

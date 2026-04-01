@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Gowun_Batang } from "next/font/google";
-import MissionSection from "@/components/mission-section";
-import AnimatedCards from "@/components/animated-cards";
-import SermonVideoCard from "@/components/sermon-video-card";
+import AnimatedCards from "@/app/home/components/animated-cards";
+import MissionSection from "@/app/home/components/mission-section";
+import SermonVideoCard from "@/app/sermons/components/sermon-video-card";
 
 import {
   quickMenuCards,

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import ShortsDetailPage from "@/components/shorts-detail-page";
+import ShortsDetailPage from "@/app/sermons/components/shorts-detail-page";
 import { getMediaDetail, getMediaList, MediaNotFoundError } from "@/lib/media-api";
 
 interface ItsOkayDetailPageProps {
