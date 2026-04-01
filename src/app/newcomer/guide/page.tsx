@@ -6,7 +6,7 @@ import QuickLinkCard from "./components/quick-link-card";
 import TimelineStep from "./components/timeline-step";
 import Breadcrumb from "@/components/breadcrumb";
 import PageHeader from "@/components/page-header";
-import SectionHeading from "@/components/temp/section-heading";
+import SectionHeading from "@/components/section-heading";
 
 const newcomerIntroParagraphs = [
   "The 제자교회는 예수님의 지상명령에 따라 제자를 삼고, 제자를 삼는 제자를 양육합니다.",

@@ -52,6 +52,7 @@ export interface VideoDetailResponse {
   publishedAt: string;
   preacher: string | null;
   scripture: string | null;
+  scriptureBody: string | null;
   serviceType: string | null;
   summary: string | null;
   tags: string[];

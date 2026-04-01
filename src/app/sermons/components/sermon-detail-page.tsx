@@ -37,6 +37,11 @@ function buildScriptureReference(detail: VideoDetailResponse): string | null {
   return scripture || null;
 }
 
+function buildScriptureBody(detail: VideoDetailResponse): string | null {
+  const scriptureBody = detail.scriptureBody?.trim();
+  return scriptureBody || null;
+}
+
 function buildMetaLines(detail: VideoDetailResponse): string[] {
   return [
     detail.preacher,
@@ -86,6 +91,46 @@ function CollapsibleSection({ title, meta, children }: CollapsibleSectionProps) 
   );
 }
 
+function ScripturePanel({
+  scriptureReference,
+  scriptureBody,
+}: {
+  scriptureReference: string | null;
+  scriptureBody: string | null;
+}) {
+  return (
+    <aside className="min-w-0 rounded-[24px] border border-black/8 bg-[#f7f8fb] p-5 md:p-6">
+      <div className="mb-5">
+        <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-ink/48">
+          Scripture
+        </p>
+        <h2 className="mt-1 text-[1.15rem] font-bold tracking-[-0.02em] text-ink">
+          본문 말씀
+        </h2>
+        {scriptureReference ? (
+          <p className="mt-3 text-[0.98rem] font-semibold leading-7 text-ink/76">
+            {scriptureReference}
+          </p>
+        ) : null}
+      </div>
+
+      {scriptureBody ? (
+        <p className="whitespace-pre-line text-[0.98rem] leading-7 text-ink/82">
+          {scriptureBody}
+        </p>
+      ) : scriptureReference ? (
+        <p className="text-[0.96rem] leading-7 text-ink/72">
+          현재 페이지에는 본문 구절 참조만 연결되어 있습니다. 성경 본문 전문 데이터가 준비되면 이 영역에 함께 표시됩니다.
+        </p>
+      ) : (
+        <p className="text-[0.98rem] leading-7 text-ink/82">
+          운영 메타데이터에 본문 구절이 연결되면 이 영역에서 확인하실 수 있습니다.
+        </p>
+      )}
+    </aside>
+  );
+}
+
 export default function SermonDetailPage({
   siteKey,
   sectionTitle,
@@ -128,7 +173,9 @@ export default function SermonDetailPage({
   const metaLines = buildMetaLines(detail);
   const description = buildDescription(detail);
   const scriptureReference = buildScriptureReference(detail);
+  const scriptureBody = buildScriptureBody(detail);
   const autoplayEmbedUrl = buildAutoplayEmbedUrl(detail.embedUrl);
+  const showScriptureAside = siteKey === "messages";
 
   return (
     <section className="mx-auto max-w-[1520px] px-4 pb-10 pt-4 md:px-8 md:pb-14 md:pt-6">
@@ -188,49 +235,72 @@ export default function SermonDetailPage({
             ) : null}
           </CollapsibleSection>
 
-          <CollapsibleSection
-            title="본문 말씀"
-            meta={[
-              detail.serviceType ?? contentKindLabel[detail.contentKind],
-              ...(scriptureReference ? [scriptureReference] : ["본문 정보 준비 중"]),
-            ]}
-          >
-            {scriptureReference ? (
-              <div className="rounded-[18px] bg-white/75 px-5 py-5 ring-1 ring-black/6">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-ink/44">
-                  Scripture
+          {showScriptureAside ? null : (
+            <CollapsibleSection
+              title="본문 말씀"
+              meta={[
+                detail.serviceType ?? contentKindLabel[detail.contentKind],
+                ...(scriptureReference ? [scriptureReference] : ["본문 정보 준비 중"]),
+              ]}
+            >
+              {scriptureBody ? (
+                <div className="rounded-[18px] bg-white/75 px-5 py-5 ring-1 ring-black/6">
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-ink/44">
+                    Scripture
+                  </p>
+                  {scriptureReference ? (
+                    <p className="mt-2 text-[1.08rem] font-semibold leading-7 text-ink">
+                      {scriptureReference}
+                    </p>
+                  ) : null}
+                  <p className="mt-4 whitespace-pre-line text-[0.98rem] leading-7 text-ink/82">
+                    {scriptureBody}
+                  </p>
+                </div>
+              ) : scriptureReference ? (
+                <div className="rounded-[18px] bg-white/75 px-5 py-5 ring-1 ring-black/6">
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-ink/44">
+                    Scripture
+                  </p>
+                  <p className="mt-2 text-[1.08rem] font-semibold leading-7 text-ink">
+                    {scriptureReference}
+                  </p>
+                  <p className="mt-4 text-[0.96rem] leading-7 text-ink/72">
+                    현재 페이지에는 본문 구절 참조만 연결되어 있습니다. 성경 본문 전문 데이터가 준비되면 이 영역에 함께 표시됩니다.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-[0.98rem] leading-7 text-ink/82">
+                  운영 메타데이터에 본문 구절이 연결되면 이 영역에서 접고 펼쳐 확인하실 수 있습니다.
                 </p>
-                <p className="mt-2 text-[1.08rem] font-semibold leading-7 text-ink">
-                  {scriptureReference}
-                </p>
-                <p className="mt-4 text-[0.96rem] leading-7 text-ink/72">
-                  현재 페이지에는 본문 구절 참조만 연결되어 있습니다. 성경 본문 전문 데이터가 준비되면 이 영역에 함께 표시됩니다.
-                </p>
-              </div>
-            ) : (
-              <p className="text-[0.98rem] leading-7 text-ink/82">
-                운영 메타데이터에 본문 구절이 연결되면 이 영역에서 접고 펼쳐 확인하실 수 있습니다.
-              </p>
-            )}
-          </CollapsibleSection>
+              )}
+            </CollapsibleSection>
+          )}
         </div>
 
-        <aside className="min-w-0 rounded-[24px] border border-black/8 bg-[#f7f8fb] p-5 md:p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-ink/48">Related Videos</p>
-              <h2 className="mt-1 text-[1.15rem] font-bold tracking-[-0.02em] text-ink">관련 영상</h2>
+        {showScriptureAside ? (
+          <ScripturePanel
+            scriptureReference={scriptureReference}
+            scriptureBody={scriptureBody}
+          />
+        ) : (
+          <aside className="min-w-0 rounded-[24px] border border-black/8 bg-[#f7f8fb] p-5 md:p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-ink/48">Related Videos</p>
+                <h2 className="mt-1 text-[1.15rem] font-bold tracking-[-0.02em] text-ink">관련 영상</h2>
+              </div>
+              <Link
+                href={listHref}
+                className="text-sm font-semibold text-cedar transition hover:text-clay"
+              >
+                전체 보기
+              </Link>
             </div>
-            <Link
-              href={listHref}
-              className="text-sm font-semibold text-cedar transition hover:text-clay"
-            >
-              전체 보기
-            </Link>
-          </div>
 
-          <RelatedVideosList siteKey={siteKey} items={relatedItems} />
-        </aside>
+            <RelatedVideosList siteKey={siteKey} items={relatedItems} />
+          </aside>
+        )}
       </div>
     </section>
   );
