@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond } from "next/font/google";
+import ApplicationForm from "./components/application-form";
+import BulletList from "./components/bullet-list";
+import ClassStructureCard from "./components/class-structure-card";
+import CurriculumTable from "./components/curriculum-table";
+import OverviewStat from "./components/overview-stat";
+import VerseCard from "./components/verse-card";
 import Breadcrumb from "@/components/breadcrumb";
 import PageHeader from "@/components/page-header";
 import SectionHeading from "@/components/temp/section-heading";
-
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-});
 
 const overviewStats = [
   { title: "5주", label: "기간" },
@@ -104,192 +104,6 @@ export const metadata: Metadata = {
   description: "The 제자교회 새가족 양육 5주 과정과 침례 안내 페이지입니다.",
 };
 
-function VerseCard() {
-  return (
-    <blockquote className="rounded-r-[12px] border-l-[3px] border-[#8c7a5b] bg-[#f7f7f4] px-5 py-6 md:px-[30px] md:py-7">
-      <p className="font-[var(--font-section-title)] text-[1rem] leading-[1.9] tracking-[-0.01em] text-[#1a2744] md:text-[1rem]">
-        &quot;그러므로 누구든지 나의 이 말을 듣고 행하는 자는 그 집을 반석 위에 지은 지혜로운 사람 같으리니&quot;
-      </p>
-      <p className="mt-4 text-[0.9rem] font-medium tracking-[0.08em] text-[#7a7060]">
-        마태복음 7:24
-      </p>
-    </blockquote>
-  );
-}
-
-function OverviewStat({
-  title,
-  label,
-}: {
-  title: string;
-  label: string;
-}) {
-  return (
-    <article className="flex min-h-[96px] items-center justify-center rounded-[12px] bg-[#f8f7f4] px-4 py-5 text-center">
-      <div className="flex flex-col items-center gap-3 tracking-[0.04em]">
-        <p className="font-[var(--font-serif)] text-[1.375rem] font-bold leading-none text-[#1a2744]">
-          {title}
-        </p>
-        <p className="text-[0.75rem] leading-none text-[#7a7060]">{label}</p>
-      </div>
-    </article>
-  );
-}
-
-function CurriculumTable() {
-  return (
-    <div className="overflow-hidden rounded-[12px] border border-[#7a7060]/30 bg-white">
-      <div className="grid grid-cols-[64px_minmax(0,1fr)] md:grid-cols-[80px_minmax(0,1fr)]">
-        <div className="flex h-10 items-center rounded-tl-[12px] bg-[#1a2744] px-4">
-          <p className="text-[0.75rem] tracking-[0.08em] text-white">주차</p>
-        </div>
-        <div className="flex h-10 items-center rounded-tr-[12px] bg-[#1a2744] px-4 md:px-6">
-          <p className="text-[0.75rem] tracking-[0.08em] text-white">주제 및 내용</p>
-        </div>
-      </div>
-
-      {curriculumWeeks.map((week, index) => {
-        const isLast = index === curriculumWeeks.length - 1;
-        const surfaceClassName = index % 2 === 1 ? "bg-[#f8f7f4]" : "bg-white";
-
-        return (
-          <div
-            key={week.week}
-            className={`grid grid-cols-[64px_minmax(0,1fr)] md:grid-cols-[80px_minmax(0,1fr)] ${surfaceClassName}`}
-          >
-            <div
-              className={`flex items-center justify-center border-r border-black/10 px-3 py-5 ${!isLast ? "border-b border-[#7a7060]/20" : "rounded-bl-[12px]"}`}
-            >
-              <span
-                className={`${cormorantGaramond.className} text-[1rem] font-bold leading-none tracking-[0.08em] text-[#c9a84c]`}
-              >
-                {week.week}
-              </span>
-            </div>
-            <div
-              className={`px-4 py-3 md:px-6 md:py-[14px] ${!isLast ? "border-b border-[#7a7060]/20" : "rounded-br-[12px]"}`}
-            >
-              <p className="text-[0.875rem] font-bold leading-[1.3] tracking-[-0.01em] text-[#1a2744]">
-                {week.title}
-              </p>
-              <p className="mt-1 text-[0.75rem] leading-[1.5] tracking-[0.02em] text-[#7a7060]">
-                {week.details.join(" · ")}
-              </p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function ClassStructureCard({
-  minute,
-  title,
-  details,
-}: {
-  minute: number;
-  title: string;
-  details: readonly string[];
-}) {
-  return (
-    <article className="relative flex flex-col items-center gap-3 text-center">
-      <div className="flex items-end gap-1">
-        <span
-          className={`${cormorantGaramond.className} text-[1.5rem] font-bold leading-none text-[#c9a84c]`}
-        >
-          {minute}
-        </span>
-        <span className="pb-[2px] text-[0.75rem] leading-none text-[#888580]">분</span>
-      </div>
-      <h3 className="text-[0.875rem] font-bold leading-none tracking-[-0.01em] text-[#1a2744]">
-        {title}
-      </h3>
-      <div className="flex flex-col gap-2 text-[0.75rem] leading-none text-[#888580]">
-        {details.map((detail) => (
-          <p key={detail}>{detail}</p>
-        ))}
-      </div>
-    </article>
-  );
-}
-
-function BulletList({
-  items,
-  theme = "light",
-}: {
-  items: readonly string[];
-  theme?: "light" | "dark";
-}) {
-  const dotClassName = theme === "dark" ? "bg-[#f2f3f8]" : "bg-[#1a2744]";
-  const textClassName = theme === "dark" ? "text-white" : "text-[#4a4845]";
-
-  return (
-    <ul className="flex flex-col gap-3">
-      {items.map((item) => (
-        <li key={item} className="flex items-start gap-[10px]">
-          <span className={`mt-[0.42rem] h-[6px] w-[6px] shrink-0 rounded-full ${dotClassName}`} />
-          <span className={`text-[0.875rem] leading-[1.5] tracking-[0.02em] ${textClassName}`}>
-            {item}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function TextField({
-  label,
-  type = "text",
-  placeholder,
-}: {
-  label: string;
-  type?: "text" | "tel" | "email";
-  placeholder: string;
-}) {
-  return (
-    <label className="flex w-full flex-col gap-[6px]">
-      <span className="text-[0.75rem] font-medium tracking-[0.08em] text-white/50">
-        {label}
-      </span>
-      <input
-        type={type}
-        placeholder={placeholder}
-        className="h-9 rounded-[6px] border border-[#4f5a75] bg-[#2f3d5d] px-5 text-[0.75rem] text-white outline-none placeholder:text-[#757575] focus:border-[#b8955a]"
-      />
-    </label>
-  );
-}
-
-function TimeOption({
-  id,
-  label,
-  defaultChecked = false,
-}: {
-  id: string;
-  label: string;
-  defaultChecked?: boolean;
-}) {
-  return (
-    <label htmlFor={id} className="flex cursor-pointer items-center gap-[6px]">
-      <input
-        id={id}
-        name="preferred-time"
-        type="radio"
-        value={label}
-        defaultChecked={defaultChecked}
-        className="peer sr-only"
-      />
-      <span className="flex h-[14px] w-[14px] items-center justify-center rounded-full border border-[#b8955a] transition peer-not-checked:border-white/35">
-        <span className="h-[8px] w-[8px] rounded-full bg-[#b8955a] opacity-0 transition peer-checked:opacity-100" />
-      </span>
-      <span className="text-[0.75rem] font-medium tracking-[0.02em] text-white/70">
-        {label}
-      </span>
-    </label>
-  );
-}
-
 export default function NewcomerCarePage() {
   return (
     <div className="flex w-full flex-col">
@@ -324,7 +138,7 @@ export default function NewcomerCarePage() {
             ))}
           </div>
 
-          <p className="mt-[18px] max-w-[727px] text-[0.875rem] leading-[1.7] tracking-[0.02em] text-[#1a2744]">
+          <p className="mt-[18px] max-w-[727px] type-body-small leading-[1.7] tracking-[0.02em] text-[#1a2744]">
             새롭게 신앙을 시작하시는 분들을 위한 5주 집중 양육 과정입니다.
             <br className="hidden md:block" />
             소그룹(2-5명) 또는 일대일로 진행되며, 침례 및 정식 교인 등록이 목표입니다.
@@ -342,7 +156,7 @@ export default function NewcomerCarePage() {
           />
 
           <div className="mt-8">
-            <CurriculumTable />
+            <CurriculumTable weeks={curriculumWeeks} />
           </div>
         </section>
 
@@ -391,7 +205,7 @@ export default function NewcomerCarePage() {
               ))}
             </div>
 
-            <p className="mt-4 text-[0.75rem] leading-none tracking-[0.02em] text-[#888580]">
+            <p className="mt-4 type-label leading-none tracking-[0.02em] text-[#888580]">
               총 <span className="font-bold text-[#1a2744]">60분</span> · 소그룹 2-5명 또는
               일대일 진행
             </p>
@@ -410,7 +224,7 @@ export default function NewcomerCarePage() {
 
           <div className="mt-6 grid gap-6 md:mt-8 md:grid-cols-2 md:gap-8">
             <article className="py-2 md:py-8">
-              <h3 className="text-[0.875rem] font-bold leading-none tracking-[0.02em] text-[#1a2744]">
+              <h3 className="type-lead font-bold leading-none tracking-[0.02em] text-[#1a2744]">
                 침례의 의미
               </h3>
               <div className="mt-4">
@@ -419,7 +233,7 @@ export default function NewcomerCarePage() {
             </article>
 
             <article className="rounded-[16px] bg-[#1a2744] px-6 py-8 md:px-6">
-              <h3 className="text-[0.875rem] font-bold leading-none tracking-[0.08em] text-[#c9a84c]">
+              <h3 className="type-lead font-bold leading-none tracking-[0.08em] text-[#c9a84c]">
                 침례 일정
               </h3>
               <div className="mt-4">
@@ -439,13 +253,13 @@ export default function NewcomerCarePage() {
               <SectionHeading
                 id="newcomer-care-apply-title"
                 label="apply"
-                title="신청 방법"
+                title="새가족 양육 신청"
                 inverted
               />
 
               <ul className="mt-6 flex flex-col gap-3">
                 {applicationNotes.map((note) => (
-                  <li key={note} className="flex items-start gap-1 text-[0.75rem] tracking-[0.02em] text-white">
+                  <li key={note} className="flex items-start gap-1 type-body tracking-[0.02em] text-white">
                     <span aria-hidden="true">·</span>
                     <span>{note}</span>
                   </li>
@@ -453,36 +267,7 @@ export default function NewcomerCarePage() {
               </ul>
             </div>
 
-            <form className="mt-8 rounded-[12px] bg-[#1e2d4f] p-[22px] md:mt-0 md:w-[294px]">
-              <div className="flex flex-col gap-4">
-                <TextField label="이름" placeholder="이름을 입력하세요" />
-                <TextField label="연락처" type="tel" placeholder="연락처를 입력하세요" />
-                <TextField label="이메일" type="email" placeholder="이메일을 입력하세요" />
-
-                <fieldset className="border-0 p-0">
-                  <legend className="text-[0.75rem] font-medium tracking-[0.08em] text-white/50">
-                    희망시간
-                  </legend>
-                  <div className="mt-[6px] flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-4">
-                    {timeOptions.map((option) => (
-                      <TimeOption
-                        key={option.id}
-                        id={option.id}
-                        label={option.label}
-                        defaultChecked={option.defaultChecked}
-                      />
-                    ))}
-                  </div>
-                </fieldset>
-              </div>
-
-              <button
-                type="button"
-                className="mt-4 flex h-10 w-full items-center justify-center rounded-[6px] bg-[#b8955a] text-[0.875rem] font-black tracking-[0.08em] text-white transition hover:bg-[#c9a84c]"
-              >
-                신청하기
-              </button>
-            </form>
+            <ApplicationForm timeOptions={timeOptions} />
           </div>
         </section>
       </main>
