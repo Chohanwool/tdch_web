@@ -205,9 +205,9 @@ export const fallbackNavigationResponse: NavigationResponse = {
         },
         {
           key: "newcomer-curriculum",
-          href: "/newcomer/curriculum",
-          label: "교육 과정",
-          matchPath: "/newcomer/curriculum",
+          href: "/newcomer/disciples",
+          label: "제자 훈련",
+          matchPath: "/newcomer/disciples",
           linkType: "INTERNAL",
           contentSiteKey: null,
           visible: true,

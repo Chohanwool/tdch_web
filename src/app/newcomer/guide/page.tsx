@@ -27,8 +27,8 @@ const quickLinks = [
     active: false,
   },
   {
-    href: "/newcomer/curriculum",
-    title: "교육 과정",
+    href: "/newcomer/disciples",
+    title: "제자 훈련",
     description: "단계별 제자훈련을 소개합니다",
     active: false,
   },

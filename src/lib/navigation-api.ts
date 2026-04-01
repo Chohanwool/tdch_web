@@ -1,6 +1,5 @@
 import "server-only";
 
-import { cache } from "react";
 import { fallbackNavigationResponse } from "@/lib/site-data";
 import type { NavigationResponse, NavMenuGroup } from "@/lib/navigation-types";
 import { toNavMenuGroups } from "@/lib/navigation-utils";
@@ -11,7 +10,7 @@ const mediaApiBaseUrl =
   process.env.NEXT_PUBLIC_MEDIA_API_BASE_URL ??
   DEFAULT_MEDIA_API_BASE_URL;
 
-const getNavigationResponseCached = cache(async (): Promise<NavigationResponse> => {
+export async function getNavigationResponse(): Promise<NavigationResponse> {
   try {
     const response = await fetch(`${mediaApiBaseUrl}/api/v1/navigation`, {
       headers: {
@@ -34,10 +33,6 @@ const getNavigationResponseCached = cache(async (): Promise<NavigationResponse> 
     console.warn("Failed to fetch navigation. Falling back to static navigation.", error);
     return fallbackNavigationResponse;
   }
-});
-
-export async function getNavigationResponse(): Promise<NavigationResponse> {
-  return getNavigationResponseCached();
 }
 
 export async function getNavMenuGroups(): Promise<NavMenuGroup[]> {
