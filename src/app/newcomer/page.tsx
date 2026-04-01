@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
+import { Cormorant_Garamond } from "next/font/google";
 import NewcomerFaqAccordion from "./components/newcomer-faq-accordion";
 import Breadcrumb from "@/components/breadcrumb";
 import PageHeader from "@/components/page-header";
+
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+});
 
 const newcomerIntroParagraphs = [
   "The 제자교회는 예수님의 지상명령에 따라 제자를 삼고, 제자를 삼는 제자를 양육합니다.",
@@ -101,6 +107,12 @@ export const metadata: Metadata = {
   description: "The 제자교회 새가족 안내와 제자 양육 비전을 소개합니다.",
 };
 
+const koreanSectionTitleClassName =
+  "type-section-title font-[var(--font-serif)] font-bold text-ink";
+
+const koreanSubsectionTitleClassName =
+  "type-subsection-title font-[var(--font-serif)] font-bold text-ink";
+
 export default function NewcomerPage() {
   return (
     <div className="flex w-full flex-col">
@@ -121,20 +133,20 @@ export default function NewcomerPage() {
             </p>
             <h1
               id="newcomer-intro-title"
-              className="type-section-title font-bold text-ink"
+              className={koreanSectionTitleClassName}
             >
               새가족 안내
             </h1>
           </div>
 
           <blockquote className="mt-10 md:mt-12">
-            <div className="border-l-[4px] border-[#cda74d] pl-3 md:pl-8 lg:max-w-[760px] lg:pl-4">
-              <div className="type-lead font-serif tracking-[-0.03em] text-ink">
+            <div className="rounded-r-[0.4rem] border-l-[3px] border-[#8C745B] bg-[#F7F7F4] pl-3 md:pl-8 lg:pl-4">
+              <div className="text-[1.3rem] font-[var(--font-section-title)] tracking-[-0.03em] text-[#1A2744] pl-4 pr-24 py-8">
                 <p>&quot;{newcomerVisionQuote}&quot;</p>
               </div>
 
-              <div className="mt-6 flex justify-end md:mt-7">
-                <p className="type-body-strong text-right tracking-[-0.02em] text-ink/58">
+              <div className="px-4 pb-8">
+                <p className="type-body-strong font-bold font-[var(--font-sans)] tracking-[-0.02em] text-[#7A7060]">
                   마태복음 28:19-20
                 </p>
               </div>
@@ -164,7 +176,7 @@ export default function NewcomerPage() {
 
             <h1
               id="newcomer-church-vision-title"
-              className="type-section-title font-bold text-ink"
+              className={koreanSectionTitleClassName}
             >
               The 제자교회는?
             </h1>
@@ -174,7 +186,7 @@ export default function NewcomerPage() {
             우리는 필리핀 산타로사 꿈의교회에서 약 17년간의 선교 사역을 마치고 한국으로 돌아와 2026년 개척한 교회입니다.
           </p>
 
-          <h2 className="type-subsection-title mt-12 font-bold text-ink md:mt-14">
+          <h2 className={`${koreanSubsectionTitleClassName} mt-12 md:mt-14`}>
             5대 핵심가치
           </h2>
 
@@ -182,17 +194,19 @@ export default function NewcomerPage() {
             {newcomerCoreValues.map((value) => (
               <article
                 key={value.number}
-                className="overflow-hidden rounded-[1.5rem] border border-cedar/10 bg-white shadow-[0_12px_30px_rgba(16,33,63,0.06)]"
+                className="overflow-hidden rounded-[1.5rem] bg-[#F8F7F4]"
               >
                 <div className="h-1.5 w-full bg-[#d1ac50]" />
                 <div className="flex flex-col items-center justify-center text-center px-3 py-5">
-                  <p className="font-serif type-body font-bold leading-none tracking-[0.08em] text-[#d1ac50]">
+                  <p
+                    className={`${cormorantGaramond.className} type-card-title font-bold leading-none tracking-[0.08em] text-[#d1ac50]`}
+                  >
                     {value.number}
                   </p>
-                  <h3 className="type-subsection-title mt-2 font-bold tracking-[-0.04em] text-ink">
+                  <h3 className="type-lead mt-2 font-[var(--font-sans)] font-bold tracking-[-0.04em] text-ink">
                     {value.title}
                   </h3>
-                  <p className="type-body-strong mt-4 whitespace-pre-line tracking-[-0.03em] text-ink/56">
+                  <p className="type-body-strong mt-4 whitespace-pre-line tracking-[-0.03em] text-[#7A7060]">
                     {value.description}
                   </p>
                 </div>
@@ -212,42 +226,44 @@ export default function NewcomerPage() {
 
             <h1
               id="newcomer-getting-started-title"
-              className="type-section-title font-bold text-ink"
+              className={koreanSectionTitleClassName}
             >
               새가족을 위한 안내
             </h1>
           </div>
 
-          <div className="mt-5 space-y-5 md:mt-6 md:space-y-6">
+          <div className="relative mt-5 space-y-5 md:mt-6 md:space-y-6">
+            <div
+              aria-hidden="true"
+              className="absolute bottom-0 left-[2.25rem] top-0 w-px -translate-x-1/2 bg-[#d8d6d1] md:left-[2.5rem]"
+            />
             {newcomerGettingStartedSteps.map((step, index) => {
               const cardSurfaceClassName =
                 index % 2 === 0
-                  ? "border-cedar/10 bg-[rgba(249,247,242,0.86)]"
-                  : "border-cedar/8 bg-white";
+                  ? "bg-[#F8F7F4]"
+                  : "bg-white";
 
               return (
                 <div
                   key={step.number}
                   className="relative grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-4 md:grid-cols-[5rem_minmax(0,1fr)] md:gap-6"
                 >
-                  <div className="relative flex min-h-[120px] items-center justify-center">
+                  <div className="relative z-10 flex min-h-[120px] items-center justify-center">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#d1ac50] bg-themeBlue text-[#d1ac50] shadow-[0_10px_24px_rgba(16,33,63,0.1)] md:h-[4.5rem] md:w-[4.5rem]">
-                      <span className="font-serif text-[1.5rem] font-bold leading-none tracking-[0.08em]">
+                      <span
+                        className={`${cormorantGaramond.className} relative -translate-y-[0.06em] text-[2rem] font-bold leading-none tracking-[0.05em]`}
+                      >
                         {step.number}
                       </span>
                     </div>
-
-                    {index < newcomerGettingStartedSteps.length - 1 ? (
-                      <div className="absolute left-1/2 top-[calc(50%+2rem)] h-[calc(100%+1.75rem)] w-px -translate-x-1/2 bg-ink/18 md:top-[calc(50%+2.25rem)] md:h-[calc(100%+2rem)]" />
-                    ) : null}
                   </div>
 
-                  <article className={`rounded-[1.4rem] border px-5 py-5 md:px-7 md:py-6 ${cardSurfaceClassName}`}>
-                    <h2 className="type-block-title font-bold tracking-[-0.03em] text-ink">
+                  <article className={`rounded-[1.4rem] px-5 py-5 md:px-7 md:py-6 ${cardSurfaceClassName}`}>
+                    <h2 className="type-lead font-[var(--font-sans)] font-bold tracking-[-0.03em] text-ink">
                       {step.title}
                     </h2>
 
-                    <p className="type-body mt-3 tracking-[-0.03em] text-ink/58">
+                    <p className="type-body tracking-[-0.03em] text-ink/58">
                       {step.details.map((detail, detailIndex) => (
                         <span key={detail}>
                           {detailIndex > 0 ? <span className="px-2 text-ink/28">·</span> : null}
@@ -273,7 +289,7 @@ export default function NewcomerPage() {
 
             <h1
               id="newcomer-faq-title"
-              className="type-section-title font-bold text-ink"
+              className={koreanSectionTitleClassName}
             >
               자주 묻는 질문
             </h1>
