@@ -45,12 +45,12 @@ export default function DisciplesCurriculum({
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => setSelectedIndex(index)}
-                className={`min-h-[126px] px-3 py-7 text-center transition-colors ${activeClassName} ${index < stages.length - 1 ? "border-r border-black/10" : ""}`}
+                className={`min-h-[96px] px-3 py-4 text-center transition-colors md:min-h-[104px] md:py-5 ${activeClassName} ${index < stages.length - 1 ? "border-r border-black/10" : ""}`}
               >
                 <p className="text-[1.125rem] font-black leading-none tracking-[0.02em] md:text-[1.25rem]">
                   {stage.level}
                 </p>
-                <p className="mt-4 text-[1rem] leading-none tracking-[0.02em] md:text-[1.125rem]">
+                <p className="mt-2 text-[1rem] leading-none tracking-[0.02em] md:mt-3 md:text-[1.125rem]">
                   {stage.title}
                   <span className="mx-3 opacity-70">·</span>
                   {stage.duration}
