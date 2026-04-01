@@ -173,13 +173,13 @@ export const fallbackNavigationResponse: NavigationResponse = {
       mobileVisible: true,
       lnbVisible: true,
       breadcrumbVisible: true,
-      defaultLandingHref: "/newcomer",
+      defaultLandingHref: "/newcomer/guide",
       items: [
         {
           key: "newcomer-main",
-          href: "/newcomer",
+          href: "/newcomer/guide",
           label: "새가족 안내",
-          matchPath: "/newcomer",
+          matchPath: "/newcomer/guide",
           linkType: "INTERNAL",
           contentSiteKey: null,
           visible: true,
@@ -354,7 +354,7 @@ export interface QuickMenuCard {
 export const quickMenuCards: QuickMenuCard[] = [
   { href: "/about/greeting", title: "교회소개", enTitle: "Church Intro", imageName: "/images/quick_menu/church.png" },
   { href: "/about/service-times", title: "예배 시간 안내", enTitle: "Service Times", imageName: "/images/quick_menu/clock.png" },
-  { href: "/newcomer", title: "새가족 안내", enTitle: "Newcomer", imageName: "/images/quick_menu/people-group.png" },
+  { href: "/newcomer/guide", title: "새가족 안내", enTitle: "Newcomer", imageName: "/images/quick_menu/people-group.png" },
   { href: "/about/location#map", title: "오시는길/문의", enTitle: "Visit & Contact", imageName: "/images/quick_menu/map-marker.png" },
 ];
 

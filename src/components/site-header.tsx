@@ -148,37 +148,41 @@ export default function SiteHeader() {
             className={`hidden items-center justify-center font-semibold text-ink/85 transition-[gap,font-size] duration-300 lg:mr-auto lg:flex lg:pl-10 ${isCondensed ? "gap-5 text-[18px] xl:gap-6" : "gap-6 text-[20px] xl:gap-8"
               }`}
           >
-            {navMenuGroups.filter((menu) => !menu.hiddenInHeader).map((menu) => (
-              <div
-                key={menu.key}
-                className="group/menu relative pb-2 -mb-2"
-              >
-                <Link
-                  href={menu.href}
-                  className={`inline-flex whitespace-nowrap rounded-full border border-transparent transition duration-300 group-hover/menu:border-cedar/20 group-hover/menu:bg-white group-hover/menu:text-themeBlue ${isCondensed ? "px-5 py-2" : "px-6 py-2.5"
-                    }`}
-                >
-                  <span>{menu.label}</span>
-                </Link>
+            {navMenuGroups.filter((menu) => !menu.hiddenInHeader).map((menu) => {
+              const menuHref = menu.defaultLandingHref ?? menu.href;
 
-                <div className="pointer-events-none absolute left-0 top-full z-50 w-64 translate-y-1 opacity-0 transition duration-150 group-hover/menu:pointer-events-auto group-hover/menu:translate-y-0 group-hover/menu:opacity-100">
-                  <div className="relative overflow-hidden rounded-2xl border border-cedar/15 bg-white p-3 shadow-[0_18px_40px_rgba(16,33,63,0.14)]">
-                    <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-cedar/60">
-                      {menu.label}
-                    </p>
-                    {menu.items.filter((item) => !item.hiddenInHeader).map((item) => (
-                      <Link
-                        key={item.key}
-                        href={item.href}
-                        className="block rounded-xl px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-cedar/5 hover:text-themeBlue"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
+              return (
+                <div
+                  key={menu.key}
+                  className="group/menu relative pb-2 -mb-2"
+                >
+                  <Link
+                    href={menuHref}
+                    className={`inline-flex whitespace-nowrap rounded-full border border-transparent transition duration-300 group-hover/menu:border-cedar/20 group-hover/menu:bg-white group-hover/menu:text-themeBlue ${isCondensed ? "px-5 py-2" : "px-6 py-2.5"
+                      }`}
+                  >
+                    <span>{menu.label}</span>
+                  </Link>
+
+                  <div className="pointer-events-none absolute left-0 top-full z-50 w-64 translate-y-1 opacity-0 transition duration-150 group-hover/menu:pointer-events-auto group-hover/menu:translate-y-0 group-hover/menu:opacity-100">
+                    <div className="relative overflow-hidden rounded-2xl border border-cedar/15 bg-white p-3 shadow-[0_18px_40px_rgba(16,33,63,0.14)]">
+                      <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-cedar/60">
+                        {menu.label}
+                      </p>
+                      {menu.items.filter((item) => !item.hiddenInHeader).map((item) => (
+                        <Link
+                          key={item.key}
+                          href={item.href}
+                          className="block rounded-xl px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-cedar/5 hover:text-themeBlue"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </nav>
 
           {/* 모바일 햄버거 버튼 & 전체 화면 메뉴 */}

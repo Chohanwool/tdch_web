@@ -95,12 +95,15 @@ export default function MobileNav({ isOpen, setIsOpen }: { isOpen: boolean, setI
           {/* 스크롤 가능한 메뉴 영역 */}
           <nav className="flex-1 overflow-y-auto px-6 pb-20 pt-10">
             <ul className="space-y-10 md:space-y-0 md:grid md:grid-cols-5 md:gap-x-4 lg:gap-x-8">
-              {navMenuGroups.filter((menu) => !menu.hiddenInMobile).map((menu) => (
+              {navMenuGroups.filter((menu) => !menu.hiddenInMobile).map((menu) => {
+                const menuHref = menu.defaultLandingHref ?? menu.href;
+
+                return (
                 <li key={menu.key} className="flex flex-col">
                   {/* 대분류 이름 (태블릿에서는 폰트 크기 조절 및 밑줄) */}
                   <div className="mb-5 md:mb-6 md:border-b md:border-cedar/10 md:pb-4">
                     <Link
-                      href={menu.href}
+                      href={menuHref}
                       className="text-3xl md:text-xl md:font-bold font-black tracking-tight text-ink/90 transition hover:text-themeBlue"
                     >
                       {menu.label}
@@ -121,7 +124,8 @@ export default function MobileNav({ isOpen, setIsOpen }: { isOpen: boolean, setI
                     ))}
                   </ul>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </nav>
 
