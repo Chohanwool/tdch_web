@@ -1,7 +1,37 @@
 "use client";
 
 import Image from "next/image";
+import { Gowun_Batang } from "next/font/google";
 import { useEffect, useRef, useState } from "react";
+
+const gowunBatang = Gowun_Batang({
+    subsets: ["latin"],
+    weight: ["400", "700"],
+});
+
+const missionCards = [
+    {
+        englishLead: "T",
+        englishRest: "EACHING",
+        koreanTitle: "가르치는 사명",
+        description: "T사역의 목적은 궁극적으로 제자훈련의 철학으로 하나님께서 직접 세우신 두 공동체인 교회와 가정을 살리는 것입니다.",
+        tone: "light" as const,
+    },
+    {
+        englishLead: "H",
+        englishRest: "EALING",
+        koreanTitle: "치유하는 사명",
+        description: "H사역의 목적은 기도로 하나님과 소통하는 개인과 공동체를 만들어 이 땅에 하나님의 나라가 임하게 하는 것입니다.",
+        tone: "dark" as const,
+    },
+    {
+        englishLead: "E",
+        englishRest: "VANGELIZING",
+        koreanTitle: "전파하는 사명",
+        description: "E사역의 목적은 살리는 것, 전도로 한 사람을 분립 개척으로 생태계를, 선교로 열방을 살리는 것입니다.",
+        tone: "light" as const,
+    },
+];
 
 function useInView(threshold = 0.15) {
     const ref = useRef<HTMLDivElement>(null);
@@ -28,14 +58,13 @@ function useInView(threshold = 0.15) {
 
 export default function MissionSection() {
     const { ref: headingRef, inView: headingInView } = useInView(0.3);
-    const { ref: imageRef, inView: imageInView } = useInView(0.15);
+    const { ref: contentRef, inView: contentInView } = useInView(0.15);
 
     return (
         <div className="relative z-10 section-shell">
-            {/* 환영 문구 */}
             <section className="px-2 py-2 text-center" ref={headingRef}>
                 <h2
-                    className="font-serif text-2xl font-bold leading-tight text-ink md:text-4xl lg:text-5xl"
+                    className={`${gowunBatang.className} text-[2rem] font-bold leading-[1.25] tracking-[0.02em] text-black md:text-[3rem] md:leading-[1.18]`}
                     style={{
                         opacity: headingInView ? 1 : 0,
                         transform: headingInView ? "translateY(0)" : "translateY(28px)",
@@ -46,24 +75,65 @@ export default function MissionSection() {
                 </h2>
             </section>
 
-            {/* 교회 사명 섹션 */}
-            <section ref={imageRef}>
-                {/* 사명 이미지 전체 감싸는 컨테이너 */}
+            <section className="pt-8 md:pt-10" ref={contentRef}>
                 <div
-                    className="mx-auto w-full max-w-[800px]"
+                    className="mx-auto flex w-full max-w-[1020px] flex-col items-center"
                     style={{
-                        opacity: imageInView ? 1 : 0,
-                        transform: imageInView ? "translateY(0) scale(1)" : "translateY(40px) scale(0.97)",
+                        opacity: contentInView ? 1 : 0,
+                        transform: contentInView ? "translateY(0) scale(1)" : "translateY(40px) scale(0.97)",
                         transition: "opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s",
                     }}
                 >
-                    <Image
-                        src="/images/our_mission.png"
-                        alt="The 제자교회 사명 - 다음 세대 자녀 양육, 다문화 가족 지원, 다민족 선교"
-                        width={800}
-                        height={600}
-                        className="h-auto w-full object-contain"
-                    />
+                    <div className="w-full min-[1025px]:hidden">
+                        <div className="mx-auto w-full max-w-[820px]">
+                            <Image
+                                src="/images/our_mission.png"
+                                alt="The 제자교회 사명 - 가르치는 사명, 치유하는 사명, 전파하는 사명"
+                                width={800}
+                                height={600}
+                                className="h-auto w-full object-contain"
+                                priority={false}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="hidden w-full min-[1025px]:block">
+                        <div className={`${gowunBatang.className} flex max-w-[820px] flex-col items-center text-center text-black`}>
+                            <h3 className="type-section-title font-bold leading-none md:text-[2.9rem]">우리의 사명</h3>
+                            <p className="mt-2 type-subsection-title leading-none">our mission</p>
+                            <p className="mt-8 max-w-[820px] text-balance type-card-title leading-[1.75]">
+                                The 제자교회는 예수님의 지상명령(마태복음 28:18-20)을 따라 세워진 선교적 교회입니다.
+                                <br className="hidden md:block" />
+                                우리는 복음을 전하고 제자를 세우기 위해 다음 세 가지 사명을 감당합니다.
+                            </p>
+                        </div>
+
+                        <div className="mt-14 grid w-full max-w-[980px] gap-8 md:grid-cols-3 md:gap-6 lg:gap-10">
+                            {missionCards.map((card) => {
+                                const isDark = card.tone === "dark";
+
+                                return (
+                                    <article key={card.koreanTitle} className="flex flex-col items-center">
+                                        <div
+                                            className={`mission-chevron ${isDark ? "mission-chevron--dark" : ""} ${gowunBatang.className} flex min-h-[126px] w-full max-w-[290px] flex-col items-center justify-center px-8 text-center`}
+                                        >
+                                            <div className="flex items-end justify-center leading-none uppercase">
+                                                <span className="type-page-title font-bold tracking-[0.03em]">{card.englishLead}</span>
+                                                <span className="mb-[0.36rem] type-card-title tracking-[0.03em]">{card.englishRest}</span>
+                                            </div>
+                                            <p className="mt-2 type-card-title leading-none">{card.koreanTitle}</p>
+                                        </div>
+
+                                        <div
+                                            className={`mission-copy-card ${isDark ? "mission-copy-card--dark" : ""} ${gowunBatang.className} mt-10 flex min-h-[164px] w-full max-w-[290px] items-center px-5 py-6 text-left type-lead leading-[1.55] md:px-6`}
+                                        >
+                                            <p>{card.description}</p>
+                                        </div>
+                                    </article>
+                                );
+                            })}
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
