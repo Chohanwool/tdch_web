@@ -24,17 +24,21 @@ export default function SiteHeader() {
       const scrollDelta = currentScrollY - previousScrollY;
       const isMobileViewport = window.innerWidth < 1024;
 
-      setIsCondensed((prev) => {
-        if (currentScrollY <= 0) {
-          return false;
-        }
+      if (isMobileViewport) {
+        setIsCondensed(false);
+      } else {
+        setIsCondensed((prev) => {
+          if (currentScrollY <= 0) {
+            return false;
+          }
 
-        if (currentScrollY > 24) {
-          return true;
-        }
+          if (currentScrollY > 24) {
+            return true;
+          }
 
-        return prev;
-      });
+          return prev;
+        });
+      }
 
       if (!isMobileViewport || isMobileNavOpen || currentScrollY <= 8) {
         setIsHiddenOnMobile(false);
@@ -50,6 +54,9 @@ export default function SiteHeader() {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setIsHiddenOnMobile(false);
+        setIsCondensed(window.scrollY > 24);
+      } else {
+        setIsCondensed(false);
       }
     };
 
@@ -107,7 +114,7 @@ export default function SiteHeader() {
       return;
     }
 
-    setIsCondensed(window.scrollY > 24);
+    setIsCondensed(window.innerWidth >= 1024 && window.scrollY > 24);
   }, [pathname]);
 
   return (
