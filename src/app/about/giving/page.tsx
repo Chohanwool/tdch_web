@@ -56,7 +56,7 @@ export default function GivingPage() {
         <SectionHeading as="h1" label="Online Offering Guide" title="온라인 헌금방법" />
         <ul className="type-body mt-5 space-y-3 text-ink/78">
           <li className="flex items-start gap-4">
-            <span className="mt-2 block h-2.5 w-2.5 shrink-0 rounded-full bg-themeBlue" />
+            <span className="list-bullet list-bullet--navy mt-2 shrink-0" />
             <span>
               온라인 입금 시 정확한 본인 확인을 위해 아래 방법으로 입금자명을
               기재해 주세요.
@@ -118,7 +118,7 @@ export default function GivingPage() {
       <section className="mt-6 md:mt-8">
         <ul className="type-body space-y-3 text-ink/78">
           <li className="flex items-start gap-4">
-            <span className="mt-2 block h-2.5 w-2.5 shrink-0 rounded-full bg-themeBlue" />
+            <span className="list-bullet list-bullet--navy mt-2 shrink-0" />
             <div>
               <span>헌금 종류 예시입니다.</span>
               <ul className="mt-3 space-y-2 text-ink/72">
