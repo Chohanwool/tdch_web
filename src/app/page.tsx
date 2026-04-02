@@ -7,8 +7,6 @@ import SermonVideoCard from "@/app/sermons/components/sermon-video-card";
 
 import {
   quickMenuCards,
-  churchNewsList,
-  bulletinList,
   homeSermonList,
 } from "@/lib/site-data";
 import { getHomeMedia, toHomeSermonCards } from "@/lib/media-api";
@@ -170,12 +168,14 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 4. The 제자 소식 섹션 */}
+      {/* 4. The 제자 소식 섹션
+          메뉴 및 상세 페이지가 준비되기 전까지 메인에서 임시 비노출 처리.
+      */}
+      {/*
       <section className="relative w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#13243a] via-[#1c2f48] to-[#0f1c2e]" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
         <div className="relative z-10 section-shell pb-16 pt-10 md:pb-24 md:pt-12 lg:pb-28">
-          {/* 섹션 헤더 */}
           <div className="mb-8">
             <div className="inline-block">
               <h2 className="font-serif text-3xl font-semibold text-ivory md:text-4xl">The 제자 소식</h2>
@@ -183,10 +183,7 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* 3컬럼 레이아웃: 모바일 1열, 태블릿 2열, 데스크탑 3열 */}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-
-            {/* 컬럼 1 — 교회 소식 */}
             <div className="flex flex-col">
               <div className="mb-4 flex items-center justify-between border-b border-white/15 pb-3">
                 <div className="flex items-baseline gap-2.5">
@@ -211,7 +208,6 @@ export default async function Home() {
               </ul>
             </div>
 
-            {/* 컬럼 2 — 교회 주보 */}
             <div className="flex flex-col">
               <div className="mb-4 flex items-center justify-between border-b border-white/15 pb-3">
                 <div className="flex items-baseline gap-2.5">
@@ -236,7 +232,6 @@ export default async function Home() {
               </ul>
             </div>
 
-            {/* 컬럼 3 — 교회 행사 사진 */}
             <div className="flex flex-col md:col-span-2 lg:col-span-1">
               <div className="mb-4 flex items-center justify-between border-b border-white/15 pb-3">
                 <div className="flex items-baseline gap-2.5">
@@ -265,10 +260,10 @@ export default async function Home() {
                 <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl transition duration-300 group-hover:ring-white/25" />
               </Link>
             </div>
-
           </div>
         </div>
       </section>
+      */}
     </div>
   );
 }
