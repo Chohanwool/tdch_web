@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { Gowun_Batang } from "next/font/google";
 import AnimatedCards from "@/app/home/components/animated-cards";
 import MissionSection from "@/app/home/components/mission-section";
@@ -13,14 +14,61 @@ import { getHomeMedia, toHomeSermonCards } from "@/lib/media-api";
 
 const gowunBatang = Gowun_Batang({ subsets: ["latin"], weight: ["400", "700"] });
 
-export const dynamic = "force-dynamic";
+function SermonSectionContent({
+  sermonCards,
+  youtubeUrl,
+}: {
+  sermonCards: typeof homeSermonList;
+  youtubeUrl: string;
+}) {
+  return (
+    <div>
+      <div className="space-y-8">
+        <div className="flex items-end justify-between">
+          <div className="text-center">
+            <h2 className="font-serif text-3xl font-semibold text-ink md:text-4xl">말씀</h2>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-cedar/70">Sermon</p>
+          </div>
+          <Link href="/sermons" className="text-sm font-semibold text-cedar transition hover:text-clay">
+            더보기 &rarr;
+          </Link>
+        </div>
 
-export default async function Home() {
+        <section className="grid gap-4 md:grid-cols-2">
+          {sermonCards.map((sermon, i) => (
+            <SermonVideoCard
+              key={`${sermon.title}-${i}`}
+              href={sermon.href || youtubeUrl}
+              thumbnail={sermon.thumbnail}
+              thumbnailAlt={sermon.thumbnailAlt}
+              category={sermon.category}
+              type={sermon.type}
+              title={sermon.title}
+              meta={`${sermon.scripture} | ${sermon.pastor}`}
+              date={sermon.date}
+            />
+          ))}
+        </section>
+      </div>
+    </div>
+  );
+}
+
+async function HomeSermonSection({ youtubeUrl }: { youtubeUrl: string }) {
+  const homeMedia = await getHomeMedia();
+  const sermonCards = toHomeSermonCards(homeMedia?.latestMessages, homeSermonList);
+
+  return <SermonSectionContent sermonCards={sermonCards} youtubeUrl={youtubeUrl} />;
+}
+
+function HomeSermonSectionFallback({ youtubeUrl }: { youtubeUrl: string }) {
+  return <SermonSectionContent sermonCards={homeSermonList} youtubeUrl={youtubeUrl} />;
+}
+
+export default function Home() {
   const youtubeUrl =
     process.env.NEXT_PUBLIC_YOUTUBE_URL ??
     "https://www.youtube.com/@%EB%8D%94%EC%A0%9C%EC%9E%90%EA%B5%90%ED%9A%8C";
-  const homeMedia = await getHomeMedia();
-  const sermonCards = toHomeSermonCards(homeMedia?.latestMessages, homeSermonList);
 
   return (
     <div className="flex w-full flex-col pb-0 pt-0 overflow-x-hidden">
@@ -135,36 +183,9 @@ export default async function Home() {
 
           <div className="h-3 md:h-4" />
 
-          {/* 말씀 섹션 */}
-          <div>
-            <div className="space-y-8">
-              <div className="flex items-end justify-between">
-                <div className="text-center">
-                  <h2 className="font-serif text-3xl font-semibold text-ink md:text-4xl">말씀</h2>
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-cedar/70">Sermon</p>
-                </div>
-                <Link href="/sermons" className="text-sm font-semibold text-cedar transition hover:text-clay">
-                  더보기 &rarr;
-                </Link>
-              </div>
-
-              <section className="grid gap-4 md:grid-cols-2">
-                {sermonCards.map((sermon, i) => (
-                  <SermonVideoCard
-                    key={`${sermon.title}-${i}`}
-                    href={sermon.href || youtubeUrl}
-                    thumbnail={sermon.thumbnail}
-                    thumbnailAlt={sermon.thumbnailAlt}
-                    category={sermon.category}
-                    type={sermon.type}
-                    title={sermon.title}
-                    meta={`${sermon.scripture} | ${sermon.pastor}`}
-                    date={sermon.date}
-                  />
-                ))}
-              </section>
-            </div>
-          </div>
+          <Suspense fallback={<HomeSermonSectionFallback youtubeUrl={youtubeUrl} />}>
+            <HomeSermonSection youtubeUrl={youtubeUrl} />
+          </Suspense>
         </div>
       </section>
 

@@ -89,9 +89,29 @@ async function fetchMedia<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+async function fetchRevalidatedMedia<T>(path: string, revalidateSeconds: number): Promise<T> {
+  const response = await fetch(`${mediaApiBaseUrl}${path}`, {
+    headers: {
+      Accept: "application/json",
+    },
+    next: {
+      revalidate: revalidateSeconds,
+    },
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new MediaNotFoundError(`Media API resource not found: ${path}`);
+    }
+    throw new Error(`Media API request failed: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
 export async function getHomeMedia(): Promise<HomeMediaResponse | null> {
   try {
-    return await fetchMedia<HomeMediaResponse>("/api/v1/media/home");
+    return await fetchRevalidatedMedia<HomeMediaResponse>("/api/v1/media/home", 300);
   } catch (error) {
     console.error("Failed to fetch home media.", error);
     return null;
