@@ -96,6 +96,20 @@ export default function SiteHeader() {
     };
   }, [hideOnMobile]);
 
+  useEffect(() => {
+    // 상세 쇼츠 페이지에서 돌아온 직후에도 헤더가 화면 밖에 남지 않도록
+    // 경로가 바뀌면 모바일 숨김 상태를 즉시 초기화한다.
+    previousScrollYRef.current = window.scrollY;
+    setIsHiddenOnMobile(false);
+
+    if (window.scrollY <= 0) {
+      setIsCondensed(false);
+      return;
+    }
+
+    setIsCondensed(window.scrollY > 24);
+  }, [pathname]);
+
   return (
     <header
       ref={headerRef}
