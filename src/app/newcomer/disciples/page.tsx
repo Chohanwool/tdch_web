@@ -397,11 +397,19 @@ export default function NewcomerDisciplesPage() {
           />
 
           <div className="mt-8 overflow-hidden border-y border-black/10 py-5">
-            <div className="grid gap-y-6 md:grid-cols-4 md:gap-y-0">
+            <div className="grid grid-cols-2 gap-y-6 lg:grid-cols-4 lg:gap-y-0">
               {multiplicationStages.map((stage, index) => (
                 <div
                   key={stage.year}
-                  className={index < multiplicationStages.length - 1 ? "md:border-r md:border-black/10" : ""}
+                  className={
+                    index === 0
+                      ? "border-b border-r border-black/10 lg:border-b-0"
+                      : index === 1
+                        ? "border-b border-black/10 lg:border-b-0 lg:border-r lg:border-black/10"
+                        : index === 2
+                          ? "border-r border-black/10 lg:border-r lg:border-black/10"
+                          : ""
+                  }
                 >
                   <GenerationCard {...stage} />
                 </div>
@@ -429,7 +437,7 @@ export default function NewcomerDisciplesPage() {
           className="mt-20 scroll-mt-32 md:mt-[68px] md:scroll-mt-36"
         >
           <div className="rounded-[12px] bg-[#1a2744] p-6 md:flex md:items-start md:justify-between md:gap-10 md:p-9">
-            <div className="md:max-w-[220px]">
+            <div className="md:max-w-[320px] lg:max-w-[360px]">
               <SectionHeading
                 id="disciples-apply-title"
                 label="Apply"
