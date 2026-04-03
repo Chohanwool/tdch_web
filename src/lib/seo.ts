@@ -1,4 +1,5 @@
 // src/lib/seo.ts
+import type { Metadata } from "next";
 import {
   SITE_DESCRIPTION as SITE_DESCRIPTION_VALUE,
   SITE_NAME as SITE_NAME_VALUE,
@@ -21,31 +22,49 @@ export const DEFAULT_OG_IMAGE = {
   type: "image/png",
 };
 
-/**
- * 페이지별 메타데이터를 생성할 때 사용하는 헬퍼.
- * title과 description만 넘기면 OG/Twitter 메타데이터가 자동으로 포함된다.
- */
+type SeoImage = {
+  url: string;
+  width: number;
+  height: number;
+  alt: string;
+  type?: string;
+};
+
+function buildCanonicalUrl(path = ""): string {
+  if (!path) {
+    return SITE_URL;
+  }
+
+  return new URL(path, `${SITE_URL}/`).toString();
+}
+
+function buildSocialTitle(title: string) {
+  return `${title} | ${SITE_NAME}`;
+}
+
 export function createPageMetadata({
   title,
   description,
   path = "",
   ogImage,
+  absoluteTitle,
 }: {
   title: string;
   description: string;
   path?: string;
-  ogImage?: { url: string; width: number; height: number; alt: string };
-}) {
-  const pageTitle = `${title} | ${SITE_NAME}`;
-  const canonical = `${SITE_URL}${path}`;
+  ogImage?: SeoImage;
+  absoluteTitle?: string;
+}): Metadata {
+  const canonical = buildCanonicalUrl(path);
   const image = ogImage ?? DEFAULT_OG_IMAGE;
+  const socialTitle = absoluteTitle ?? buildSocialTitle(title);
 
   return {
-    title: pageTitle,
+    title: absoluteTitle ? { absolute: absoluteTitle } : title,
     description,
     alternates: { canonical },
     openGraph: {
-      title: pageTitle,
+      title: socialTitle,
       description,
       url: canonical,
       siteName: SITE_NAME,
@@ -55,7 +74,47 @@ export function createPageMetadata({
     },
     twitter: {
       card: "summary_large_image" as const,
-      title: pageTitle,
+      title: socialTitle,
+      description,
+      images: [image.url],
+    },
+  };
+}
+
+export function createVideoMetadata({
+  title,
+  description,
+  path,
+  ogImage,
+  publishedTime,
+}: {
+  title: string;
+  description: string;
+  path: string;
+  ogImage?: SeoImage;
+  publishedTime?: string;
+}): Metadata {
+  const canonical = buildCanonicalUrl(path);
+  const image = ogImage ?? DEFAULT_OG_IMAGE;
+  const socialTitle = buildSocialTitle(title);
+
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title: socialTitle,
+      description,
+      url: canonical,
+      siteName: SITE_NAME,
+      locale: SITE_LOCALE,
+      type: "video.other",
+      images: [image],
+      ...(publishedTime ? { publishedTime } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: socialTitle,
       description,
       images: [image.url],
     },

@@ -14,11 +14,13 @@ import {
   NAVER_MAP_URL,
   SITE_NAME,
 } from "@/lib/site-config";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "오시는 길",
   description: `${SITE_NAME} 오시는 길 안내입니다. ${CHURCH_ADDRESS}. 지하철, 버스 노선 및 주차 안내.`,
-};
+  path: "/about/location",
+});
 
 const busRoutes = [
   { from: "수원역", routes: "51, 92, 92-1", stop: "권선초교 하차" },

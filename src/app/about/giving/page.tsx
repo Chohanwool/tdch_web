@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import SectionHeading from "@/components/section-heading";
+import { createPageMetadata } from "@/lib/seo";
 import { GIVING_BANK, GIVING_OWNER } from "@/lib/site-config";
 import CopyAccountButton from "./components/copy-account-button";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "헌금안내",
   description: "온라인 헌금 방법, 입금자명 작성 예시, 온라인 계좌 안내를 확인하실 수 있습니다.",
-};
+  path: "/about/giving",
+});
 
 const senderNameExamples = {
   description: "예) 홍길동 성도가 헌금을 하는 경우",

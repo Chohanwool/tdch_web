@@ -19,13 +19,16 @@ import {
   YOUTUBE_CHANNEL_LABEL,
   YOUTUBE_CHANNEL_URL,
 } from "@/lib/site-config";
+import { createPageMetadata } from "@/lib/seo";
 
 const gowunBatang = Gowun_Batang({ subsets: ["latin"], weight: ["400", "700"] });
 
-export const metadata: Metadata = {
-  title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+export const metadata: Metadata = createPageMetadata({
+  title: SITE_NAME,
+  absoluteTitle: `${SITE_NAME} — ${SITE_TAGLINE}`,
   description: `${SITE_TAGLINE}, ${SITE_NAME}입니다. ${CHURCH_ADDRESS}에서 예배합니다.`,
-};
+  path: "/",
+});
 
 function SermonSectionContent({
   sermonCards,
