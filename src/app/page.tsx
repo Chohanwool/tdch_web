@@ -14,6 +14,7 @@ import {
 import { getHomeMedia, toHomeSermonCards } from "@/lib/media-api";
 import {
   CHURCH_ADDRESS,
+  SITE_ALTERNATE_NAME,
   SITE_NAME,
   SITE_TAGLINE,
   YOUTUBE_CHANNEL_LABEL,
@@ -24,9 +25,9 @@ import { createPageMetadata } from "@/lib/seo";
 const gowunBatang = Gowun_Batang({ subsets: ["latin"], weight: ["400", "700"] });
 
 export const metadata: Metadata = createPageMetadata({
-  title: SITE_NAME,
-  absoluteTitle: `${SITE_NAME} — ${SITE_TAGLINE}`,
-  description: `${SITE_TAGLINE}, ${SITE_NAME}입니다. ${CHURCH_ADDRESS}에서 예배합니다.`,
+  title: `${SITE_ALTERNATE_NAME} | ${SITE_NAME}`,
+  absoluteTitle: `${SITE_ALTERNATE_NAME} | ${SITE_NAME}`,
+  description: `${SITE_ALTERNATE_NAME}(${SITE_NAME})는 ${SITE_TAGLINE}를 비전으로 세워가는 교회입니다. ${CHURCH_ADDRESS}에서 예배합니다.`,
   path: "/",
 });
 
@@ -103,6 +104,9 @@ export default function Home() {
                 {/* 비전 텍스트 카드 */}
                 <div className="w-full space-y-4 rounded-2xl bg-black/30 px-6 py-6 text-ivory backdrop-blur-md md:space-y-5 md:px-7 md:py-7 lg:space-y-6 lg:py-8">
                   <p className="chip w-fit bg-gold/30 text-ivory text-xs">VISION</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-ivory/78 md:text-sm">
+                    {SITE_ALTERNATE_NAME} | {SITE_NAME}
+                  </p>
                   <h1 className="font-yeongwol text-[3rem] leading-[1.2] tracking-wide md:text-6xl lg:text-7xl lg:tracking-wider xl:text-8xl">
                     성령으로
                     <br />

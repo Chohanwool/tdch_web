@@ -10,6 +10,7 @@ import { NavigationProvider } from "@/lib/navigation-context";
 import { getNavigationResponse } from "@/lib/navigation-api";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOCALE, DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { ChurchJsonLd, WebSiteJsonLd } from "@/components/json-ld";
+import { SITE_ALTERNATE_NAME, SITE_TAGLINE } from "@/lib/site-config";
 
 const sans = Noto_Sans_KR({
   subsets: ["latin"],
@@ -38,12 +39,12 @@ const yeongwol = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — 성령으로 제자삼는 교회`,
+    default: `${SITE_ALTERNATE_NAME} | ${SITE_NAME}`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "더제자교회", "The 제자교회", "수원교회", "팔달구교회",
+    "더제자교회", "The 제자교회", "The제자교회", "수원교회", "팔달구교회",
     "침례교회", "제자훈련", "예배영상", "교회홈페이지",
   ],
   formatDetection: {
@@ -55,20 +56,20 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: SITE_NAME,
+    title: `${SITE_ALTERNATE_NAME} | ${SITE_TAGLINE}`,
   },
   openGraph: {
     type: "website",
     locale: SITE_LOCALE,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} — 성령으로 제자삼는 교회`,
+    title: `${SITE_ALTERNATE_NAME} | ${SITE_NAME}`,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} — 성령으로 제자삼는 교회`,
+    title: `${SITE_ALTERNATE_NAME} | ${SITE_NAME}`,
     description: SITE_DESCRIPTION,
     images: [DEFAULT_OG_IMAGE.url],
   },

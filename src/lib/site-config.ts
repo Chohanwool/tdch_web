@@ -5,6 +5,7 @@ const readEnv = (name: string, fallback: string) => {
 
 const DEFAULT_SITE_URL = "https://www.tdch.co.kr";
 const DEFAULT_SITE_NAME = "The 제자교회";
+const DEFAULT_SITE_ALTERNATE_NAME = "더제자교회";
 const DEFAULT_SITE_TAGLINE = "성령으로 제자삼는 교회";
 const DEFAULT_CHURCH_ADDRESS = "경기도 수원시 팔달구 경수대로425 지하1층(나인아트홀)";
 const DEFAULT_CHURCH_ADDRESS_STREET = "경수대로425 지하1층(나인아트홀)";
@@ -32,6 +33,10 @@ const DEFAULT_PUBLIC_MEDIA_API_BASE_URL = "http://localhost:8080";
 
 export const SITE_URL = readEnv("NEXT_PUBLIC_SITE_URL", DEFAULT_SITE_URL);
 export const SITE_NAME = readEnv("NEXT_PUBLIC_SITE_NAME", DEFAULT_SITE_NAME);
+export const SITE_ALTERNATE_NAME = readEnv(
+  "NEXT_PUBLIC_SITE_ALTERNATE_NAME",
+  DEFAULT_SITE_ALTERNATE_NAME,
+);
 export const SITE_TAGLINE = readEnv("NEXT_PUBLIC_SITE_TAGLINE", DEFAULT_SITE_TAGLINE);
 export const SITE_TITLE = `${SITE_NAME} — ${SITE_TAGLINE}`;
 
@@ -88,4 +93,4 @@ export const PUBLIC_MEDIA_API_BASE_URL = readEnv(
   DEFAULT_PUBLIC_MEDIA_API_BASE_URL,
 );
 
-export const SITE_DESCRIPTION = `${SITE_TAGLINE} — ${CHURCH_ADDRESS}`;
+export const SITE_DESCRIPTION = `${SITE_ALTERNATE_NAME}(${SITE_NAME})는 ${SITE_TAGLINE}를 비전으로 하는 교회입니다. ${CHURCH_ADDRESS}`;

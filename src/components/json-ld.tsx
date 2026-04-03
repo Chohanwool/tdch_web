@@ -10,6 +10,7 @@ import {
   CHURCH_LONGITUDE_NUMBER,
   CHURCH_PHONE,
   CHURCH_POSTAL_CODE,
+  SITE_ALTERNATE_NAME,
   YOUTUBE_CHANNEL_URL,
 } from "@/lib/site-config";
 
@@ -31,6 +32,7 @@ export function ChurchJsonLd() {
     "@context": "https://schema.org",
     "@type": "Church",
     name: SITE_NAME,
+    alternateName: SITE_ALTERNATE_NAME,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     logo: `${SITE_URL}/images/logo/church_logo.png`,
@@ -60,6 +62,7 @@ export function WebSiteJsonLd() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_NAME,
+    alternateName: SITE_ALTERNATE_NAME,
     url: SITE_URL,
   };
 
@@ -105,6 +108,7 @@ export function VideoJsonLd({
     publisher: {
       "@type": "Organization",
       name: SITE_NAME,
+      alternateName: SITE_ALTERNATE_NAME,
       url: SITE_URL,
       logo: {
         "@type": "ImageObject",
