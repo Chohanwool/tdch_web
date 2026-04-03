@@ -6,7 +6,7 @@
 
 ```bash
 npm install
-cp .env.example .env
+cp .env.example .env.local
 npm run dev
 ```
 
@@ -35,34 +35,22 @@ npm run dev
 - `/news`, `/contact` 라우트는 현재 구현되어 있지 않습니다.
 - `/about`, `/sermons` 기본 진입 경로는 메뉴 데이터의 `defaultLandingHref` 기준으로 결정됩니다.
 
-## 단계 3) 인프라 세팅 (Docker + Caddy)
+## 단계 3) 배포 구성 (Vercel + Railway)
 
-```bash
-cp .env.example .env
-# 실제 도메인 입력
-# DOMAIN=church.example.org
-docker compose up -d --build
-```
+- 프론트엔드: Vercel
+- 백엔드 API / DB: Railway
+- GitHub Actions: PR/메인 브랜치에서 lint + build 검증
+- 프론트 배포: `main` 브랜치 푸시 후 Vercel이 자동 배포
 
-`infra/Caddyfile`은 `.env`의 `DOMAIN`을 읽어 라우팅합니다.
-실배포 시 `DOMAIN`만 실제 도메인으로 바꾸면 Caddy가 HTTPS 인증서를 자동 발급합니다.
+운영 환경변수 설정 위치:
 
-## 단계 4) 배포 자동화 (GitHub Actions)
+- 로컬 개발: `.env.local`
+- 프론트 운영: Vercel Project Settings > Environment Variables
+- 백엔드 운영: Railway service variables
 
-- `CI`: PR/메인 브랜치에서 lint + build 검증
-- `Deploy`: 메인 브랜치 푸시 시 배포 서버에서 `docker compose up -d --build`
+## 단계 4) 운영 데이터 수정 위치
 
-필요한 GitHub Secrets:
-
-- `DEPLOY_HOST`
-- `DEPLOY_USER`
-- `DEPLOY_SSH_KEY`
-- `DEPLOY_PORT`
-- `DEPLOY_PATH`
-
-## 단계 5) 운영 데이터 수정 위치
-
-- 연락처/계좌/링크: `.env`
+- 연락처/계좌/링크: `.env.local` (로컬) / Vercel Environment Variables (운영)
 - 예배시간/공지 기본 데이터: `src/lib/site-data.ts`
 - 사이트 메뉴 원본: 백엔드 `site_navigation_item` + `GET /api/v1/navigation`
 - 프론트 fallback 메뉴: `src/lib/site-data.ts` 의 `fallbackNavigationResponse`
