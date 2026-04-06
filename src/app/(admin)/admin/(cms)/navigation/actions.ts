@@ -58,6 +58,10 @@ function toFriendlyNavigationMessage(error: unknown, fallback: string): string {
     return "메뉴 저장 기능이 아직 서버에 반영되지 않았습니다. 잠시 후 다시 시도해 주세요.";
   }
 
+  if (message.includes("Request method 'PUT' is not supported")) {
+    return "메뉴 수정 기능이 아직 서버에 반영되지 않았습니다. 잠시 후 다시 시도해 주세요.";
+  }
+
   if (message.includes("이미 사용 중인 menuKey")) {
     return "이미 사용 중인 메뉴 키입니다. 다른 메뉴 키를 입력해 주세요.";
   }
@@ -84,6 +88,18 @@ function toFriendlyNavigationMessage(error: unknown, fallback: string): string {
 
   if (message.includes("내비게이션 세트")) {
     return "메뉴 그룹 정보를 다시 불러온 뒤 시도해 주세요.";
+  }
+
+  if (message.includes("메뉴 세트는 변경할 수 없습니다")) {
+    return "현재 메뉴는 다른 메뉴 그룹으로 옮길 수 없습니다.";
+  }
+
+  if (message.includes("메뉴 자신을 상위 메뉴로 선택할 수 없습니다")) {
+    return "같은 메뉴를 상위 메뉴로 선택할 수 없습니다.";
+  }
+
+  if (message.includes("하위 메뉴가 있는 1depth 메뉴는 2depth로 변경할 수 없습니다")) {
+    return "하위 메뉴가 연결된 1단계 메뉴는 바로 위치를 바꿀 수 없습니다. 하위 메뉴를 먼저 정리해 주세요.";
   }
 
   if (message.includes("하위 메뉴가 있는 메뉴는 삭제할 수 없습니다")) {

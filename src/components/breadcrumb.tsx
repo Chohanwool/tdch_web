@@ -54,7 +54,7 @@ export default function Breadcrumb({
           )}
 
           {/* 구분자 + 현재 아이템 */}
-          {currentItem && (
+          {currentItem && !currentItem.hiddenInBreadcrumb && (
             <>
               <li className="text-ink/25" aria-hidden="true">
                 <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -72,7 +72,7 @@ export default function Breadcrumb({
       </nav>
 
       {/* 2. LNB (Local Navigation Bar) - 소메뉴 목록 */}
-      {!hideLnb && menuGroup && menuGroup.items.some((item) => !item.hiddenInLnb) && (
+      {!hideLnb && menuGroup && !menuGroup.hiddenInLnb && menuGroup.items.some((item) => !item.hiddenInLnb) && (
         <nav className="w-full border-b border-cedar/8 bg-white overflow-x-auto no-scrollbar" aria-label="LNB">
           <ul className="section-shell flex items-center justify-start md:justify-center gap-1 min-w-max px-4">
             {menuGroup.items.filter((item) => !item.hiddenInLnb).map((item) => {
