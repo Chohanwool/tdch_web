@@ -13,6 +13,7 @@ import { AdminApiError } from "@/lib/admin-api";
 export interface NavigationFormState {
   errors?: Partial<Record<string, string>>;
   message?: string;
+  messageKey?: number;
 }
 
 function parseBoolean(val: FormDataEntryValue | null): boolean {
@@ -30,6 +31,63 @@ function parseNullableNumber(val: FormDataEntryValue | null): number | null {
 }
 
 const VALID_LINK_TYPES: AdminNavigationLinkType[] = ["INTERNAL", "ANCHOR", "EXTERNAL", "CONTENT_REF"];
+
+function buildMessageState(message: string): NavigationFormState {
+  return {
+    message,
+    messageKey: Date.now(),
+  };
+}
+
+function toFriendlyNavigationMessage(error: unknown, fallback: string): string {
+  if (!(error instanceof AdminApiError)) {
+    return fallback;
+  }
+
+  if (error.status === 401 || error.status === 403) {
+    return "로그인 정보가 확인되지 않았습니다. 다시 로그인한 뒤 시도해 주세요.";
+  }
+
+  if (error.code === "ADMIN_SYNC_KEY_MISSING") {
+    return "관리자 저장 설정이 아직 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.";
+  }
+
+  const message = error.message.trim();
+
+  if (message.includes("Request method 'POST' is not supported")) {
+    return "메뉴 저장 기능이 아직 서버에 반영되지 않았습니다. 잠시 후 다시 시도해 주세요.";
+  }
+
+  if (message.includes("이미 사용 중인 menuKey")) {
+    return "이미 사용 중인 메뉴 키입니다. 다른 메뉴 키를 입력해 주세요.";
+  }
+
+  if (message.includes("상위 메뉴는 1depth")) {
+    return "상위 메뉴는 1단계 메뉴만 선택할 수 있습니다.";
+  }
+
+  if (message.includes("기본 랜딩")) {
+    return "기본 이동 메뉴 설정이 올바르지 않습니다. 같은 상위 메뉴에서는 하나만 선택할 수 있습니다.";
+  }
+
+  if (message.includes("CONTENT_REF") || message.includes("contentSiteKey")) {
+    return "콘텐츠 연결 설정을 다시 확인해 주세요.";
+  }
+
+  if (message.includes("ANCHOR")) {
+    return "페이지 내 위치 이동 메뉴 설정을 다시 확인해 주세요.";
+  }
+
+  if (message.includes("EXTERNAL")) {
+    return "외부 링크 주소를 다시 확인해 주세요.";
+  }
+
+  if (message.includes("내비게이션 세트")) {
+    return "메뉴 그룹 정보를 다시 불러온 뒤 시도해 주세요.";
+  }
+
+  return fallback;
+}
 
 // ── 공통 payload 파싱 & 유효성 검사 ────────────────────────────────────────
 function parsePayload(formData: FormData): {
@@ -89,8 +147,9 @@ export async function createNavigationItemAction(
   try {
     await createAdminNavigationItem(payload!);
   } catch (err) {
-    const msg = err instanceof AdminApiError ? err.message : "메뉴 생성에 실패했습니다.";
-    return { message: msg };
+    return buildMessageState(
+      toFriendlyNavigationMessage(err, "메뉴를 추가하지 못했습니다. 입력한 내용을 확인한 뒤 다시 시도해 주세요."),
+    );
   }
 
   revalidatePath("/admin/navigation");
@@ -109,8 +168,9 @@ export async function updateNavigationItemAction(
   try {
     await updateAdminNavigationItem(id, payload!);
   } catch (err) {
-    const msg = err instanceof AdminApiError ? err.message : "메뉴 수정에 실패했습니다.";
-    return { message: msg };
+    return buildMessageState(
+      toFriendlyNavigationMessage(err, "메뉴를 저장하지 못했습니다. 입력한 내용을 확인한 뒤 다시 시도해 주세요."),
+    );
   }
 
   revalidatePath("/admin/navigation");
@@ -123,7 +183,7 @@ export async function deleteNavigationItemAction(id: number): Promise<void> {
   try {
     await deleteAdminNavigationItem(id);
   } catch (err) {
-    const msg = err instanceof AdminApiError ? err.message : "메뉴 삭제에 실패했습니다.";
+    const msg = toFriendlyNavigationMessage(err, "메뉴를 삭제하지 못했습니다. 잠시 후 다시 시도해 주세요.");
     throw new Error(msg);
   }
 

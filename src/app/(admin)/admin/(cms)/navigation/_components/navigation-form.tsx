@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useTransition, useState } from "react";
+import { useActionState, useEffect, useTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { AdminNavigationItem, AdminNavigationLinkType, AdminContentMenu } from "@/lib/admin-navigation-api";
 import type { NavigationFormState } from "../actions";
@@ -65,13 +65,36 @@ function TextInput({
 }
 
 function Toggle({
-  name, defaultChecked, label, description,
+  name, defaultChecked, label, description, disabled, checked, onCheckedChange,
 }: {
   name: string; defaultChecked?: boolean; label: string; description?: string;
+  disabled?: boolean;
+  checked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
 }) {
-  const [checked, setChecked] = useState(defaultChecked ?? true);
+  const [internalChecked, setInternalChecked] = useState(defaultChecked ?? true);
+  const isControlled = checked !== undefined;
+  const resolvedChecked = isControlled ? checked : internalChecked;
+
+  function handleToggle() {
+    if (disabled) {
+      return;
+    }
+
+    const nextChecked = !resolvedChecked;
+
+    if (!isControlled) {
+      setInternalChecked(nextChecked);
+    }
+
+    onCheckedChange?.(nextChecked);
+  }
+
   return (
-    <label className="flex cursor-pointer items-start justify-between gap-3 rounded-xl border border-[#e9edf3] bg-[#f8fafc] px-4 py-3 transition hover:bg-[#f3f7ff]">
+    <label
+      className={`flex items-start justify-between gap-3 rounded-xl border border-[#e9edf3] px-4 py-3 transition
+        ${disabled ? "cursor-not-allowed bg-[#f3f5f8] opacity-70" : "cursor-pointer bg-[#f8fafc] hover:bg-[#f3f7ff]"}`}
+    >
       <div>
         <p className="text-[13px] font-medium text-[#132033]">{label}</p>
         {description && <p className="mt-0.5 text-[11px] text-[#8fa3bb]">{description}</p>}
@@ -80,19 +103,22 @@ function Toggle({
         <input
           type="hidden"
           name={name}
-          value={checked ? "true" : "false"}
+          value={resolvedChecked ? "true" : "false"}
         />
         <button
           type="button"
           role="switch"
-          aria-checked={checked}
-          onClick={() => setChecked((v) => !v)}
+          aria-checked={resolvedChecked}
+          aria-disabled={disabled}
+          disabled={disabled}
+          onClick={handleToggle}
           className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 focus:outline-none
-            ${checked ? "bg-[#3f74c7]" : "bg-[#d1dbe6]"}`}
+            ${resolvedChecked ? "bg-[#3f74c7]" : "bg-[#d1dbe6]"}
+            ${disabled ? "cursor-not-allowed" : ""}`}
         >
           <span
             className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform duration-200
-              ${checked ? "translate-x-4" : "translate-x-1"}`}
+              ${resolvedChecked ? "translate-x-4" : "translate-x-1"}`}
           />
         </button>
       </div>
@@ -111,6 +137,40 @@ function SectionCard({ title, children }: { title: string; children: React.React
   );
 }
 
+function BottomToast({
+  message,
+  onClose,
+}: {
+  message: string;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed bottom-6 left-1/2 z-50 w-[min(92vw,560px)] -translate-x-1/2">
+      <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-[#fff5f5] px-4 py-3 shadow-[0_18px_40px_rgba(15,28,46,0.16)] backdrop-blur">
+        <div className="mt-0.5 shrink-0 rounded-full bg-red-500/10 p-1.5 text-red-500">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 5.2v3.6M8 11.4h.01M14 8A6 6 0 1 1 2 8a6 6 0 0 1 12 0Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] font-semibold text-[#8b1e1e]">저장하지 못했습니다</p>
+          <p className="mt-1 text-[13px] leading-5 text-[#a12d2d]">{message}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[#b85b5b] transition hover:bg-red-100 hover:text-[#8b1e1e]"
+          aria-label="오류 메시지 닫기"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── 메인 폼 ──────────────────────────────────────────────────────────────────
 export default function NavigationForm({
   mode,
@@ -125,6 +185,9 @@ export default function NavigationForm({
   const router = useRouter();
   const [isPendingDelete, startDeleteTransition] = useTransition();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [toast, setToast] = useState<{ id: number; message: string } | null>(null);
+  const [selectedParentId, setSelectedParentId] = useState(item?.parentId ? String(item.parentId) : "");
+  const [defaultLandingChecked, setDefaultLandingChecked] = useState(item?.defaultLanding ?? false);
 
   const action = mode === "edit" && updateAction ? updateAction : createAction;
   const [state, formAction, isPending] = useActionState<NavigationFormState, FormData>(action, {});
@@ -132,6 +195,27 @@ export default function NavigationForm({
   const [linkType, setLinkType] = useState<AdminNavigationLinkType>(
     item?.linkType ?? "INTERNAL",
   );
+
+  useEffect(() => {
+    if (!state.message) {
+      return;
+    }
+
+    const id = state.messageKey ?? Date.now();
+    setToast({ id, message: state.message });
+
+    const timer = window.setTimeout(() => {
+      setToast((current) => (current?.id === id ? null : current));
+    }, 4200);
+
+    return () => window.clearTimeout(timer);
+  }, [state.message, state.messageKey]);
+
+  useEffect(() => {
+    if (!selectedParentId && defaultLandingChecked) {
+      setDefaultLandingChecked(false);
+    }
+  }, [selectedParentId, defaultLandingChecked]);
 
   function handleDelete() {
     if (!deleteAction) return;
@@ -144,13 +228,6 @@ export default function NavigationForm({
     <form action={formAction} className="space-y-5">
       {/* navigationSetId — hidden */}
       <input type="hidden" name="navigationSetId" value={navigationSetId} />
-
-      {/* 전역 에러 메시지 */}
-      {state.message && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600">
-          {state.message}
-        </div>
-      )}
 
       {/* ── 기본 정보 ── */}
       <SectionCard title="기본 정보">
@@ -203,7 +280,8 @@ export default function NavigationForm({
             <FieldLabel>상위 메뉴 (2depth)</FieldLabel>
             <select
               name="parentId"
-              defaultValue={item?.parentId ?? ""}
+              value={selectedParentId}
+              onChange={(e) => setSelectedParentId(e.target.value)}
               className="h-9 w-full rounded-lg border border-[#d1dbe6] bg-[#f8fafc] px-3 text-[13px] text-[#132033]
                 focus:border-[#3f74c7] focus:outline-none focus:ring-1 focus:ring-[#3f74c7]/40 transition"
             >
@@ -233,10 +311,10 @@ export default function NavigationForm({
             <TextInput
               name="matchPath"
               defaultValue={item?.matchPath ?? ""}
-              placeholder="예) /media/messages/* (비우면 href 사용)"
+              placeholder="예) /about/location (비우면 href 사용)"
             />
             <p className="mt-1 text-[11px] text-[#8fa3bb]">
-              활성 상태 판별에 사용할 경로 패턴. 비워두면 href 값을 그대로 사용합니다.
+              현재 보고 있는 페이지와 메뉴를 연결할 기준 경로입니다. 보통은 비워두고, 앵커 메뉴처럼 href에 #이 들어갈 때만 hash 없는 경로를 입력합니다.
             </p>
           </div>
 
@@ -278,7 +356,14 @@ export default function NavigationForm({
           <Toggle name="mobileVisible"     defaultChecked={item?.mobileVisible ?? true}     label="모바일 노출"     description="모바일 전용 표시 여부" />
           <Toggle name="lnbVisible"        defaultChecked={item?.lnbVisible ?? true}        label="LNB 노출"        description="좌측 사이드 내비게이션" />
           <Toggle name="breadcrumbVisible" defaultChecked={item?.breadcrumbVisible ?? true} label="브레드크럼 노출" description="페이지 상단 경로 표시" />
-          <Toggle name="defaultLanding"    defaultChecked={item?.defaultLanding ?? false}   label="기본 랜딩"       description="상위 메뉴 클릭 시 이 페이지로" />
+          <Toggle
+            name="defaultLanding"
+            checked={selectedParentId ? defaultLandingChecked : false}
+            onCheckedChange={setDefaultLandingChecked}
+            disabled={!selectedParentId}
+            label="기본 랜딩"
+            description={selectedParentId ? "상위 메뉴 클릭 시 이 페이지로" : "2단계 메뉴에서만 설정할 수 있습니다."}
+          />
         </div>
       </SectionCard>
 
@@ -366,6 +451,13 @@ export default function NavigationForm({
           </button>
         </div>
       </div>
+
+      {toast && (
+        <BottomToast
+          message={toast.message}
+          onClose={() => setToast(null)}
+        />
+      )}
     </form>
   );
 }
