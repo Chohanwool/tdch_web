@@ -45,7 +45,53 @@ export async function getAdminNavigationItems(includeHidden = true): Promise<Adm
   return response.json() as Promise<AdminNavigationTreeResponse>;
 }
 
+export async function getAdminNavigationItem(id: number): Promise<AdminNavigationItem> {
+  const response = await adminApiFetch(`/api/v1/admin/navigation/items/${id}`);
+  return response.json() as Promise<AdminNavigationItem>;
+}
+
 export async function getAdminContentMenus(): Promise<AdminContentMenusResponse> {
   const response = await adminApiFetch("/api/v1/admin/navigation/content-menus");
   return response.json() as Promise<AdminContentMenusResponse>;
+}
+
+// ── CRUD ─────────────────────────────────────────────────────────────────────
+
+export interface NavigationItemPayload {
+  parentId?: number | null;
+  menuKey: string;
+  label: string;
+  href: string;
+  matchPath?: string | null;
+  linkType: AdminNavigationLinkType;
+  contentSiteKey?: string | null;
+  visible: boolean;
+  headerVisible: boolean;
+  mobileVisible: boolean;
+  lnbVisible: boolean;
+  breadcrumbVisible: boolean;
+  defaultLanding: boolean;
+  sortOrder: number;
+}
+
+export async function createAdminNavigationItem(payload: NavigationItemPayload): Promise<AdminNavigationItem> {
+  const response = await adminApiFetch("/api/v1/admin/navigation/items", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return response.json() as Promise<AdminNavigationItem>;
+}
+
+export async function updateAdminNavigationItem(id: number, payload: NavigationItemPayload): Promise<AdminNavigationItem> {
+  const response = await adminApiFetch(`/api/v1/admin/navigation/items/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return response.json() as Promise<AdminNavigationItem>;
+}
+
+export async function deleteAdminNavigationItem(id: number): Promise<void> {
+  await adminApiFetch(`/api/v1/admin/navigation/items/${id}`, { method: "DELETE" });
 }

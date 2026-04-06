@@ -1,0 +1,365 @@
+"use client";
+
+import { useActionState, useTransition, useState } from "react";
+import { useRouter } from "next/navigation";
+import type { AdminNavigationItem, AdminNavigationLinkType, AdminContentMenu } from "@/lib/admin-navigation-api";
+import type { NavigationFormState } from "../actions";
+
+// ── 타입 ─────────────────────────────────────────────────────────────────────
+interface NavigationFormProps {
+  mode: "new" | "edit";
+  item?: AdminNavigationItem;
+  parentOptions: Pick<AdminNavigationItem, "id" | "label" | "menuKey">[];
+  contentMenuOptions: AdminContentMenu[];
+  createAction: (prev: NavigationFormState, formData: FormData) => Promise<NavigationFormState>;
+  updateAction?: (prev: NavigationFormState, formData: FormData) => Promise<NavigationFormState>;
+  deleteAction?: () => Promise<void>;
+}
+
+// ── 상수 ─────────────────────────────────────────────────────────────────────
+const LINK_TYPES: { value: AdminNavigationLinkType; label: string; desc: string }[] = [
+  { value: "INTERNAL", label: "내부",   desc: "사이트 내부 페이지" },
+  { value: "EXTERNAL", label: "외부",   desc: "외부 URL (새 탭)" },
+  { value: "ANCHOR",   label: "앵커",   desc: "페이지 내 앵커 (#)" },
+  { value: "CONTENT_REF", label: "콘텐츠", desc: "콘텐츠 메뉴 연결" },
+];
+
+// ── 공통 UI 컴포넌트 ─────────────────────────────────────────────────────────
+function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
+  return (
+    <label className="mb-1.5 block text-[12px] font-semibold text-[#374151]">
+      {children}
+      {required && <span className="ml-0.5 text-red-500">*</span>}
+    </label>
+  );
+}
+
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null;
+  return <p className="mt-1 text-[11px] text-red-500">{message}</p>;
+}
+
+function TextInput({
+  name, defaultValue, placeholder, error, disabled,
+}: {
+  name: string; defaultValue?: string; placeholder?: string; error?: string; disabled?: boolean;
+}) {
+  return (
+    <>
+      <input
+        type="text"
+        name={name}
+        defaultValue={defaultValue ?? ""}
+        placeholder={placeholder}
+        disabled={disabled}
+        className={`h-9 w-full rounded-lg border px-3 text-[13px] text-[#132033] placeholder:text-[#a0aec0]
+          focus:outline-none focus:ring-1 focus:ring-[#3f74c7]/40 transition
+          ${error ? "border-red-400 bg-red-50 focus:border-red-400" : "border-[#d1dbe6] bg-[#f8fafc] focus:border-[#3f74c7]"}
+          disabled:cursor-not-allowed disabled:opacity-50`}
+      />
+      <FieldError message={error} />
+    </>
+  );
+}
+
+function Toggle({
+  name, defaultChecked, label, description,
+}: {
+  name: string; defaultChecked?: boolean; label: string; description?: string;
+}) {
+  const [checked, setChecked] = useState(defaultChecked ?? true);
+  return (
+    <label className="flex cursor-pointer items-start justify-between gap-3 rounded-xl border border-[#e9edf3] bg-[#f8fafc] px-4 py-3 transition hover:bg-[#f3f7ff]">
+      <div>
+        <p className="text-[13px] font-medium text-[#132033]">{label}</p>
+        {description && <p className="mt-0.5 text-[11px] text-[#8fa3bb]">{description}</p>}
+      </div>
+      <div className="relative mt-0.5 shrink-0">
+        <input
+          type="hidden"
+          name={name}
+          value={checked ? "true" : "false"}
+        />
+        <button
+          type="button"
+          role="switch"
+          aria-checked={checked}
+          onClick={() => setChecked((v) => !v)}
+          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 focus:outline-none
+            ${checked ? "bg-[#3f74c7]" : "bg-[#d1dbe6]"}`}
+        >
+          <span
+            className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform duration-200
+              ${checked ? "translate-x-4" : "translate-x-1"}`}
+          />
+        </button>
+      </div>
+    </label>
+  );
+}
+
+function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-[#e2e8f0] bg-white shadow-sm">
+      <div className="border-b border-[#f0f4f8] bg-[#f8fafc] px-5 py-3.5">
+        <h2 className="text-[13px] font-semibold text-[#374151]">{title}</h2>
+      </div>
+      <div className="px-5 py-5">{children}</div>
+    </div>
+  );
+}
+
+// ── 메인 폼 ──────────────────────────────────────────────────────────────────
+export default function NavigationForm({
+  mode,
+  item,
+  parentOptions,
+  contentMenuOptions,
+  createAction,
+  updateAction,
+  deleteAction,
+}: NavigationFormProps) {
+  const router = useRouter();
+  const [isPendingDelete, startDeleteTransition] = useTransition();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const action = mode === "edit" && updateAction ? updateAction : createAction;
+  const [state, formAction, isPending] = useActionState<NavigationFormState, FormData>(action, {});
+
+  const [linkType, setLinkType] = useState<AdminNavigationLinkType>(
+    item?.linkType ?? "INTERNAL",
+  );
+
+  function handleDelete() {
+    if (!deleteAction) return;
+    startDeleteTransition(async () => {
+      await deleteAction();
+    });
+  }
+
+  return (
+    <form action={formAction} className="space-y-5">
+      {/* 전역 에러 메시지 */}
+      {state.message && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600">
+          {state.message}
+        </div>
+      )}
+
+      {/* ── 기본 정보 ── */}
+      <SectionCard title="기본 정보">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {/* 메뉴명 */}
+          <div>
+            <FieldLabel required>메뉴명</FieldLabel>
+            <TextInput
+              name="label"
+              defaultValue={item?.label}
+              placeholder="예) 설교 영상"
+              error={state.errors?.label}
+            />
+          </div>
+
+          {/* 메뉴 키 */}
+          <div>
+            <FieldLabel required>메뉴 키</FieldLabel>
+            <TextInput
+              name="menuKey"
+              defaultValue={item?.menuKey}
+              placeholder="예) sermon-video"
+              error={state.errors?.menuKey}
+            />
+            <p className="mt-1 text-[11px] text-[#8fa3bb]">영소문자, 숫자, -, _ 만 사용 가능</p>
+          </div>
+
+          {/* 링크 타입 */}
+          <div>
+            <FieldLabel required>링크 타입</FieldLabel>
+            <select
+              name="linkType"
+              value={linkType}
+              onChange={(e) => setLinkType(e.target.value as AdminNavigationLinkType)}
+              className={`h-9 w-full rounded-lg border px-3 text-[13px] text-[#132033]
+                bg-[#f8fafc] focus:border-[#3f74c7] focus:outline-none focus:ring-1 focus:ring-[#3f74c7]/40 transition
+                ${state.errors?.linkType ? "border-red-400" : "border-[#d1dbe6]"}`}
+            >
+              {LINK_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label} — {t.desc}
+                </option>
+              ))}
+            </select>
+            <FieldError message={state.errors?.linkType} />
+          </div>
+
+          {/* 상위 메뉴 */}
+          <div>
+            <FieldLabel>상위 메뉴 (2depth)</FieldLabel>
+            <select
+              name="parentId"
+              defaultValue={item?.parentId ?? ""}
+              className="h-9 w-full rounded-lg border border-[#d1dbe6] bg-[#f8fafc] px-3 text-[13px] text-[#132033]
+                focus:border-[#3f74c7] focus:outline-none focus:ring-1 focus:ring-[#3f74c7]/40 transition"
+            >
+              <option value="">없음 (1depth)</option>
+              {parentOptions.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.label} ({p.menuKey})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 연결 주소 */}
+          <div className="sm:col-span-2">
+            <FieldLabel required>연결 주소 (href)</FieldLabel>
+            <TextInput
+              name="href"
+              defaultValue={item?.href}
+              placeholder="예) /media/messages"
+              error={state.errors?.href}
+            />
+          </div>
+
+          {/* 매치 경로 */}
+          <div className="sm:col-span-2">
+            <FieldLabel>매치 경로 (match_path)</FieldLabel>
+            <TextInput
+              name="matchPath"
+              defaultValue={item?.matchPath ?? ""}
+              placeholder="예) /media/messages/* (비우면 href 사용)"
+            />
+            <p className="mt-1 text-[11px] text-[#8fa3bb]">
+              활성 상태 판별에 사용할 경로 패턴. 비워두면 href 값을 그대로 사용합니다.
+            </p>
+          </div>
+
+          {/* 콘텐츠 키 (CONTENT_REF 전용) */}
+          {linkType === "CONTENT_REF" && (
+            <div className="sm:col-span-2">
+              <FieldLabel>콘텐츠 사이트 키</FieldLabel>
+              {contentMenuOptions.length > 0 ? (
+                <select
+                  name="contentSiteKey"
+                  defaultValue={item?.contentSiteKey ?? ""}
+                  className="h-9 w-full rounded-lg border border-[#d1dbe6] bg-[#f8fafc] px-3 text-[13px] text-[#132033]
+                    focus:border-[#3f74c7] focus:outline-none focus:ring-1 focus:ring-[#3f74c7]/40 transition"
+                >
+                  <option value="">선택하세요</option>
+                  {contentMenuOptions.map((c) => (
+                    <option key={c.siteKey} value={c.siteKey}>
+                      {c.menuName} ({c.siteKey})
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <TextInput
+                  name="contentSiteKey"
+                  defaultValue={item?.contentSiteKey ?? ""}
+                  placeholder="예) sermon-series"
+                />
+              )}
+            </div>
+          )}
+        </div>
+      </SectionCard>
+
+      {/* ── 표시 설정 ── */}
+      <SectionCard title="표시 설정">
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+          <Toggle name="visible"           defaultChecked={item?.visible ?? true}           label="전체 노출"       description="false 시 모든 위치에서 숨김" />
+          <Toggle name="headerVisible"     defaultChecked={item?.headerVisible ?? true}     label="헤더 노출"       description="PC/모바일 상단 헤더" />
+          <Toggle name="mobileVisible"     defaultChecked={item?.mobileVisible ?? true}     label="모바일 노출"     description="모바일 전용 표시 여부" />
+          <Toggle name="lnbVisible"        defaultChecked={item?.lnbVisible ?? true}        label="LNB 노출"        description="좌측 사이드 내비게이션" />
+          <Toggle name="breadcrumbVisible" defaultChecked={item?.breadcrumbVisible ?? true} label="브레드크럼 노출" description="페이지 상단 경로 표시" />
+          <Toggle name="defaultLanding"    defaultChecked={item?.defaultLanding ?? false}   label="기본 랜딩"       description="상위 메뉴 클릭 시 이 페이지로" />
+        </div>
+      </SectionCard>
+
+      {/* ── 기타 설정 ── */}
+      <SectionCard title="기타 설정">
+        <div className="max-w-xs">
+          <FieldLabel>정렬 순서</FieldLabel>
+          <input
+            type="number"
+            name="sortOrder"
+            defaultValue={item?.sortOrder ?? 0}
+            min={0}
+            className="h-9 w-full rounded-lg border border-[#d1dbe6] bg-[#f8fafc] px-3 text-[13px] text-[#132033]
+              focus:border-[#3f74c7] focus:outline-none focus:ring-1 focus:ring-[#3f74c7]/40 transition"
+          />
+          <p className="mt-1 text-[11px] text-[#8fa3bb]">숫자가 낮을수록 앞에 노출됩니다.</p>
+        </div>
+      </SectionCard>
+
+      {/* ── 액션 버튼 ── */}
+      <div className="flex items-center justify-between pt-1">
+        {/* 삭제 (수정 모드에서만) */}
+        <div>
+          {mode === "edit" && deleteAction && (
+            <>
+              {showDeleteConfirm ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-[12px] text-[#e53e3e]">정말 삭제하시겠습니까?</span>
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={isPendingDelete}
+                    className="inline-flex h-8 items-center rounded-lg bg-red-500 px-3 text-[12px] font-semibold text-white transition hover:bg-red-600 disabled:opacity-50"
+                  >
+                    {isPendingDelete ? "삭제 중…" : "삭제 확인"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="inline-flex h-8 items-center rounded-lg border border-[#d1dbe6] bg-white px-3 text-[12px] text-[#5d6f86] transition hover:bg-[#f1f5f9]"
+                  >
+                    취소
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-4 text-[13px] font-medium text-red-500 transition hover:border-red-300 hover:bg-red-100"
+                >
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                    <path d="M2 3h9M5 3V2h3v1M4 3v7h5V3H4z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  메뉴 삭제
+                </button>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* 취소 / 저장 */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="inline-flex h-9 items-center rounded-lg border border-[#d1dbe6] bg-white px-4 text-[13px] font-medium text-[#5d6f86] transition hover:bg-[#f1f5f9]"
+          >
+            취소
+          </button>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#3f74c7] px-5 text-[13px] font-semibold text-white shadow-sm transition hover:bg-[#4a82d7] disabled:opacity-60"
+          >
+            {isPending ? (
+              <>
+                <svg className="animate-spin" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                  <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5" strokeDasharray="12 8" />
+                </svg>
+                저장 중…
+              </>
+            ) : (
+              mode === "edit" ? "변경 저장" : "메뉴 추가"
+            )}
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+}

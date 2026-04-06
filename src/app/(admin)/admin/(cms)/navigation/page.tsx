@@ -99,18 +99,7 @@ export default async function AdminNavigationPage({ searchParams }: AdminNavigat
       </nav>
 
       {/* ── 페이지 헤더 ── */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-[#0f1c2e]">내비게이션 메뉴</h1>
-        <Link
-          href="/admin/navigation/new"
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#3f74c7] px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-[#4a82d7]"
-        >
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-            <path d="M6.5 1v11M1 6.5h11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-          </svg>
-          메뉴 추가
-        </Link>
-      </div>
+      <h1 className="text-xl font-bold text-[#0f1c2e]">내비게이션 메뉴</h1>
 
       {/* ── 필터 바 ── */}
       <Suspense fallback={<div className="h-[100px] animate-pulse rounded-2xl bg-[#f1f5f9]" />}>
@@ -264,6 +253,19 @@ export default async function AdminNavigationPage({ searchParams }: AdminNavigat
             <p className="text-[11px] text-[#a0b0c3]">전체 {totalCount}건 모두 표시됨</p>
           </div>
         )}
+      </div>
+
+      {/* ── 메뉴 추가 버튼 ── */}
+      <div className="flex justify-end">
+        <Link
+          href="/admin/navigation/new"
+          className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#3f74c7] px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-[#4a82d7]"
+        >
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M6.5 1v11M1 6.5h11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+          메뉴 추가
+        </Link>
       </div>
     </div>
   );
