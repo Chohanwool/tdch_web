@@ -19,7 +19,7 @@ export default async function CmsLayout({
       <CmsSidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
         <CmsTopbar session={session} />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto bg-[#faf8ff]">
           <div className="mx-auto max-w-5xl px-6 py-8">{children}</div>
         </main>
       </div>

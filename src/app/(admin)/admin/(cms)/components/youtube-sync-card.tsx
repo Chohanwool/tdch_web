@@ -50,7 +50,7 @@ export default function YoutubeSyncCard() {
   };
 
   return (
-    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6">
+    <div className="rounded-2xl border border-[#d5d9df] bg-[#f7f9fc] p-6 shadow-[0_12px_30px_rgba(15,28,46,0.06)]">
       {/* 헤더 */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -61,9 +61,9 @@ export default function YoutubeSyncCard() {
                 <circle cx="9.5" cy="7.5" r="1" fill="#f87171"/>
               </svg>
             </div>
-            <h3 className="text-[13px] font-semibold text-white">YouTube 동기화</h3>
+            <h3 className="text-[13px] font-semibold text-[#132033]">YouTube 동기화</h3>
           </div>
-          <p className="mt-2 text-xs leading-5 text-white/40">
+          <p className="mt-2 text-xs leading-5 text-[#5d6f86]">
             YouTube 플레이리스트를 수동으로 동기화합니다.
             <br />
             브라우저는 관리자 세션만 보내고, 서버가 안전하게 관리자 API를 호출합니다.
@@ -73,7 +73,7 @@ export default function YoutubeSyncCard() {
         <button
           onClick={handleSync}
           disabled={status === "syncing"}
-          className="flex shrink-0 items-center gap-2 rounded-xl bg-[#3f74c7]/20 px-4 py-2 text-[13px] font-semibold text-[#6ca6f0] transition hover:bg-[#3f74c7]/30 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex shrink-0 items-center gap-2 rounded-xl bg-[#3f74c7] px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-[#4a82d7] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {status === "syncing" ? (
             <>
@@ -105,7 +105,7 @@ export default function YoutubeSyncCard() {
             </svg>
             <p className="text-xs font-semibold text-emerald-400">동기화 완료</p>
           </div>
-          <div className="mt-2.5 flex gap-4 text-[11px] text-white/50">
+          <div className="mt-2.5 flex gap-4 text-[11px] text-[#48606d]">
             <span>전체 {result.totalPlaylists}개</span>
             <span className="text-emerald-400/80">성공 {result.succeededPlaylists}개</span>
             {result.failedPlaylists > 0 && (
