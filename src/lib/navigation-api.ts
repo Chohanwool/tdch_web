@@ -1,9 +1,12 @@
 import "server-only";
 
-import { fallbackNavigationResponse } from "@/lib/site-data";
 import type { NavigationResponse, NavMenuGroup } from "@/lib/navigation-types";
 import { toNavMenuGroups } from "@/lib/navigation-utils";
 import { SERVER_MEDIA_API_BASE_URL } from "@/lib/server-config";
+
+const EMPTY_NAVIGATION_RESPONSE: NavigationResponse = {
+  groups: [],
+};
 
 export async function getNavigationResponse(): Promise<NavigationResponse> {
   try {
@@ -18,15 +21,15 @@ export async function getNavigationResponse(): Promise<NavigationResponse> {
 
     if (!response.ok) {
       console.warn(
-        `Navigation API request failed: ${response.status} ${response.statusText}. Falling back to static navigation.`,
+        `Navigation API request failed: ${response.status} ${response.statusText}. Returning empty navigation.`,
       );
-      return fallbackNavigationResponse;
+      return EMPTY_NAVIGATION_RESPONSE;
     }
 
     return response.json() as Promise<NavigationResponse>;
   } catch (error) {
-    console.warn("Failed to fetch navigation. Falling back to static navigation.", error);
-    return fallbackNavigationResponse;
+    console.warn("Failed to fetch navigation. Returning empty navigation.", error);
+    return EMPTY_NAVIGATION_RESPONSE;
   }
 }
 
