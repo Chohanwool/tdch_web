@@ -188,6 +188,11 @@ export default function NavigationForm({
   const [toast, setToast] = useState<{ id: number; message: string } | null>(null);
   const [selectedParentId, setSelectedParentId] = useState(item?.parentId ? String(item.parentId) : "");
   const [defaultLandingChecked, setDefaultLandingChecked] = useState(item?.defaultLanding ?? false);
+  const [visibleChecked, setVisibleChecked] = useState(item?.visible ?? true);
+  const [headerVisibleChecked, setHeaderVisibleChecked] = useState(item?.headerVisible ?? true);
+  const [mobileVisibleChecked, setMobileVisibleChecked] = useState(item?.mobileVisible ?? true);
+  const [lnbVisibleChecked, setLnbVisibleChecked] = useState(item?.lnbVisible ?? true);
+  const [breadcrumbVisibleChecked, setBreadcrumbVisibleChecked] = useState(item?.breadcrumbVisible ?? true);
 
   const action = mode === "edit" && updateAction ? updateAction : createAction;
   const [state, formAction, isPending] = useActionState<NavigationFormState, FormData>(action, {});
@@ -216,6 +221,15 @@ export default function NavigationForm({
       setDefaultLandingChecked(false);
     }
   }, [selectedParentId, defaultLandingChecked]);
+
+  useEffect(() => {
+    if (!visibleChecked) {
+      setHeaderVisibleChecked(false);
+      setMobileVisibleChecked(false);
+      setLnbVisibleChecked(false);
+      setBreadcrumbVisibleChecked(false);
+    }
+  }, [visibleChecked]);
 
   function handleDelete() {
     if (!deleteAction) return;
@@ -358,20 +372,70 @@ export default function NavigationForm({
 
       {/* ── 표시 설정 ── */}
       <SectionCard title="표시 설정">
-        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-          <Toggle name="visible"           defaultChecked={item?.visible ?? true}           label="전체 노출"       description="false 시 모든 위치에서 숨김" />
-          <Toggle name="headerVisible"     defaultChecked={item?.headerVisible ?? true}     label="헤더 노출"       description="PC/모바일 상단 헤더" />
-          <Toggle name="mobileVisible"     defaultChecked={item?.mobileVisible ?? true}     label="모바일 노출"     description="모바일 전용 표시 여부" />
-          <Toggle name="lnbVisible"        defaultChecked={item?.lnbVisible ?? true}        label="LNB 노출"        description="좌측 사이드 내비게이션" />
-          <Toggle name="breadcrumbVisible" defaultChecked={item?.breadcrumbVisible ?? true} label="브레드크럼 노출" description="페이지 상단 경로 표시" />
-          <Toggle
-            name="defaultLanding"
-            checked={selectedParentId ? defaultLandingChecked : false}
-            onCheckedChange={setDefaultLandingChecked}
-            disabled={!selectedParentId}
-            label="기본 랜딩"
-            description={selectedParentId ? "상위 메뉴 클릭 시 이 페이지로" : "2단계 메뉴에서만 설정할 수 있습니다."}
-          />
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-[#d8e2ee] bg-[#f8fbff] p-3">
+            <Toggle
+              name="visible"
+              checked={visibleChecked}
+              onCheckedChange={setVisibleChecked}
+              label="전체 노출"
+              description="끄면 사이트의 모든 메뉴 영역에서 숨겨집니다."
+            />
+          </div>
+
+          <div className="rounded-2xl border border-[#e9edf3] bg-[#fcfdff] p-4">
+            <div className="mb-3">
+              <p className="text-[12px] font-semibold text-[#374151]">세부 노출 위치</p>
+              <p className="mt-1 text-[11px] text-[#8fa3bb]">
+                전체 노출이 켜져 있을 때만 각 위치별로 따로 표시할 수 있습니다.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              <Toggle
+                name="headerVisible"
+                checked={visibleChecked ? headerVisibleChecked : false}
+                onCheckedChange={setHeaderVisibleChecked}
+                disabled={!visibleChecked}
+                label="헤더 노출"
+                description="PC/모바일 상단 헤더"
+              />
+              <Toggle
+                name="mobileVisible"
+                checked={visibleChecked ? mobileVisibleChecked : false}
+                onCheckedChange={setMobileVisibleChecked}
+                disabled={!visibleChecked}
+                label="모바일 노출"
+                description="모바일 전체 메뉴"
+              />
+              <Toggle
+                name="lnbVisible"
+                checked={visibleChecked ? lnbVisibleChecked : false}
+                onCheckedChange={setLnbVisibleChecked}
+                disabled={!visibleChecked}
+                label="하위 메뉴 탭 노출"
+                description="브레드크럼 아래 하위 메뉴 탭"
+              />
+              <Toggle
+                name="breadcrumbVisible"
+                checked={visibleChecked ? breadcrumbVisibleChecked : false}
+                onCheckedChange={setBreadcrumbVisibleChecked}
+                disabled={!visibleChecked}
+                label="브레드크럼 노출"
+                description="페이지 상단 현재 위치 경로"
+              />
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-[#e9edf3] bg-[#fcfdff] p-3">
+            <Toggle
+              name="defaultLanding"
+              checked={selectedParentId ? defaultLandingChecked : false}
+              onCheckedChange={setDefaultLandingChecked}
+              disabled={!selectedParentId}
+              label="기본 랜딩"
+              description={selectedParentId ? "상위 메뉴 클릭 시 이 페이지로 이동합니다." : "2단계 메뉴에서만 설정할 수 있습니다."}
+            />
+          </div>
         </div>
       </SectionCard>
 
