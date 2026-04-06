@@ -76,6 +76,24 @@ npm run dev
 4. 카카오 계정 이메일을 `ADMIN_ALLOWED_EMAILS`에 추가
 5. `npm run dev` 후 `/admin/login`에서 로그인 확인
 
+운영 배포 체크:
+
+- Vercel `Environment Variables`에 [`tdch_web/.env.production.example`](/Users/hanwool/ground/Palm%20Lab/TDCH/tdch_web/.env.production.example) 기준으로 입력
+- `NEXTAUTH_URL=https://www.tdch.co.kr`
+- `NEXT_PUBLIC_SITE_URL=https://www.tdch.co.kr`
+- `MEDIA_API_BASE_URL=https://api.tdch.co.kr`
+- `NEXT_PUBLIC_MEDIA_API_BASE_URL=https://api.tdch.co.kr`
+- `ADMIN_SYNC_KEY`는 `tdch_api` 운영값과 동일하게 유지
+- Kakao Developers `카카오 로그인 리다이렉트 URI`에 `https://www.tdch.co.kr/api/auth/callback/kakao` 등록
+- Kakao Developers `Logout Redirect URI`에 `https://www.tdch.co.kr/admin/login` 등록
+
+운영에서 관리자 계정을 바꾸는 방법:
+
+- Vercel의 `ADMIN_ALLOWED_EMAILS` 값을 수정
+- 쉼표 구분 문자열 유지
+- 값 저장 후 `Redeploy`
+- 기존 관리자 세션 로그아웃 후 다시 로그인 확인
+
 ## 단계 4) 운영 데이터 수정 위치
 
 - 연락처/계좌/링크: `.env.local` (로컬) / Vercel Environment Variables (운영)

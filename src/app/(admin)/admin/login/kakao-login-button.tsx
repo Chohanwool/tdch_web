@@ -41,7 +41,7 @@ export default function KakaoLoginButton({ callbackUrl }: KakaoLoginButtonProps)
         ) : (
           <>
             <KakaoIcon />
-            <span>카카오로 로그인</span>
+            <span>카카오 로그인</span>
           </>
         )}
       </button>
