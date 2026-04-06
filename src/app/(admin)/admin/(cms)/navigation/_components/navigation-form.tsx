@@ -220,7 +220,15 @@ export default function NavigationForm({
   function handleDelete() {
     if (!deleteAction) return;
     startDeleteTransition(async () => {
-      await deleteAction();
+      try {
+        await deleteAction();
+      } catch (error) {
+        const message = error instanceof Error
+          ? error.message
+          : "메뉴를 삭제하지 못했습니다. 잠시 후 다시 시도해 주세요.";
+        setToast({ id: Date.now(), message });
+        setShowDeleteConfirm(false);
+      }
     });
   }
 

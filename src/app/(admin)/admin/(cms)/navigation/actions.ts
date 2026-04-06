@@ -86,6 +86,10 @@ function toFriendlyNavigationMessage(error: unknown, fallback: string): string {
     return "메뉴 그룹 정보를 다시 불러온 뒤 시도해 주세요.";
   }
 
+  if (message.includes("하위 메뉴가 있는 메뉴는 삭제할 수 없습니다")) {
+    return "이 메뉴 안에 하위 메뉴가 있어 바로 삭제할 수 없습니다. 하위 메뉴를 먼저 정리해 주세요.";
+  }
+
   return fallback;
 }
 
