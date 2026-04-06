@@ -1,84 +1,64 @@
-// src/app/sitemap.ts
 import type { MetadataRoute } from "next";
+import { getNavigationResponse } from "@/lib/navigation-api";
 import { SITE_URL } from "@/lib/seo";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+function normalizePath(href: string | null | undefined): string {
+  if (!href) {
+    return "";
+  }
+
+  const basePath = href.split("#")[0]?.trim() ?? "";
+  if (!basePath || !basePath.startsWith("/")) {
+    return "";
+  }
+
+  if (basePath === "/") {
+    return "/";
+  }
+
+  return basePath.replace(/\/+$/, "");
+}
+
+function addPath(paths: Set<string>, href: string | null | undefined): void {
+  const normalized = normalizePath(href);
+  if (!normalized) {
+    return;
+  }
+
+  paths.add(normalized);
+}
+
+function toSitemapEntry(path: string, now: Date): MetadataRoute.Sitemap[number] {
+  return {
+    url: path === "/" ? SITE_URL : `${SITE_URL}${path}`,
+    lastModified: now,
+    changeFrequency: path === "/" ? "weekly" : "monthly",
+    priority: path === "/" ? 1.0 : 0.7,
+  };
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const navigation = await getNavigationResponse();
+  const paths = new Set<string>(["/"]);
 
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: SITE_URL,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 1.0,
-    },
-    {
-      url: `${SITE_URL}/about/pastor`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/about/service-times`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${SITE_URL}/about/location`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${SITE_URL}/about/history`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${SITE_URL}/about/giving`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${SITE_URL}/sermons/messages`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${SITE_URL}/sermons/better-devotion`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/sermons/its-okay`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/newcomer/guide`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${SITE_URL}/newcomer/care`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/newcomer/disciples`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-  ];
+  for (const group of navigation.groups) {
+    addPath(paths, group.defaultLandingHref ?? group.href);
 
-  return staticPages;
+    for (const item of group.items) {
+      if (item.linkType === "EXTERNAL") {
+        continue;
+      }
+
+      addPath(paths, item.href);
+    }
+  }
+
+  return Array.from(paths)
+    .sort((left, right) => {
+      if (left === "/") return -1;
+      if (right === "/") return 1;
+      return left.localeCompare(right);
+    })
+    .map((path) => toSitemapEntry(path, now));
 }
