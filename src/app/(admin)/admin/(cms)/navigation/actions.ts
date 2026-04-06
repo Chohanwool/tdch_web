@@ -50,10 +50,16 @@ function parsePayload(formData: FormData): {
   if (!VALID_LINK_TYPES.includes(linkType as AdminNavigationLinkType))
     errors.linkType = "올바른 링크 타입을 선택해주세요.";
 
+  const navigationSetId = parseNullableNumber(formData.get("navigationSetId"));
+  if (!navigationSetId) {
+    errors.navigationSetId = "메뉴 세트 정보가 누락되었습니다.";
+  }
+
   if (Object.keys(errors).length > 0) return { errors };
 
   return {
     payload: {
+      navigationSetId: navigationSetId!,
       parentId: parseNullableNumber(formData.get("parentId")),
       menuKey,
       label,

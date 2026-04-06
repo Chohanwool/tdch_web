@@ -4,8 +4,25 @@ import { adminApiFetch } from "@/lib/admin-api";
 
 export type AdminNavigationLinkType = "INTERNAL" | "ANCHOR" | "EXTERNAL" | "CONTENT_REF";
 
+// ── Navigation Set ────────────────────────────────────────────────────────────
+
+export interface AdminNavigationSet {
+  id: number;
+  setKey: string;
+  label: string;
+  description: string | null;
+  active: boolean;
+}
+
+export interface AdminNavigationSetsResponse {
+  sets: AdminNavigationSet[];
+}
+
+// ── Navigation Item ───────────────────────────────────────────────────────────
+
 export interface AdminNavigationItem {
   id: number;
+  navigationSetId: number;
   parentId: number | null;
   menuKey: string;
   label: string;
@@ -40,8 +57,24 @@ export interface AdminContentMenusResponse {
   items: AdminContentMenu[];
 }
 
-export async function getAdminNavigationItems(includeHidden = true): Promise<AdminNavigationTreeResponse> {
-  const response = await adminApiFetch(`/api/v1/admin/navigation/items?includeHidden=${includeHidden ? "true" : "false"}`);
+// ── Read ──────────────────────────────────────────────────────────────────────
+
+export async function getAdminNavigationSets(): Promise<AdminNavigationSetsResponse> {
+  try {
+    const response = await adminApiFetch("/api/v1/admin/navigation/sets");
+    return response.json() as Promise<AdminNavigationSetsResponse>;
+  } catch {
+    // 엔드포인트 미구현 시 기본 세트로 fallback
+    return { sets: [{ id: 1, setKey: "main", label: "메인 사이트 메뉴", description: null, active: true }] };
+  }
+}
+
+export async function getAdminNavigationItems(
+  includeHidden = true,
+  setKey = "main",
+): Promise<AdminNavigationTreeResponse> {
+  const params = new URLSearchParams({ includeHidden: includeHidden ? "true" : "false", setKey });
+  const response = await adminApiFetch(`/api/v1/admin/navigation/items?${params.toString()}`);
   return response.json() as Promise<AdminNavigationTreeResponse>;
 }
 
@@ -55,9 +88,10 @@ export async function getAdminContentMenus(): Promise<AdminContentMenusResponse>
   return response.json() as Promise<AdminContentMenusResponse>;
 }
 
-// ── CRUD ─────────────────────────────────────────────────────────────────────
+// ── CRUD ──────────────────────────────────────────────────────────────────────
 
 export interface NavigationItemPayload {
+  navigationSetId: number;
   parentId?: number | null;
   menuKey: string;
   label: string;

@@ -8,6 +8,8 @@ import type { NavigationFormState } from "../actions";
 // ── 타입 ─────────────────────────────────────────────────────────────────────
 interface NavigationFormProps {
   mode: "new" | "edit";
+  /** 소속 세트 ID — 신규 생성 시 필수, 수정 시 item에서 추출 */
+  navigationSetId: number;
   item?: AdminNavigationItem;
   parentOptions: Pick<AdminNavigationItem, "id" | "label" | "menuKey">[];
   contentMenuOptions: AdminContentMenu[];
@@ -112,6 +114,7 @@ function SectionCard({ title, children }: { title: string; children: React.React
 // ── 메인 폼 ──────────────────────────────────────────────────────────────────
 export default function NavigationForm({
   mode,
+  navigationSetId,
   item,
   parentOptions,
   contentMenuOptions,
@@ -139,6 +142,9 @@ export default function NavigationForm({
 
   return (
     <form action={formAction} className="space-y-5">
+      {/* navigationSetId — hidden */}
+      <input type="hidden" name="navigationSetId" value={navigationSetId} />
+
       {/* 전역 에러 메시지 */}
       {state.message && (
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600">
