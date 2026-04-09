@@ -18,13 +18,13 @@ export default function ServiceTimesTable({
       <table className="w-full min-w-[680px] table-fixed border-collapse text-left lg:min-w-[760px]">
         <thead>
           <tr className="border-b border-cedar/15 bg-[#fafcff]">
-            <th className="type-label w-[38%] border-r border-cedar/15 px-4 py-4 text-center font-semibold tracking-[0.08em] text-ink/72 lg:px-6 lg:py-5">
+            <th className="type-label w-[35%] border-r border-cedar/15 px-4 py-4 text-center font-semibold tracking-[0.08em] text-ink/72 lg:px-6 lg:py-5">
               구분
             </th>
-            <th className="type-label w-[37%] border-r border-cedar/15 px-4 py-4 text-center font-semibold tracking-[0.08em] text-ink/72 lg:px-6 lg:py-5">
+            <th className="type-label w-[35%] border-r border-cedar/15 px-4 py-4 text-center font-semibold tracking-[0.08em] text-ink/72 lg:px-6 lg:py-5">
               시간
             </th>
-            <th className="type-label w-[25%] px-4 py-4 text-center font-semibold tracking-[0.08em] text-ink/72 lg:px-6 lg:py-5">
+            <th className="type-label w-[30%] px-4 py-4 text-center font-semibold tracking-[0.08em] text-ink/72 lg:px-6 lg:py-5">
               장소
             </th>
           </tr>
