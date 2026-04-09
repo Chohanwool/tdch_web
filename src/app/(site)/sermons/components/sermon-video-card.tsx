@@ -29,7 +29,7 @@ export default function SermonVideoCard({
 
   const content = (
     <>
-      <div className="relative aspect-[16/10] w-full overflow-hidden">
+      <div className="relative aspect-[16/10] w-full overflow-hidden" data-fab-theme="dark">
         <Image
           src={thumbnail}
           alt={thumbnailAlt}
@@ -43,7 +43,7 @@ export default function SermonVideoCard({
           </svg>
         </div>
       </div>
-      <div className="p-5">
+      <div className="p-5" data-fab-theme="light">
         <div className="flex items-center gap-2 text-xs font-semibold text-cedar">
           <span>{category}</span>
           <span className="text-cedar/40">|</span>

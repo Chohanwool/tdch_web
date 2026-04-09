@@ -57,6 +57,22 @@ export default function BackToTopFab() {
       const centerY = rect.top + rect.height / 2;
       const elements = document.elementsFromPoint(centerX, centerY);
 
+      // 1. data-fab-theme 속성이 있는 요소를 우선 탐색
+      const explictElement = elements.find((element) => {
+        if (element === button || button.contains(element)) return false;
+        return element.hasAttribute?.('data-fab-theme') || element.closest?.('[data-fab-theme]');
+      });
+
+      if (explictElement) {
+        const themeTarget = explictElement.hasAttribute('data-fab-theme')
+          ? explictElement
+          : explictElement.closest('[data-fab-theme]');
+        const theme = (themeTarget as HTMLElement).dataset.fabTheme;
+        setUseInverseTheme(theme === 'dark');
+        return;
+      }
+
+      // 2. 명시적 테마가 없으면 기존의 background-color 계산 로직 수행
       const surface = elements.find((element) => {
         if (element === button || button.contains(element)) {
           return false;
