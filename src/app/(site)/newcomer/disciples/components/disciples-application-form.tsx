@@ -46,7 +46,7 @@ export default function DisciplesApplicationForm({
         <TextField label="연락처" type="tel" placeholder="연락처를 입력하세요" />
         <TextField label="이메일" type="email" placeholder="이메일을 입력하세요" />
 
-        <fieldset className="border-0 p-0">
+        {/* <fieldset className="border-0 p-0">
           <legend className="type-label font-medium tracking-[0.08em] text-white/50">
             신청 과정
           </legend>
@@ -55,12 +55,12 @@ export default function DisciplesApplicationForm({
               <StageRadioOption key={option.id} {...option} />
             ))}
           </div>
-        </fieldset>
+        </fieldset> */}
       </div>
 
       <button
         type="button"
-        className="mt-4 flex h-10 w-full items-center justify-center rounded-[6px] bg-[#b8955a] type-label font-black tracking-[0.08em] text-white transition hover:bg-[#c9a84c]"
+        className="mt-12 flex h-10 w-full items-center justify-center rounded-[6px] bg-[#b8955a] type-label font-black tracking-[0.08em] text-white transition hover:bg-[#c9a84c]"
       >
         신청하기
       </button>
