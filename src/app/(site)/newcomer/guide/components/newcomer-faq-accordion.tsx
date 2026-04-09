@@ -58,7 +58,7 @@ export default function NewcomerFaqAccordion({
                   {(Array.isArray(item.answer) ? item.answer : [item.answer]).map((answerLine) => (
                     <li key={answerLine} className="flex items-start gap-2">
                       <span className="mt-[0.55rem] h-[4px] w-[4px] shrink-0 rounded-full bg-[#7a7060]" />
-                      <span className="type-bodt leading-[1.7] tracking-[0.02em] text-[#7a7060]">
+                      <span className="type-body whitespace-pre-wrap leading-[1.7] tracking-[0.02em] text-[#7a7060]">
                         {answerLine}
                       </span>
                     </li>
