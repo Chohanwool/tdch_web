@@ -86,7 +86,7 @@ export default function Home() {
   return (
     <div className="flex w-full flex-col pb-0 pt-0 overflow-x-hidden">
       {/* 1. 히어로 섹션 */}
-      <section className="relative w-full h-[560px] md:h-[620px] lg:h-[740px] overflow-hidden">
+      <section className="relative w-full h-[640px] md:h-[670px] lg:h-[740px] overflow-hidden">
         <div className="relative h-full">
           <Image
             src="/images/main_bg/main_bg_sec1.png"
@@ -200,8 +200,8 @@ export default function Home() {
           <div className="h-3 md:h-4" />
 
           <Suspense fallback={<HomeSermonSectionFallback youtubeUrl={YOUTUBE_CHANNEL_URL} />}>
-              <HomeSermonSection youtubeUrl={YOUTUBE_CHANNEL_URL} />
-            </Suspense>
+            <HomeSermonSection youtubeUrl={YOUTUBE_CHANNEL_URL} />
+          </Suspense>
         </div>
       </section>
 

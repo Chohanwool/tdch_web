@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MobileNav from "@/components/mobile-nav";
@@ -14,6 +13,7 @@ export default function SiteHeader() {
   const { navMenuGroups } = useNavigation();
   const pathname = usePathname() ?? "";
   const hideOnMobile = /^\/sermons\/its-okay\/[^/]+$/.test(pathname);
+  const isHomePage = pathname === "/";
   const previousScrollYRef = useRef(0);
   const headerRef = useRef<HTMLElement>(null);
 
@@ -83,7 +83,8 @@ export default function SiteHeader() {
       const styles = window.getComputedStyle(headerElement);
       const isHidden = styles.display === "none";
       const isDesktopViewport = window.innerWidth >= 1024;
-      const headerHeight = isHidden || isDesktopViewport
+      const isMobileHomePage = isHomePage && !isDesktopViewport;
+      const headerHeight = isHidden || isDesktopViewport || isMobileHomePage
         ? 0
         : headerElement.getBoundingClientRect().height;
 
@@ -101,7 +102,7 @@ export default function SiteHeader() {
       window.removeEventListener("resize", updateHeaderHeight);
       document.documentElement.style.removeProperty("--site-header-height");
     };
-  }, [hideOnMobile]);
+  }, [hideOnMobile, isHomePage]);
 
   useEffect(() => {
     // 상세 쇼츠 페이지에서 돌아온 직후에도 헤더가 화면 밖에 남지 않도록
@@ -120,33 +121,44 @@ export default function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`${hideOnMobile ? "hidden md:block" : ""} fixed inset-x-0 top-0 z-50 border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg transition-[transform,box-shadow,background-color] duration-300 lg:sticky ${isHiddenOnMobile ? "-translate-y-full pointer-events-none lg:translate-y-0 lg:pointer-events-auto" : "translate-y-0"
-        } ${isCondensed ? "shadow-[0_10px_30px_rgba(16,33,63,0.08)]" : ""
-        }`}
+      className={`${hideOnMobile ? "hidden md:block" : ""} fixed inset-x-0 top-0 z-50 transition-[transform,box-shadow,background-color] duration-300 lg:sticky
+        ${isHomePage ? "border-b border-transparent bg-transparent backdrop-blur-none lg:border-cedar/10 lg:bg-[#ffffff] lg:backdrop-blur-lg" : "border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg"}
+        ${isHiddenOnMobile ? "-translate-y-full pointer-events-none lg:translate-y-0 lg:pointer-events-auto" : "translate-y-0"}
+        ${isCondensed ? "shadow-[0_10px_30px_rgba(16,33,63,0.08)]" : ""}
+      `}
     >
       <div
         className={`section-shell animate-header-item transition-[padding] duration-300 ${isCondensed ? "py-3 md:py-4" : "py-[25px]"
           }`}
       >
         <div className="relative flex items-center justify-between gap-4 md:gap-6">
-          {/* 모바일 환경: 좌측 여백(가상 요소)을 주어 로고가 완벽히 중앙에 오도록 맞춤 */}
-          <div className="w-11 lg:hidden"></div>
+          {/* 모바일/태블릿 로고 또는 텍스트 (홈페이지 여부에 따라 다르게 표시) */}
 
-          {/* 로고 (모바일/태블릿에서는 중앙, 데스크탑에서는 좌측) */}
+          {/* 로고 (모바일/태블릿에서는 좌측, 데스크탑에서는 좌측) */}
           <Link
             href="/"
-            className="absolute left-1/2 top-1/2 max-w-[calc(100%-7.5rem)] -translate-x-1/2 -translate-y-1/2 text-center transition-[transform,font-size] duration-300 lg:static lg:max-w-none lg:shrink-0 lg:translate-x-0 lg:translate-y-0"
+            className="transition-[transform,font-size] duration-300 lg:static lg:max-w-none lg:shrink-0 lg:translate-x-0 lg:translate-y-0"
           >
             <div className="lg:hidden">
-              <Image
-                src="/images/logo/church_logo.png"
-                alt="The 제자교회 로고"
-                width={3099}
-                height={3265}
-                priority
-                className={`h-auto transition-[width] duration-300 ${isCondensed ? "w-[50px] md:w-[70px]" : "w-[86px] md:w-[90px]"
-                  }`}
-              />
+              {isHomePage ? (
+                <div className="flex flex-col">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80">
+                    The Disciples Church
+                  </p>
+                  <p className="font-serif font-bold text-[20px] text-white leading-tight">
+                    The 제자교회
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-themeBlue/70">
+                    The Disciples Church
+                  </p>
+                  <p className="font-serif font-bold text-[20px] text-ink leading-tight">
+                    The 제자교회
+                  </p>
+                </div>
+              )}
             </div>
             <div className="hidden lg:block">
               <p
@@ -208,7 +220,7 @@ export default function SiteHeader() {
 
           {/* 모바일 햄버거 버튼 & 전체 화면 메뉴 */}
           <div className="relative z-10 flex shrink-0 items-center lg:hidden">
-            <MobileNav isOpen={isMobileNavOpen} setIsOpen={setIsMobileNavOpen} />
+            <MobileNav isOpen={isMobileNavOpen} setIsOpen={setIsMobileNavOpen} isTransparent={isHomePage} />
           </div>
         </div>
       </div>

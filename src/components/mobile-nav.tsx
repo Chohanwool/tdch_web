@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useNavigation } from "@/lib/navigation-context";
 
-export default function MobileNav({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (val: boolean) => void }) {
+export default function MobileNav({ isOpen, setIsOpen, isTransparent = false }: { isOpen: boolean, setIsOpen: (val: boolean) => void, isTransparent?: boolean }) {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname() ?? "";
   const { navMenuGroups } = useNavigation();
@@ -52,7 +52,11 @@ export default function MobileNav({ isOpen, setIsOpen }: { isOpen: boolean, setI
         type="button"
         onClick={openMenu}
         onPointerUp={openMenu}
-        className="inline-flex min-h-11 min-w-11 touch-manipulation items-center justify-center rounded-xl border border-themeBlue/20 text-xl text-themeBlue transition hover:border-themeBlue/40 hover:bg-themeBlue/5"
+        className={`inline-flex min-h-11 min-w-11 touch-manipulation items-center justify-center rounded-xl border text-xl transition
+          ${isTransparent
+            ? "border-white/30 text-white hover:border-white/50 hover:bg-white/10"
+            : "border-themeBlue/20 text-themeBlue hover:border-themeBlue/40 hover:bg-themeBlue/5"
+          }`}
         aria-label="메뉴 열기"
         aria-expanded={isOpen}
         aria-controls="mobile-site-nav"
