@@ -18,21 +18,41 @@ function formatSchedule(day: string, time: string, ampm: string) {
   return `${day} ${period} ${time}`;
 }
 
+function normalizeTableLocation(location: string) {
+  return location.replaceAll("(지하1층)", "");
+}
+
 export default function ServiceTimesPage() {
   const serviceRows = serviceTimes.map((service) => ({
     title: service.name,
     schedule: formatSchedule(service.day, service.time, service.ampm),
     location: service.location,
   }));
-  const mainLocationRows = serviceRows.filter(
-    (service) => service.location === "나인아트홀(지하1층)"
+  const tableRows = serviceRows.map((service) => ({
+    ...service,
+    location: normalizeTableLocation(service.location),
+  }));
+  const mainLocationRows = tableRows.filter(
+    (service) => service.location === "나인아트홀"
   );
-  const otherLocationRows = serviceRows.filter(
-    (service) => service.location !== "나인아트홀(지하1층)"
+  const otherLocationRows = tableRows.filter(
+    (service) => service.location !== "나인아트홀"
   );
   const noticeItems = [
     "모든 주일 예배는 온라인 송출을 병행합니다.",
     "예배시간 10분 전에 오셔서 예배를 준비해주세요.",
+    "아트홀은 주일과 금요일만 예배를 위한 공간으로 사용하고 있습니다.",
+    <>
+      나인아트홀 대관 문의 031-238-6685 |{" "}
+      <a
+        href="https://www.nine9ent.com/ARTHALL"
+        target="_blank"
+        rel="noreferrer"
+        className="text-ink underline underline-offset-2"
+      >
+        https://www.nine9ent.com/ARTHALL
+      </a>
+    </>,
   ];
 
   return (

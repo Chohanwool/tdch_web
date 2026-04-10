@@ -138,7 +138,7 @@ export default function LocationPage() {
                 <span className="list-bullet list-bullet--navy shrink-0" />
                 <span>
                   예배 장소는{" "}
-                  <strong className="font-semibold text-red-600">나인아트홀(지하 1층)</strong>
+                  <strong className="font-semibold text-red-600">나인아트홀</strong>
                   {" "}입니다.
                 </span>
               </li>
