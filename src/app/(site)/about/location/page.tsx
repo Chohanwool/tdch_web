@@ -237,12 +237,6 @@ export default function LocationPage() {
                     </a>
                   </span>
                 </li>
-                <li className="flex items-center gap-4">
-                  <span className="list-bullet list-bullet--navy shrink-0" />
-                  <span>
-                    좌표 : {CHURCH_LATITUDE}, {CHURCH_LONGITUDE}
-                  </span>
-                </li>
               </ul>
             </InfoSection>
           </div>
