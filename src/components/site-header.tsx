@@ -1,21 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MobileNav from "@/components/mobile-nav";
 import { useNavigation } from "@/lib/navigation-context";
 
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
 export default function SiteHeader() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isCondensed, setIsCondensed] = useState(false);
   const [isHiddenOnMobile, setIsHiddenOnMobile] = useState(false);
+  const [resolvedPathname, setResolvedPathname] = useState("");
   const { navMenuGroups } = useNavigation();
-  const pathname = usePathname() ?? "";
-  const hideOnMobile = /^\/sermons\/its-okay\/[^/]+$/.test(pathname);
-  const isHomePage = pathname === "/";
+  const pathname = usePathname();
+  const currentPathname = resolvedPathname || pathname || "";
+  const hideOnMobile = /^\/sermons\/its-okay\/[^/]+$/.test(currentPathname);
+  const isHomePage = currentPathname === "/";
   const previousScrollYRef = useRef(0);
   const headerRef = useRef<HTMLElement>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    // Production hard refreshes can briefly lag `usePathname()`.
+    // Sync with the browser pathname before paint to avoid the wrong header style flashing.
+    const browserPathname = window.location.pathname;
+    setResolvedPathname(pathname ?? browserPathname);
+  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -116,7 +127,7 @@ export default function SiteHeader() {
     }
 
     setIsCondensed(window.innerWidth >= 1024 && window.scrollY > 24);
-  }, [pathname]);
+  }, [currentPathname]);
 
   return (
     <header
