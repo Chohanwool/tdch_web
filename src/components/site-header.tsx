@@ -18,7 +18,8 @@ export default function SiteHeader() {
   const currentPathname = resolvedPathname || pathname || "";
   const hideOnMobile = /^\/sermons\/its-okay\/[^/]+$/.test(currentPathname);
   const isHomePage = currentPathname === "/";
-  const shouldUseMobileHomeTheme = isHomePage || currentPathname === "";
+  const shouldUseMobileHomeTheme = isHomePage;
+  const hideOnHomeMobile = isHomePage;
   const previousScrollYRef = useRef(0);
   const headerRef = useRef<HTMLElement>(null);
 
@@ -35,6 +36,7 @@ export default function SiteHeader() {
       const previousScrollY = previousScrollYRef.current;
       const scrollDelta = currentScrollY - previousScrollY;
       const isMobileViewport = window.innerWidth < 1024;
+      const shouldKeepHomeHeaderVisible = isMobileViewport && isHomePage;
 
       if (isMobileViewport) {
         setIsCondensed(false);
@@ -52,7 +54,7 @@ export default function SiteHeader() {
         });
       }
 
-      if (!isMobileViewport || isMobileNavOpen || currentScrollY <= 8) {
+      if (shouldKeepHomeHeaderVisible || !isMobileViewport || isMobileNavOpen || currentScrollY <= 8) {
         setIsHiddenOnMobile(false);
       } else if (scrollDelta > 8) {
         setIsHiddenOnMobile(true);
@@ -81,7 +83,7 @@ export default function SiteHeader() {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
     };
-  }, [isMobileNavOpen]);
+  }, [isHomePage, isMobileNavOpen]);
 
   useEffect(() => {
     const headerElement = headerRef.current;
@@ -133,7 +135,7 @@ export default function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`${hideOnMobile ? "hidden md:block" : ""} fixed inset-x-0 top-0 z-50 transition-[transform,box-shadow,background-color] duration-300 lg:sticky
+      className={`${hideOnMobile ? "hidden md:block" : ""} ${hideOnHomeMobile ? "hidden lg:block" : ""} fixed inset-x-0 top-0 z-50 transition-[transform,box-shadow,background-color] duration-300 lg:sticky
         ${shouldUseMobileHomeTheme
           ? "border-b border-transparent bg-transparent backdrop-blur-none lg:border-cedar/10 lg:bg-[#ffffff] lg:backdrop-blur-lg"
           : "border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg"}

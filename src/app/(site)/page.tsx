@@ -6,6 +6,7 @@ import { Gowun_Batang } from "next/font/google";
 import AnimatedCards from "@/app/home/components/animated-cards";
 import MissionSection from "@/app/home/components/mission-section";
 import SermonVideoCard from "@/app/(site)/sermons/components/sermon-video-card";
+import HomeHeroHeader from "@/components/home-hero-header";
 
 import {
   quickMenuCards,
@@ -86,7 +87,7 @@ export default function Home() {
   return (
     <div className="flex w-full flex-col pb-0 pt-0 overflow-x-hidden">
       {/* 1. 히어로 섹션 */}
-      <section className="relative w-full h-[640px] md:h-[670px] lg:h-[740px] overflow-hidden">
+      <section id="home-hero-section" className="relative w-full h-[640px] md:h-[670px] lg:h-[740px] overflow-hidden">
         <div className="relative h-full">
           <Image
             src="/images/main_bg/main_bg_sec1.png"
@@ -98,78 +99,84 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-ink/78 via-ink/52 to-ink/18" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/38 via-transparent to-transparent" />
 
-          <div className="relative z-10 flex h-full items-start pb-8 pt-28 md:items-center md:py-8">
+          <div className="relative z-10 flex h-full items-start pb-8 pt-8 lg:items-center lg:py-8">
             <div className="section-shell w-full">
-              <div className="grid items-center gap-3 lg:grid-cols-[minmax(0,770px),270px] lg:items-stretch lg:gap-4">
-                {/* 비전 텍스트 카드 */}
-                <div className="w-full space-y-4 rounded-2xl bg-black/30 px-6 py-6 text-ivory backdrop-blur-md md:space-y-5 md:px-7 md:py-7 lg:space-y-6 lg:py-8">
-                  <p className="chip w-fit bg-gold/30 text-ivory text-xs">VISION</p>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-ivory/78 md:text-sm">
-                    {SITE_ALTERNATE_NAME} | {SITE_NAME}
-                  </p>
-                  <h1 className="font-yeongwol text-[3rem] leading-[1.2] tracking-wide md:text-6xl lg:text-7xl lg:tracking-wider xl:text-8xl">
-                    성령으로
-                    <br />
-                    제자삼는 교회
-                  </h1>
-                  {/* 성경 구절 */}
-                  <div className={`${gowunBatang.className} mt-3 text-sm font-medium leading-[1.8] text-ivory/90 md:mt-4 md:text-base lg:mt-5 lg:text-[1.42rem]`}>
-                    <p className="lg:space-y-3">
-                      <span className="block">
-                        예수께서 나아와 말씀하여 이르시되 하늘과 땅의 모든 권세를 내게 주셨으니
-                      </span>
-                      <span className="block">
-                        너희는 가서 모든 민족을 제자로 삼아 아버지와 아들과 성령의 이름으로
-                      </span>
-                      <span className="block">
-                        세례를 베풀고 내가 너희에게 분부한 모든 것을 가르쳐 지키게 하라
-                      </span>
-                      <span className="block">
-                        볼지어다 내가 세상 끝날까지 너희와 항상 함께 있으리라
-                      </span>
+              <div className="flex flex-col gap-8 md:gap-10 lg:block">
+                <HomeHeroHeader />
+                <div className="grid items-center gap-3 lg:grid-cols-[minmax(0,770px),270px] lg:items-stretch lg:gap-4">
+                  {/* 비전 텍스트 카드 */}
+                  <div
+                    id="home-vision-card"
+                    className="w-full space-y-4 rounded-2xl bg-black/30 px-6 py-6 text-ivory backdrop-blur-md md:space-y-5 md:px-7 md:py-7 lg:space-y-6 lg:py-8"
+                  >
+                    <p className="chip w-fit bg-gold/30 text-ivory text-xs">VISION</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-ivory/78 md:text-sm">
+                      {SITE_ALTERNATE_NAME} | {SITE_NAME}
+                    </p>
+                    <h1 className="font-yeongwol text-[3rem] leading-[1.2] tracking-wide md:text-6xl lg:text-7xl lg:tracking-wider xl:text-8xl">
+                      성령으로
+                      <br />
+                      제자삼는 교회
+                    </h1>
+                    {/* 성경 구절 */}
+                    <div className={`${gowunBatang.className} mt-3 text-sm font-medium leading-[1.8] text-ivory/90 md:mt-4 md:text-base lg:mt-5 lg:text-[1.42rem]`}>
+                      <p className="lg:space-y-3">
+                        <span className="block">
+                          예수께서 나아와 말씀하여 이르시되 하늘과 땅의 모든 권세를 내게 주셨으니
+                        </span>
+                        <span className="block">
+                          너희는 가서 모든 민족을 제자로 삼아 아버지와 아들과 성령의 이름으로
+                        </span>
+                        <span className="block">
+                          세례를 베풀고 내가 너희에게 분부한 모든 것을 가르쳐 지키게 하라
+                        </span>
+                        <span className="block">
+                          볼지어다 내가 세상 끝날까지 너희와 항상 함께 있으리라
+                        </span>
+                      </p>
+                    </div>
+                    <p className="text-right text-sm font-semibold tracking-wide text-white md:text-base">
+                      마태복음 28:18~20
                     </p>
                   </div>
-                  <p className="text-right text-sm font-semibold tracking-wide text-white md:text-base">
-                    마태복음 28:18~20
-                  </p>
-                </div>
 
-                {/* 오시는 길 & YouTube 바로가기 카드: lg 이상에서만 표시 */}
-                <div className="hidden lg:grid gap-5 h-full grid-rows-2">
-                  <Link
-                    href="/about/location"
-                    id="hero-location-card"
-                    className="group flex h-full flex-col items-center justify-center rounded-[2rem] border border-white/70 bg-[#f1f3f5]/80 px-8 py-7 text-center text-ink shadow-[0_18px_26px_rgba(16,33,63,0.18)] backdrop-blur-md transition duration-300 hover:-translate-y-1"
-                  >
-                    <lord-icon
-                      src="/images/wired-outline-18-location-pin-hover-jump.json"
-                      trigger="hover"
-                      target="#hero-location-card"
-                      style={{ width: "72px", height: "72px" }}
-                    ></lord-icon>
-                    <p className="mt-1 text-[1.72rem] font-bold leading-none tracking-[-0.01em]">오시는 길</p>
-                    <p className="mt-1 text-[1.02rem] font-medium leading-none text-ink/65">Location</p>
-                    <p className="mt-2 text-sm font-medium leading-snug text-ink/65">
-                      {CHURCH_ADDRESS}
-                    </p>
-                  </Link>
+                  {/* 오시는 길 & YouTube 바로가기 카드: lg 이상에서만 표시 */}
+                  <div className="hidden h-full grid-rows-2 gap-5 lg:grid">
+                    <Link
+                      href="/about/location"
+                      id="hero-location-card"
+                      className="group flex h-full flex-col items-center justify-center rounded-[2rem] border border-white/70 bg-[#f1f3f5]/80 px-8 py-7 text-center text-ink shadow-[0_18px_26px_rgba(16,33,63,0.18)] backdrop-blur-md transition duration-300 hover:-translate-y-1"
+                    >
+                      <lord-icon
+                        src="/images/wired-outline-18-location-pin-hover-jump.json"
+                        trigger="hover"
+                        target="#hero-location-card"
+                        style={{ width: "72px", height: "72px" }}
+                      ></lord-icon>
+                      <p className="mt-1 text-[1.72rem] font-bold leading-none tracking-[-0.01em]">오시는 길</p>
+                      <p className="mt-1 text-[1.02rem] font-medium leading-none text-ink/65">Location</p>
+                      <p className="mt-2 text-sm font-medium leading-snug text-ink/65">
+                        {CHURCH_ADDRESS}
+                      </p>
+                    </Link>
 
-                  <a
-                    href={YOUTUBE_CHANNEL_URL}
-                    id="hero-youtube-card"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group flex h-full flex-col items-center justify-center rounded-[2rem] border border-white/70 bg-[#f1f3f5]/80 px-8 py-7 text-center text-ink shadow-[0_18px_26px_rgba(16,33,63,0.18)] backdrop-blur-md transition duration-300 hover:-translate-y-1"
-                  >
-                    <lord-icon
-                      src="/images/wired-outline-2547-logo-youtube-hover-pinch.json"
-                      trigger="hover"
-                      target="#hero-youtube-card"
-                      style={{ width: "72px", height: "72px" }}
-                    ></lord-icon>
-                    <p className="mt-1 text-[1.48rem] font-bold leading-none tracking-[-0.01em]">{YOUTUBE_CHANNEL_LABEL}</p>
-                    <p className="mt-1 text-[0.94rem] font-medium leading-none text-ink/65">Youtube Channel</p>
-                  </a>
+                    <a
+                      href={YOUTUBE_CHANNEL_URL}
+                      id="hero-youtube-card"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group flex h-full flex-col items-center justify-center rounded-[2rem] border border-white/70 bg-[#f1f3f5]/80 px-8 py-7 text-center text-ink shadow-[0_18px_26px_rgba(16,33,63,0.18)] backdrop-blur-md transition duration-300 hover:-translate-y-1"
+                    >
+                      <lord-icon
+                        src="/images/wired-outline-2547-logo-youtube-hover-pinch.json"
+                        trigger="hover"
+                        target="#hero-youtube-card"
+                        style={{ width: "72px", height: "72px" }}
+                      ></lord-icon>
+                      <p className="mt-1 text-[1.48rem] font-bold leading-none tracking-[-0.01em]">{YOUTUBE_CHANNEL_LABEL}</p>
+                      <p className="mt-1 text-[0.94rem] font-medium leading-none text-ink/65">Youtube Channel</p>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
