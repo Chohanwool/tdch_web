@@ -18,24 +18,16 @@ function formatSchedule(day: string, time: string, ampm: string) {
   return `${day} ${period} ${time}`;
 }
 
-function normalizeTableLocation(location: string) {
-  return location.replaceAll("(지하1층)", "");
-}
-
 export default function ServiceTimesPage() {
   const serviceRows = serviceTimes.map((service) => ({
     title: service.name,
     schedule: formatSchedule(service.day, service.time, service.ampm),
     location: service.location,
   }));
-  const tableRows = serviceRows.map((service) => ({
-    ...service,
-    location: normalizeTableLocation(service.location),
-  }));
-  const mainLocationRows = tableRows.filter(
+  const mainLocationRows = serviceRows.filter(
     (service) => service.location === "나인아트홀"
   );
-  const otherLocationRows = tableRows.filter(
+  const otherLocationRows = serviceRows.filter(
     (service) => service.location !== "나인아트홀"
   );
   const noticeItems = [
