@@ -18,8 +18,7 @@ export default function SiteHeader() {
   const currentPathname = resolvedPathname || pathname || "";
   const hideOnMobile = /^\/sermons\/its-okay\/[^/]+$/.test(currentPathname);
   const isHomePage = currentPathname === "/";
-  const shouldUseMobileHomeTheme = isHomePage;
-  const hideOnHomeMobile = isHomePage;
+  const hideOnHomePage = isHomePage;
   const previousScrollYRef = useRef(0);
   const headerRef = useRef<HTMLElement>(null);
 
@@ -36,7 +35,6 @@ export default function SiteHeader() {
       const previousScrollY = previousScrollYRef.current;
       const scrollDelta = currentScrollY - previousScrollY;
       const isMobileViewport = window.innerWidth < 1024;
-      const shouldKeepHomeHeaderVisible = isMobileViewport && isHomePage;
 
       if (isMobileViewport) {
         setIsCondensed(false);
@@ -54,7 +52,7 @@ export default function SiteHeader() {
         });
       }
 
-      if (shouldKeepHomeHeaderVisible || !isMobileViewport || isMobileNavOpen || currentScrollY <= 8) {
+      if (!isMobileViewport || isMobileNavOpen || currentScrollY <= 8) {
         setIsHiddenOnMobile(false);
       } else if (scrollDelta > 8) {
         setIsHiddenOnMobile(true);
@@ -83,7 +81,7 @@ export default function SiteHeader() {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
     };
-  }, [isHomePage, isMobileNavOpen]);
+  }, [isMobileNavOpen]);
 
   useEffect(() => {
     const headerElement = headerRef.current;
@@ -97,8 +95,7 @@ export default function SiteHeader() {
       const styles = window.getComputedStyle(headerElement);
       const isHidden = styles.display === "none";
       const isDesktopViewport = window.innerWidth >= 1024;
-      const isMobileHomePage = isHomePage && !isDesktopViewport;
-      const headerHeight = isHidden || isDesktopViewport || isMobileHomePage
+      const headerHeight = isHidden || isDesktopViewport
         ? 0
         : headerElement.getBoundingClientRect().height;
 
@@ -116,7 +113,7 @@ export default function SiteHeader() {
       window.removeEventListener("resize", updateHeaderHeight);
       document.documentElement.style.removeProperty("--site-header-height");
     };
-  }, [hideOnMobile, isHomePage]);
+  }, [hideOnMobile]);
 
   useEffect(() => {
     // 상세 쇼츠 페이지에서 돌아온 직후에도 헤더가 화면 밖에 남지 않도록
@@ -135,10 +132,8 @@ export default function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`${hideOnMobile ? "hidden md:block" : ""} ${hideOnHomeMobile ? "hidden lg:block" : ""} fixed inset-x-0 top-0 z-50 transition-[transform,box-shadow,background-color] duration-300 lg:sticky
-        ${shouldUseMobileHomeTheme
-          ? "border-b border-transparent bg-transparent backdrop-blur-none lg:border-cedar/10 lg:bg-[#ffffff] lg:backdrop-blur-lg"
-          : "border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg"}
+      className={`${hideOnMobile ? "hidden md:block" : ""} ${hideOnHomePage ? "hidden" : ""} fixed inset-x-0 top-0 z-50 transition-[transform,box-shadow,background-color] duration-300 lg:sticky
+        border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg
         ${isHiddenOnMobile ? "-translate-y-full pointer-events-none lg:translate-y-0 lg:pointer-events-auto" : "translate-y-0"}
         ${isCondensed ? "shadow-[0_10px_30px_rgba(16,33,63,0.08)]" : ""}
       `}
@@ -156,25 +151,14 @@ export default function SiteHeader() {
             className="transition-[transform,font-size] duration-300 lg:static lg:max-w-none lg:shrink-0 lg:translate-x-0 lg:translate-y-0"
           >
             <div className="lg:hidden">
-              {shouldUseMobileHomeTheme ? (
-                <div className="flex flex-col">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80">
-                    The Disciples Church
-                  </p>
-                  <p className="font-serif font-bold text-[20px] text-white leading-tight">
-                    The 제자교회
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-col">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-themeBlue/70">
-                    The Disciples Church
-                  </p>
-                  <p className="font-serif font-bold text-[20px] text-ink leading-tight">
-                    The 제자교회
-                  </p>
-                </div>
-              )}
+              <div className="flex flex-col">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-themeBlue/70">
+                  The Disciples Church
+                </p>
+                <p className="font-serif font-bold text-[20px] text-ink leading-tight">
+                  The 제자교회
+                </p>
+              </div>
             </div>
             <div className="hidden lg:block">
               <p
@@ -239,7 +223,7 @@ export default function SiteHeader() {
             <MobileNav
               isOpen={isMobileNavOpen}
               setIsOpen={setIsMobileNavOpen}
-              isTransparent={shouldUseMobileHomeTheme}
+              isTransparent={false}
             />
           </div>
         </div>
