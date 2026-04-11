@@ -134,41 +134,41 @@ export default function LocationPage() {
         <div className="space-y-16 md:space-y-24">
           <InfoSection title="방문 안내" subtitle="Visit Guide">
             <ul className="type-body space-y-3 text-black/88">
-              <li className="flex items-center gap-4">
-                <span className="list-bullet list-bullet--navy shrink-0" />
-                <span>
+              <li className="flex items-start gap-4">
+                <span className="list-bullet list-bullet--navy mt-[0.45em] shrink-0" />
+                <span className="flex-1">
                   예배 장소는{" "}
                   <strong className="font-semibold text-red-600">나인아트홀</strong>
                   {" "}입니다.
                 </span>
               </li>
-              <li className="flex items-center gap-4">
-                <span className="list-bullet list-bullet--navy shrink-0" />
-                <span>
+              <li className="flex items-start gap-4">
+                <span className="list-bullet list-bullet--navy mt-[0.45em] shrink-0" />
+                <span className="flex-1">
                   주일 방문 시, 아트홀 건물 주차장을 이용하실 수 있고,
                   주변 유료주차장이나 수원시청 주차장에 주차하신 뒤 걸어서 오셔도 됩니다.
                 </span>
               </li>
-              <li className="flex items-center gap-4">
-                <span className="list-bullet list-bullet--navy shrink-0" />
-                <span>평일에는 주차가 다소 어려울 수 있어 대중 교통 이용을 권장합니다.</span>
+              <li className="flex items-start gap-4">
+                <span className="list-bullet list-bullet--navy mt-[0.45em] shrink-0" />
+                <span className="flex-1">평일에는 주차가 다소 어려울 수 있어 대중 교통 이용을 권장합니다.</span>
               </li>
-              <li className="flex items-center gap-4">
-                <span className="list-bullet list-bullet--navy shrink-0" />
-                <span>방문하시는 경우 건물 내 엘리베이터를 이용하여 지하 1층으로 오시면 됩니다.</span>
+              <li className="flex items-start gap-4">
+                <span className="list-bullet list-bullet--navy mt-[0.45em] shrink-0" />
+                <span className="flex-1">방문하시는 경우 건물 내 엘리베이터를 이용하여 지하 1층으로 오시면 됩니다.</span>
               </li>
             </ul>
           </InfoSection>
 
           <InfoSection title="지하철 이용" subtitle="Subway">
             <ul className="type-body space-y-3 text-black/88">
-              <li className="flex items-center gap-4">
-                <span className="list-bullet list-bullet--navy shrink-0" />
-                <span>수원시청역 6번 출구에서 도보 약 8분 거리</span>
+              <li className="flex items-start gap-4">
+                <span className="list-bullet list-bullet--navy mt-[0.45em] shrink-0" />
+                <span className="flex-1">수원시청역 6번 출구에서 도보 약 8분 거리</span>
               </li>
-              <li className="flex items-center gap-4">
-                <span className="list-bullet list-bullet--navy shrink-0" />
-                <span>매교역 8번 출구에서 도보 약 14분 거리</span>
+              <li className="flex items-start gap-4">
+                <span className="list-bullet list-bullet--navy mt-[0.45em] shrink-0" />
+                <span className="flex-1">매교역 8번 출구에서 도보 약 14분 거리</span>
               </li>
             </ul>
           </InfoSection>
@@ -211,15 +211,15 @@ export default function LocationPage() {
           <div id="contact-info" className="scroll-mt-28">
             <InfoSection title="교회정보" subtitle="Church Info">
               <ul className="type-body space-y-3 text-black/88">
-                <li className="flex items-center gap-4">
-                  <span className="list-bullet list-bullet--navy shrink-0" />
-                  <span>
+                <li className="flex items-start gap-4">
+                  <span className="list-bullet list-bullet--navy mt-[0.45em] shrink-0" />
+                  <span className="flex-1">
                     주소 : {CHURCH_ADDRESS}
                   </span>
                 </li>
-                <li className="flex items-center gap-4">
-                  <span className="list-bullet list-bullet--navy shrink-0" />
-                  <span>
+                <li className="flex items-start gap-4">
+                  <span className="list-bullet list-bullet--navy mt-[0.45em] shrink-0" />
+                  <span className="flex-1">
                     TEL :
                     {" "}
                     <a href={`tel:${CHURCH_PHONE}`} className="transition hover:text-themeBlue">
@@ -227,9 +227,9 @@ export default function LocationPage() {
                     </a>
                   </span>
                 </li>
-                <li className="flex items-center gap-4">
-                  <span className="list-bullet list-bullet--navy shrink-0" />
-                  <span>
+                <li className="flex items-start gap-4">
+                  <span className="list-bullet list-bullet--navy mt-[0.45em] shrink-0" />
+                  <span className="flex-1">
                     EMAIL :
                     {" "}
                     <a href={`mailto:${CHURCH_EMAIL}`} className="transition hover:text-themeBlue">
