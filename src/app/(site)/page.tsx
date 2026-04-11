@@ -98,7 +98,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-ink/78 via-ink/52 to-ink/18" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/38 via-transparent to-transparent" />
 
-          <div className="relative z-10 flex h-full items-center py-8">
+          <div className="relative z-10 flex h-full items-start pb-8 pt-28 md:items-center md:py-8">
             <div className="section-shell w-full">
               <div className="grid items-center gap-3 lg:grid-cols-[minmax(0,770px),270px] lg:items-stretch lg:gap-4">
                 {/* 비전 텍스트 카드 */}
