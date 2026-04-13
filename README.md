@@ -48,6 +48,13 @@ npm run dev
 - 프론트 운영: Vercel Project Settings > Environment Variables
 - 백엔드 운영: Oracle VM `/opt/tdch/.env`
 
+점검 모드 운영:
+
+- `MAINTENANCE_MODE=true` 로 배포하면 일반 페이지 요청은 `/maintenance.html` 로 우회됩니다.
+- `/api/*`, `/_next/*`, 정적 파일 요청은 우회 대상에서 제외됩니다.
+- 점검 해제 시 `MAINTENANCE_MODE=false` 로 되돌리고 다시 배포합니다.
+- 점검 페이지 파일 위치: `public/maintenance.html`
+
 ## 관리자 카카오 로그인 설정
 
 관리자 로그인(`/admin/login`)이 실제로 동작하려면 `.env.local`의 placeholder 값을 실제 값으로 바꿔야 합니다.

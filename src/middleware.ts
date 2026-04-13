@@ -2,11 +2,45 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 const ADMIN_LOGIN_PATH = "/admin/login";
+const MAINTENANCE_PAGE_PATH = "/maintenance.html";
+const MAINTENANCE_ENABLED_VALUES = new Set(["1", "true", "on", "yes"]);
+
 const hasAdminIdentity = (token?: { email?: string | null; username?: string | null } | null) =>
   Boolean(token?.email?.trim() || token?.username?.trim());
 
+function isMaintenanceModeEnabled() {
+  const value = process.env.MAINTENANCE_MODE?.trim().toLowerCase();
+  return value ? MAINTENANCE_ENABLED_VALUES.has(value) : false;
+}
+
+function shouldBypassMaintenance(pathname: string) {
+  if (pathname === MAINTENANCE_PAGE_PATH) {
+    return true;
+  }
+
+  if (
+    pathname.startsWith("/_next/") ||
+    pathname.startsWith("/api/") ||
+    pathname === "/favicon.ico" ||
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml"
+  ) {
+    return true;
+  }
+
+  return /\.[^/]+$/.test(pathname);
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+
+  if (isMaintenanceModeEnabled() && !shouldBypassMaintenance(pathname)) {
+    return NextResponse.redirect(new URL(MAINTENANCE_PAGE_PATH, request.url));
+  }
+
+  if (!pathname.startsWith("/admin")) {
+    return NextResponse.next();
+  }
 
   if (pathname === ADMIN_LOGIN_PATH) {
     return NextResponse.next();
@@ -28,5 +62,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/:path*"],
 };
