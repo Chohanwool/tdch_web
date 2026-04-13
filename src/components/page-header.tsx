@@ -24,7 +24,7 @@ export default function PageHeader({
   const displayTitle = menuGroup?.label || defaultTitle;
 
   return (
-    <section className="relative w-full h-[280px] md:h-[300px] overflow-hidden">
+    <section className="relative hidden h-[280px] w-full overflow-hidden md:block md:h-[300px]">
       <div className="absolute inset-0">
         <Image
           src={backgroundImageUrl}
