@@ -13,10 +13,10 @@ const NAV_GROUPS = [
         exact: true,
         icon: (
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
-            <rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
-            <rect x="1" y="10" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
-            <rect x="10" y="1" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
-            <rect x="10" y="10" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+            <rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+            <rect x="1" y="10" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+            <rect x="10" y="1" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+            <rect x="10" y="10" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
           </svg>
         ),
       },
@@ -32,8 +32,8 @@ const NAV_GROUPS = [
         badge: "messages",
         icon: (
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
-            <rect x="1" y="3" width="15" height="11" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M6.5 6.2l4 2.3-4 2.3V6.2z" fill="currentColor"/>
+            <rect x="1" y="3" width="15" height="11" rx="2" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M6.5 6.2l4 2.3-4 2.3V6.2z" fill="currentColor" />
           </svg>
         ),
       },
@@ -44,7 +44,7 @@ const NAV_GROUPS = [
         badge: "its-okay",
         icon: (
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
-            <path d="M8.5 2C5.46 2 3 4.46 3 7.5c0 1.74.82 3.29 2.1 4.28L4.5 15l3.2-1.6a5.49 5.49 0 0 0 .8.06c3.04 0 5.5-2.46 5.5-5.5C14 4.46 11.54 2 8.5 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+            <path d="M8.5 2C5.46 2 3 4.46 3 7.5c0 1.74.82 3.29 2.1 4.28L4.5 15l3.2-1.6a5.49 5.49 0 0 0 .8.06c3.04 0 5.5-2.46 5.5-5.5C14 4.46 11.54 2 8.5 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
           </svg>
         ),
       },
@@ -55,7 +55,7 @@ const NAV_GROUPS = [
         badge: "better-devotion",
         icon: (
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
-            <path d="M3 4h11M3 8h8M3 12h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <path d="M3 4h11M3 8h8M3 12h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         ),
       },
@@ -70,7 +70,7 @@ const NAV_GROUPS = [
         exact: false,
         icon: (
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
-            <path d="M2 4h13M2 8.5h9M2 13h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <path d="M2 4h13M2 8.5h9M2 13h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         ),
       },
@@ -88,22 +88,22 @@ export default function CmsSidebar({ canManageAccounts }: CmsSidebarProps) {
   const navGroups = NAV_GROUPS.map((group) =>
     group.label === "운영" && canManageAccounts
       ? {
-          ...group,
-          items: [
-            ...group.items,
-            {
-              href: "/admin/accounts",
-              label: "관리자 계정",
-              exact: false,
-              icon: (
-                <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
-                  <path d="M8.5 9.2a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2Z" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M3 14.3c.9-2 3.1-3.3 5.5-3.3s4.6 1.3 5.5 3.3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
-              ),
-            },
-          ],
-        }
+        ...group,
+        items: [
+          ...group.items,
+          {
+            href: "/admin/accounts",
+            label: "관리자 계정",
+            exact: false,
+            icon: (
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
+                <path d="M8.5 9.2a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2Z" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M3 14.3c.9-2 3.1-3.3 5.5-3.3s4.6 1.3 5.5 3.3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            ),
+          },
+        ],
+      }
       : group
   );
 
@@ -116,7 +116,7 @@ export default function CmsSidebar({ canManageAccounts }: CmsSidebarProps) {
       <div className="flex h-16 shrink-0 items-center gap-3 border-b border-white/[0.06] px-5">
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#3f74c7]/20">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M7 1L12.196 4.5V11.5L7 15L1.804 11.5V4.5L7 1Z" stroke="#6ca6f0" strokeWidth="1.3" strokeLinejoin="round"/>
+            <path d="M7 1L12.196 4.5V11.5L7 15L1.804 11.5V4.5L7 1Z" stroke="#6ca6f0" strokeWidth="1.3" strokeLinejoin="round" />
           </svg>
         </div>
         <div>
@@ -141,11 +141,10 @@ export default function CmsSidebar({ canManageAccounts }: CmsSidebarProps) {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors duration-100 ${
-                        active
-                          ? "bg-[#3f74c7]/15 text-[#6ca6f0]"
-                          : "text-white/50 hover:bg-white/[0.05] hover:text-white/80"
-                      }`}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors duration-100 ${active
+                        ? "bg-[#3f74c7]/15 text-[#6ca6f0]"
+                        : "text-white/50 hover:bg-white/[0.05] hover:text-white/80"
+                        }`}
                     >
                       <span className={active ? "text-[#6ca6f0]" : "text-white/35"}>
                         {item.icon}

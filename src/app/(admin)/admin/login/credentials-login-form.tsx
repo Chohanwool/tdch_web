@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { signIn } from "next-auth/react";
 
 interface CredentialsLoginFormProps {
@@ -11,44 +11,38 @@ export default function CredentialsLoginForm({ callbackUrl }: CredentialsLoginFo
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [fallbackError, setFallbackError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isLoading) return;
+
     setFallbackError(null);
+    setIsLoading(true);
 
-    startTransition(() => {
-      void (async () => {
-        const result = await signIn("credentials", {
-          redirect: false,
-          callbackUrl,
-          username,
-          password,
-        });
-
-        if (!result || result.error) {
-          setFallbackError("아이디 또는 비밀번호를 다시 확인해 주세요.");
-          return;
-        }
-
-        window.location.assign(result.url || callbackUrl);
-      })().catch(() => {
-        setFallbackError("로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        callbackUrl,
+        username,
+        password,
       });
-    });
+
+      if (!result || result.error) {
+        setFallbackError("아이디 또는 비밀번호를 다시 확인해 주세요.");
+        setIsLoading(false);
+        return;
+      }
+
+      window.location.assign(result.url || callbackUrl);
+    } catch {
+      setFallbackError("로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      setIsLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
-      <div
-        className={`overflow-hidden rounded-full border border-white/10 bg-white/[0.04] transition-all ${
-          isPending ? "h-2 opacity-100" : "h-0 opacity-0"
-        }`}
-        aria-hidden={!isPending}
-      >
-        <div className="h-full w-full animate-pulse rounded-full bg-[#6ca6f0]" />
-      </div>
-
       <div>
         <label className="mb-1.5 block text-[12px] font-semibold text-white/70">아이디</label>
         <input
@@ -57,7 +51,7 @@ export default function CredentialsLoginForm({ callbackUrl }: CredentialsLoginFo
           autoComplete="username"
           value={username}
           onChange={(event) => setUsername(event.target.value)}
-          disabled={isPending}
+          disabled={isLoading}
           className="h-11 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 text-sm text-white placeholder:text-white/25 focus:border-[#6ca6f0]/60 focus:outline-none"
           placeholder="super-admin"
           required
@@ -72,7 +66,7 @@ export default function CredentialsLoginForm({ callbackUrl }: CredentialsLoginFo
           autoComplete="current-password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          disabled={isPending}
+          disabled={isLoading}
           className="h-11 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 text-sm text-white placeholder:text-white/25 focus:border-[#6ca6f0]/60 focus:outline-none"
           placeholder="비밀번호 입력"
           required
@@ -81,11 +75,11 @@ export default function CredentialsLoginForm({ callbackUrl }: CredentialsLoginFo
 
       <button
         type="submit"
-        disabled={isPending}
+        disabled={isLoading}
         className="flex h-11 w-full items-center justify-center rounded-xl bg-[#6ca6f0] text-sm font-semibold text-[#08121f] transition hover:bg-[#82b4f3] disabled:cursor-not-allowed disabled:opacity-60"
-        aria-busy={isPending}
+        aria-busy={isLoading}
       >
-        {isPending ? <LoadingSpinner /> : "로그인"}
+        {isLoading ? <LoadingSpinner /> : "로그인"}
       </button>
 
       {fallbackError ? (
