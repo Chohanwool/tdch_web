@@ -29,7 +29,7 @@ export interface AdminNavigationItem {
   href: string;
   matchPath: string | null;
   linkType: AdminNavigationLinkType;
-  contentSiteKey: string | null;
+  targetMediaCollectionId: number | null;
   visible: boolean;
   headerVisible: boolean;
   mobileVisible: boolean;
@@ -45,16 +45,17 @@ export interface AdminNavigationTreeResponse {
   groups: AdminNavigationItem[];
 }
 
-export interface AdminContentMenu {
-  siteKey: string;
-  menuName: string;
-  slug: string;
+export interface AdminMediaCollection {
+  id: number;
+  collectionKey: string;
+  title: string;
+  defaultPath: string;
   contentKind: string;
   active: boolean;
 }
 
-export interface AdminContentMenusResponse {
-  items: AdminContentMenu[];
+export interface AdminMediaCollectionsResponse {
+  items: AdminMediaCollection[];
 }
 
 // ── Read ──────────────────────────────────────────────────────────────────────
@@ -83,9 +84,9 @@ export async function getAdminNavigationItem(id: number): Promise<AdminNavigatio
   return response.json() as Promise<AdminNavigationItem>;
 }
 
-export async function getAdminContentMenus(): Promise<AdminContentMenusResponse> {
-  const response = await adminApiFetch("/api/v1/admin/navigation/content-menus");
-  return response.json() as Promise<AdminContentMenusResponse>;
+export async function getAdminMediaCollections(): Promise<AdminMediaCollectionsResponse> {
+  const response = await adminApiFetch("/api/v1/admin/navigation/media-collections");
+  return response.json() as Promise<AdminMediaCollectionsResponse>;
 }
 
 // ── CRUD ──────────────────────────────────────────────────────────────────────
@@ -98,7 +99,7 @@ export interface NavigationItemPayload {
   href: string;
   matchPath?: string | null;
   linkType: AdminNavigationLinkType;
-  contentSiteKey?: string | null;
+  targetMediaCollectionId?: number | null;
   visible: boolean;
   headerVisible: boolean;
   mobileVisible: boolean;

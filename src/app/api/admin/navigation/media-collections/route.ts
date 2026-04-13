@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminSession, isAdminSession } from "@/auth";
 import { AdminApiError } from "@/lib/admin-api";
-import { getAdminContentMenus } from "@/lib/admin-navigation-api";
+import { getAdminMediaCollections } from "@/lib/admin-navigation-api";
 
 export async function GET() {
   const session = await getAdminSession();
@@ -17,7 +17,7 @@ export async function GET() {
   }
 
   try {
-    const data = await getAdminContentMenus();
+    const data = await getAdminMediaCollections();
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     if (error instanceof AdminApiError) {
@@ -33,7 +33,7 @@ export async function GET() {
     return NextResponse.json(
       {
         code: "INTERNAL_SERVER_ERROR",
-        message: "콘텐츠 메뉴 목록을 불러오는 중 오류가 발생했습니다.",
+        message: "미디어 컬렉션 목록을 불러오는 중 오류가 발생했습니다.",
       },
       { status: 500 },
     );

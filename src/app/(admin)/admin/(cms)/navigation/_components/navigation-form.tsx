@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useTransition, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { AdminNavigationItem, AdminNavigationLinkType, AdminContentMenu } from "@/lib/admin-navigation-api";
+import type { AdminMediaCollection, AdminNavigationItem, AdminNavigationLinkType } from "@/lib/admin-navigation-api";
 import type { NavigationFormState } from "../actions";
 
 // ── 타입 ─────────────────────────────────────────────────────────────────────
@@ -12,7 +12,7 @@ interface NavigationFormProps {
   navigationSetId: number;
   item?: AdminNavigationItem;
   parentOptions: Pick<AdminNavigationItem, "id" | "label" | "menuKey">[];
-  contentMenuOptions: AdminContentMenu[];
+  mediaCollectionOptions: AdminMediaCollection[];
   createAction: (prev: NavigationFormState, formData: FormData) => Promise<NavigationFormState>;
   updateAction?: (prev: NavigationFormState, formData: FormData) => Promise<NavigationFormState>;
   deleteAction?: () => Promise<void>;
@@ -23,7 +23,7 @@ const LINK_TYPES: { value: AdminNavigationLinkType; label: string; desc: string 
   { value: "INTERNAL", label: "내부",   desc: "사이트 내부 페이지" },
   { value: "EXTERNAL", label: "외부",   desc: "외부 URL (새 탭)" },
   { value: "ANCHOR",   label: "앵커",   desc: "페이지 내 앵커 (#)" },
-  { value: "CONTENT_REF", label: "콘텐츠", desc: "콘텐츠 메뉴 연결" },
+  { value: "CONTENT_REF", label: "콘텐츠", desc: "미디어 컬렉션 연결" },
 ];
 
 // ── 공통 UI 컴포넌트 ─────────────────────────────────────────────────────────
@@ -177,7 +177,7 @@ export default function NavigationForm({
   navigationSetId,
   item,
   parentOptions,
-  contentMenuOptions,
+  mediaCollectionOptions,
   createAction,
   updateAction,
   deleteAction,
@@ -340,31 +340,35 @@ export default function NavigationForm({
             </p>
           </div>
 
-          {/* 콘텐츠 키 (CONTENT_REF 전용) */}
+          {/* 미디어 컬렉션 (CONTENT_REF 전용) */}
           {linkType === "CONTENT_REF" && (
             <div className="sm:col-span-2">
-              <FieldLabel>콘텐츠 사이트 키</FieldLabel>
-              {contentMenuOptions.length > 0 ? (
-                <select
-                  name="contentSiteKey"
-                  defaultValue={item?.contentSiteKey ?? ""}
-                  className="h-9 w-full rounded-lg border border-[#d1dbe6] bg-[#f8fafc] px-3 text-[13px] text-[#132033]
-                    focus:border-[#3f74c7] focus:outline-none focus:ring-1 focus:ring-[#3f74c7]/40 transition"
-                >
-                  <option value="">선택하세요</option>
-                  {contentMenuOptions.map((c) => (
-                    <option key={c.siteKey} value={c.siteKey}>
-                      {c.menuName} ({c.siteKey})
-                    </option>
-                  ))}
-                </select>
+              <FieldLabel required>미디어 컬렉션</FieldLabel>
+              {mediaCollectionOptions.length > 0 ? (
+                <>
+                  <select
+                    name="targetMediaCollectionId"
+                    defaultValue={item?.targetMediaCollectionId?.toString() ?? ""}
+                    className="h-9 w-full rounded-lg border border-[#d1dbe6] bg-[#f8fafc] px-3 text-[13px] text-[#132033]
+                      focus:border-[#3f74c7] focus:outline-none focus:ring-1 focus:ring-[#3f74c7]/40 transition"
+                  >
+                    <option value="">선택하세요</option>
+                    {mediaCollectionOptions.map((collection) => (
+                      <option key={collection.id} value={collection.id}>
+                        {collection.title} ({collection.collectionKey})
+                      </option>
+                    ))}
+                  </select>
+                  <FieldError message={state.errors?.targetMediaCollectionId} />
+                </>
               ) : (
-                <TextInput
-                  name="contentSiteKey"
-                  defaultValue={item?.contentSiteKey ?? ""}
-                  placeholder="예) sermon-series"
-                />
+                <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-700">
+                  연결할 미디어 컬렉션이 없습니다. 먼저 미디어 컬렉션을 생성해야 합니다.
+                </p>
               )}
+              <p className="mt-1 text-[11px] text-[#8fa3bb]">
+                `CONTENT_REF` 메뉴는 사이트 경로가 아니라 미디어 컬렉션을 직접 참조합니다.
+              </p>
             </div>
           )}
         </div>
