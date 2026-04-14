@@ -16,7 +16,7 @@ export default async function ItsOkayPage() {
 
   return (
     <div className="pb-20">
-      <ShortsArchivePage response={response} />
+      <ShortsArchivePage siteKey="its-okay" response={response} />
     </div>
   );
 }

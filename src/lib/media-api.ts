@@ -2,7 +2,7 @@ import "server-only";
 import type { SermonCardData } from "@/lib/site-data";
 import { SERVER_MEDIA_API_BASE_URL } from "@/lib/server-config";
 
-export type SermonSiteKey = "messages" | "better-devotion" | "its-okay";
+export type SermonSiteKey = string;
 
 export interface MediaItemDto {
   youtubeVideoId: string;
@@ -119,13 +119,21 @@ export async function getMediaList(
   size = 24,
 ): Promise<MediaListResponse | null> {
   try {
-    return await fetchMedia<MediaListResponse>(
-      `/api/v1/media/menus/${siteKey}/videos?page=${page}&size=${size}`,
-    );
+    return await getMediaListStrict(siteKey, page, size);
   } catch (error) {
     console.error(`Failed to fetch media list for ${siteKey}.`, error);
     return null;
   }
+}
+
+export async function getMediaListStrict(
+  siteKey: SermonSiteKey,
+  page = 0,
+  size = 24,
+): Promise<MediaListResponse> {
+  return fetchMedia<MediaListResponse>(
+    `/api/v1/media/menus/${siteKey}/videos?page=${page}&size=${size}`,
+  );
 }
 
 export async function getMediaDetail(youtubeVideoId: string): Promise<VideoDetailResponse | null> {
