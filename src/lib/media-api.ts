@@ -5,6 +5,8 @@ import { SERVER_MEDIA_API_BASE_URL } from "@/lib/server-config";
 export type SermonSiteKey = string;
 
 export interface MediaItemDto {
+  menuSiteKey: string | null;
+  menuSlug: string | null;
   youtubeVideoId: string;
   title: string;
   displayTitle: string;
@@ -36,9 +38,7 @@ export interface MediaListResponse {
 
 export interface HomeMediaResponse {
   featuredSermons: MediaItemDto[];
-  latestMessages: MediaItemDto[];
-  latestDevotions: MediaItemDto[];
-  latestShorts: MediaItemDto[];
+  latestSermons: MediaItemDto[];
 }
 
 export interface VideoDetailResponse {
@@ -161,7 +161,7 @@ export function toHomeSermonCards(
   }
 
   return items.slice(0, 2).map((item) => ({
-    href: buildMediaDetailPath("messages", item.youtubeVideoId),
+    href: item.menuSlug ? buildMediaDetailPath(item.menuSlug, item.youtubeVideoId) : "/sermons",
     thumbnail: item.thumbnailUrl,
     thumbnailAlt: item.displayTitle,
     category: item.contentKind === "SHORT" ? "쇼츠" : "말씀",

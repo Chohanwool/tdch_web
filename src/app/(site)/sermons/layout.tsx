@@ -10,10 +10,7 @@ export default function SermonsLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname() ?? "";
-  const hideShell =
-    /^\/sermons\/messages\/[^/]+$/.test(pathname) ||
-    /^\/sermons\/better-devotion\/[^/]+$/.test(pathname) ||
-    /^\/sermons\/its-okay\/[^/]+$/.test(pathname);
+  const hideShell = /^\/sermons\/[^/]+\/[^/]+$/.test(pathname);
 
   return (
     <div className="flex w-full flex-col">

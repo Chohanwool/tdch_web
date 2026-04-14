@@ -72,7 +72,7 @@ function SermonSectionContent({
 
 async function HomeSermonSection({ youtubeUrl }: { youtubeUrl: string }) {
   const homeMedia = await getHomeMedia();
-  const sermonCards = toHomeSermonCards(homeMedia?.latestMessages, homeSermonList);
+  const sermonCards = toHomeSermonCards(homeMedia?.latestSermons, homeSermonList);
 
   return <SermonSectionContent sermonCards={sermonCards} youtubeUrl={youtubeUrl} />;
 }

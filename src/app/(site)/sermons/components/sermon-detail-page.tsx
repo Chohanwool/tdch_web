@@ -142,7 +142,7 @@ export default function SermonDetailPage({
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_380px] xl:items-start">
         <div className="min-w-0">
           <div className="overflow-hidden rounded-[22px] bg-black">
-            <div className={siteKey === "its-okay" ? "mx-auto aspect-[9/16] max-h-[78vh] w-full max-w-[520px]" : "aspect-video w-full"}>
+            <div className={detail.contentKind === "SHORT" ? "mx-auto aspect-[9/16] max-h-[78vh] w-full max-w-[520px]" : "aspect-video w-full"}>
               <iframe
                 src={autoplayEmbedUrl}
                 title={detail.displayTitle}

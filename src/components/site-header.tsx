@@ -17,7 +17,6 @@ export default function SiteHeader() {
   const pathname = usePathname();
   const currentPathname = resolvedPathname ?? pathname ?? "";
   const hasResolvedPathname = resolvedPathname !== null || Boolean(pathname);
-  const hideOnMobile = /^\/sermons\/its-okay\/[^/]+$/.test(currentPathname);
   const isHomePage = currentPathname === "/";
   const shouldRenderHeader = hasResolvedPathname && !isHomePage;
   const previousScrollYRef = useRef(0);
@@ -123,7 +122,7 @@ export default function SiteHeader() {
       window.removeEventListener("resize", updateHeaderHeight);
       document.documentElement.style.removeProperty("--site-header-height");
     };
-  }, [hideOnMobile, shouldRenderHeader]);
+  }, [shouldRenderHeader]);
 
   useEffect(() => {
     if (!shouldRenderHeader) {
@@ -150,7 +149,7 @@ export default function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`${hideOnMobile ? "hidden md:block" : ""} fixed inset-x-0 top-0 z-50 transition-[transform,box-shadow,background-color] duration-300 lg:sticky
+      className={`fixed inset-x-0 top-0 z-50 transition-[transform,box-shadow,background-color] duration-300 lg:sticky
         border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg
         ${isHiddenOnMobile ? "-translate-y-full pointer-events-none lg:translate-y-0 lg:pointer-events-auto" : "translate-y-0"}
         ${isCondensed ? "shadow-[0_10px_30px_rgba(16,33,63,0.08)]" : ""}
