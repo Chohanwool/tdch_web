@@ -14,9 +14,8 @@ export default function CommissionSubnav() {
   const pathname = usePathname() ?? "";
 
   return (
-    <nav className="border-b border-[#ece7df] bg-white" aria-label="지상명령 서브 메뉴">
-      <div className="section-shell section-shell--narrow overflow-x-auto no-scrollbar">
-        <ul className="flex min-w-max items-center justify-center gap-2 px-4">
+    <nav className="w-full border-b border-cedar/8 bg-white overflow-x-auto no-scrollbar" aria-label="LNB">
+      <ul className="section-shell flex items-center justify-start md:justify-center gap-1 min-w-max px-4">
           {commissionItems.map((item) => {
             const isActive = pathname === item.href;
 
@@ -24,10 +23,10 @@ export default function CommissionSubnav() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`block whitespace-nowrap border-b-2 px-3 py-3 text-[14px] tracking-[0.04em] transition md:px-4 md:text-[15px] ${
+                  className={`type-body-small block whitespace-nowrap border-b-[2.5px] px-3 py-3.5 font-medium transition-colors md:px-4 ${
                     isActive
-                      ? "border-[#1a2744] font-bold text-[#1a2744]"
-                      : "border-transparent font-medium text-[#1a2744]/55 hover:border-[#c9a84c]/40 hover:text-[#1a2744]"
+                      ? "border-themeBlue text-themeBlue font-bold"
+                      : "border-transparent text-ink/65 hover:text-themeBlue hover:border-themeBlue/30"
                   }`}
                 >
                   {item.label}
@@ -35,8 +34,7 @@ export default function CommissionSubnav() {
               </li>
             );
           })}
-        </ul>
-      </div>
+      </ul>
     </nav>
   );
 }
