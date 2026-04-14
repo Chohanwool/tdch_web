@@ -115,6 +115,8 @@ function BulletList({ items, className = "" }: { items: string[]; className?: st
 export default function EthnicProgramTabs() {
   const [activeKey, setActiveKey] = useState<TabKey>("prayer");
   const activeTab = tabs[activeKey];
+  const shortTermPrimary = activeTab.cards?.[0];
+  const shortTermPrimaryLines = shortTermPrimary?.lines;
   const shortTermTraining = activeTab.cards?.[1];
   const shortTermFollowUp = activeTab.cards?.[2];
 
@@ -163,28 +165,30 @@ export default function EthnicProgramTabs() {
         </div>
       ) : null}
 
-      {activeTab.cards ? (
+      {shortTermPrimary ? (
         <div className="mt-8">
           <div className="grid gap-8 md:grid-cols-2 md:gap-10">
             <div>
-              <p className="text-[12px] font-medium tracking-[0.08em] text-[#c9a84c]">{activeTab.cards[0].title}</p>
+              <p className="text-[12px] font-medium tracking-[0.08em] text-[#c9a84c]">{shortTermPrimary.title}</p>
               <div className="mt-4 overflow-hidden rounded-[8px] border border-[#d0cdca]">
-              {activeTab.cards[0].lines?.map((line, index) => {
-                const [label, ...valueParts] = line.split(" ");
-                return (
-                  <div
-                    key={line}
-                    className={`flex ${index < activeTab.cards[0].lines!.length - 1 ? "border-b border-[#d0cdca]" : ""}`}
-                  >
-                    <div className="w-[72px] shrink-0 bg-[#f8f7f4] px-4 py-3 text-[12px] font-medium tracking-[0.02em] text-[#888580]">
-                      {label}
+                {shortTermPrimaryLines?.map((line, index) => {
+                  const [label, ...valueParts] = line.split(" ");
+                  return (
+                    <div
+                      key={line}
+                      className={`flex ${
+                        index < shortTermPrimaryLines.length - 1 ? "border-b border-[#d0cdca]" : ""
+                      }`}
+                    >
+                      <div className="w-[72px] shrink-0 bg-[#f8f7f4] px-4 py-3 text-[12px] font-medium tracking-[0.02em] text-[#888580]">
+                        {label}
+                      </div>
+                      <div className="flex-1 px-4 py-3 text-[12px] tracking-[0.02em] text-[#4a4845]">
+                        {valueParts.join(" ")}
+                      </div>
                     </div>
-                    <div className="flex-1 px-4 py-3 text-[12px] tracking-[0.02em] text-[#4a4845]">
-                      {valueParts.join(" ")}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
               </div>
             </div>
 

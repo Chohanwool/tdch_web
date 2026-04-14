@@ -19,7 +19,14 @@ const tabLabels: { key: TabKey; label: string }[] = [
   { key: "cultural-exchange", label: "문화 교류" },
 ];
 
-const koreanEducationCourses = [
+type KoreanEducationCourse = {
+  level: string;
+  title: string;
+  details: readonly (readonly [string, string])[];
+  highlighted?: boolean;
+};
+
+const koreanEducationCourses: readonly KoreanEducationCourse[] = [
   {
     level: "초급반",
     title: "한글 읽기·쓰기",

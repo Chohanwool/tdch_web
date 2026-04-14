@@ -57,7 +57,14 @@ const scriptureCards = [
   },
 ] as const;
 
-const globalStats = [
+type GlobalStat = {
+  label: string;
+  title: string;
+  lines: readonly string[];
+  emphasized?: boolean;
+};
+
+const globalStats: readonly GlobalStat[] = [
   {
     label: "세계 인구",
     title: "80억",
@@ -95,7 +102,14 @@ const missionHistory = [
   },
 ] as const;
 
-const missionLessons = [
+type MissionLesson = {
+  number: string;
+  title: string;
+  lines: readonly string[];
+  emphasized?: boolean;
+};
+
+const missionLessons: readonly MissionLesson[] = [
   {
     number: "01",
     title: "제자훈련 중심",
