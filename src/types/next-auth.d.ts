@@ -8,7 +8,6 @@ declare module "next-auth" {
       username?: string;
       role: "admin";
       accountRole: "SUPER_ADMIN" | "ADMIN";
-      authProvider: "kakao" | "credentials";
     };
   }
 }
@@ -18,6 +17,5 @@ declare module "next-auth/jwt" {
     role?: "admin";
     username?: string;
     accountRole?: "SUPER_ADMIN" | "ADMIN";
-    authProvider?: "kakao" | "credentials";
   }
 }

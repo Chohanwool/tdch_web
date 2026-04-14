@@ -36,7 +36,7 @@ export default function CmsTopbar({ session }: CmsTopbarProps) {
 
         <div className="h-4 w-px bg-white/10" />
 
-        <SignOutButton authProvider={session.user.authProvider} />
+        <SignOutButton />
       </div>
     </header>
   );

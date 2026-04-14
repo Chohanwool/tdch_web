@@ -18,7 +18,7 @@ export default async function CmsLayout({
 
   let topbarSession = session;
 
-  if (session.user.authProvider === "credentials" && session.user.id) {
+  if (session.user.id) {
     try {
       const currentAccount = await getCurrentAdminAccount(session.user.id);
       topbarSession = {

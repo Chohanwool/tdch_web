@@ -3,11 +3,7 @@
 import { useState, useTransition } from "react";
 import { signOut } from "next-auth/react";
 
-interface SignOutButtonProps {
-  authProvider: "kakao" | "credentials";
-}
-
-export default function SignOutButton({ authProvider }: SignOutButtonProps) {
+export default function SignOutButton() {
   const [hasStarted, setHasStarted] = useState(false);
   const [isPending, startTransition] = useTransition();
   const loading = hasStarted || isPending;
@@ -19,11 +15,6 @@ export default function SignOutButton({ authProvider }: SignOutButtonProps) {
       void (async () => {
         try {
           await signOut({ redirect: false, callbackUrl: "/admin/login" });
-          if (authProvider === "kakao") {
-            window.location.assign("/api/auth/kakao/logout?callbackUrl=/admin/login");
-            return;
-          }
-
           window.location.assign("/admin/login");
         } catch {
           window.location.assign("/admin/login");

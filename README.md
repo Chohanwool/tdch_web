@@ -55,33 +55,23 @@ npm run dev
 - 점검 해제 시 `MAINTENANCE_MODE=false` 로 되돌리고 다시 배포합니다.
 - 점검 페이지 파일 위치: `public/maintenance.html`
 
-## 관리자 카카오 로그인 설정
+## 관리자 로그인 설정
 
-관리자 로그인(`/admin/login`)이 실제로 동작하려면 `.env.local`의 placeholder 값을 실제 값으로 바꿔야 합니다.
+관리자 로그인(`/admin/login`)은 아이디/비밀번호 기반 계정으로만 동작합니다.
 
 필수 값:
 
 - `AUTH_SECRET`: Auth.js 세션 서명 키
-- `KAKAO_CLIENT_ID`: 카카오 Developers REST API 키
-- `KAKAO_CLIENT_SECRET`: 카카오 Developers Client Secret
-- `ADMIN_ALLOWED_EMAILS`: 로그인 허용 이메일 목록. 쉼표로 구분
 - `ADMIN_SESSION_MAX_AGE_SECONDS`: 관리자 세션 유지 시간. 기본값 `28800`(8시간)
-
-로컬 Redirect URI:
-
-- `http://localhost:3000/api/auth/callback/kakao`
-
-운영 Redirect URI 예시:
-
-- `https://<your-domain>/api/auth/callback/kakao`
+- `ADMIN_SYNC_KEY`: 관리자 API 호출용 서버 키. `tdch_api`와 동일해야 함
+- `MEDIA_API_BASE_URL`: 관리자 인증/계정 API가 연결될 백엔드 주소
 
 확인 순서:
 
 1. `cp .env.example .env.local`
 2. `.env.local`의 관리자 로그인 관련 값을 실제 값으로 교체
-3. 카카오 Developers 콘솔에 Redirect URI 등록
-4. 카카오 계정 이메일을 `ADMIN_ALLOWED_EMAILS`에 추가
-5. `npm run dev` 후 `/admin/login`에서 로그인 확인
+3. `tdch_api` DB에 초기 관리자 계정을 직접 생성
+4. `npm run dev` 후 `/admin/login`에서 로그인 확인
 
 운영 배포 체크:
 
@@ -91,15 +81,11 @@ npm run dev
 - `MEDIA_API_BASE_URL=https://api.tdch.co.kr`
 - `NEXT_PUBLIC_MEDIA_API_BASE_URL=https://api.tdch.co.kr`
 - `ADMIN_SYNC_KEY`는 `tdch_api` 운영값과 동일하게 유지
-- Kakao Developers `카카오 로그인 리다이렉트 URI`에 `https://www.tdch.co.kr/api/auth/callback/kakao` 등록
-- Kakao Developers `Logout Redirect URI`에 `https://www.tdch.co.kr/admin/login` 등록
 
 운영에서 관리자 계정을 바꾸는 방법:
 
-- Vercel의 `ADMIN_ALLOWED_EMAILS` 값을 수정
-- 쉼표 구분 문자열 유지
-- 값 저장 후 `Redeploy`
-- 기존 관리자 세션 로그아웃 후 다시 로그인 확인
+- `tdch_api`의 관리자 계정 데이터를 수정
+- 변경 후 관리자 로그인 재검증
 
 ## 단계 4) 운영 데이터 수정 위치
 

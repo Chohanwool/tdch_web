@@ -9,15 +9,11 @@ export const metadata: Metadata = {
 };
 
 const ERROR_MESSAGES: Record<string, string> = {
-  email_required: "카카오 계정에 이메일 정보가 없습니다. 카카오 계정 설정에서 이메일을 확인해 주세요.",
-  unauthorized: "접근이 허용되지 않은 계정입니다. 관리자에게 문의해 주세요.",
-  oauth_failed: "카카오 로그인 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
   CredentialsSignin: "아이디 또는 비밀번호를 다시 확인해 주세요.",
-  AccessDenied: "관리자 권한이 확인되지 않았습니다.",
+  AccessDenied: "관리자 로그인 권한이 확인되지 않았습니다.",
   Callback: "로그인 콜백 처리 중 오류가 발생했습니다.",
-  OAuthAccountNotLinked: "이미 다른 방식으로 연결된 계정입니다.",
-  OAuthCallback: "카카오 인증 응답을 처리하지 못했습니다.",
-  OAuthSignin: "카카오 로그인 시작 중 오류가 발생했습니다.",
+  Configuration: "관리자 로그인 설정을 확인한 뒤 다시 시도해 주세요.",
+  Default: "로그인 중 오류가 발생했습니다.",
 };
 
 interface LoginPageProps {
@@ -39,7 +35,7 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
       ? resolvedCallbackUrl
       : "/admin";
   const errorMessage = resolvedError
-    ? (ERROR_MESSAGES[resolvedError] ?? "로그인 중 오류가 발생했습니다.")
+    ? (ERROR_MESSAGES[resolvedError] ?? ERROR_MESSAGES.Default)
     : null;
 
   return (
@@ -59,7 +55,7 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
             관리자 로그인
           </h1>
           <p className="mt-2 text-sm text-white/40">
-            허용된 관리자 계정으로만 접근할 수 있습니다.
+            발급된 관리자 계정으로만 접근할 수 있습니다.
           </p>
         </div>
 
