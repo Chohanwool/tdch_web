@@ -9,6 +9,7 @@ import {
   getAdminSyncJobStatusMeta,
   getAdminPlaylists,
   getAdminSyncJobs,
+  type AdminSyncJob,
   type AdminPlaylist,
 } from "@/lib/admin-media-api";
 import DiscoverPlaylistsButton from "./_components/discover-playlists-button";
@@ -16,8 +17,8 @@ import AdminMediaSyncButton from "./_components/admin-media-sync-button";
 import AdminMediaFilterForm from "./_components/admin-media-filter-form";
 import { discoverAdminPlaylistsAction, runAdminMediaSyncAction } from "./actions";
 
-function Badge({ label, cls }: { label: string; cls: string }) {
-  return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${cls}`}>{label}</span>;
+function Badge({ label, className }: { label: string; className: string }) {
+  return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${className}`}>{label}</span>;
 }
 
 type StatusFilter = "all" | "draft" | "published" | "inactive";
@@ -35,6 +36,12 @@ interface AdminMediaFilters {
   status: StatusFilter;
   sync: SyncFilter;
   search: string;
+}
+
+interface SummaryCardProps {
+  label: string;
+  value: number;
+  tone: string;
 }
 
 function getFirst(value: string | string[] | undefined): string {
@@ -94,6 +101,16 @@ function filterAdminPlaylists(playlists: AdminPlaylist[], filters: AdminMediaFil
   return playlists.filter((item) => matchesStatusFilter(item, filters.status) && matchesSyncFilter(item, filters.sync) && matchesSearchFilter(item, filters.search));
 }
 
+function buildSummaryCards(playlists: AdminPlaylist[]): SummaryCardProps[] {
+  return [
+    { label: "전체 메뉴", value: playlists.length, tone: "bg-white border-[#e2e8f0]" },
+    { label: "초안", value: countByStatus(playlists, "DRAFT"), tone: "bg-[#fffaf0] border-[#fde7c7]" },
+    { label: "게시", value: countByStatus(playlists, "PUBLISHED"), tone: "bg-[#f0fdf4] border-[#dcfce7]" },
+    { label: "비활성", value: countByStatus(playlists, "INACTIVE"), tone: "bg-[#f8fafc] border-[#e2e8f0]" },
+    { label: "Sync 사용", value: countEnabledSync(playlists), tone: "bg-[#eff6ff] border-[#dbeafe]" },
+  ];
+}
+
 function countByStatus(playlists: AdminPlaylist[], status: AdminPlaylist["status"]): number {
   return playlists.filter((item) => item.status === status).length;
 }
@@ -102,18 +119,88 @@ function countEnabledSync(playlists: AdminPlaylist[]): number {
   return playlists.filter((item) => item.syncEnabled).length;
 }
 
+function SummaryCard({ label, value, tone }: SummaryCardProps) {
+  return (
+    <section className={`rounded-2xl border px-5 py-4 shadow-sm ${tone}`}>
+      <p className="text-[12px] font-medium text-[#5d6f86]">{label}</p>
+      <p className="mt-2 text-2xl font-bold text-[#132033]">{value}</p>
+    </section>
+  );
+}
+
+function LatestSyncJobSummary({
+  latestSyncJob,
+  latestSyncJobStatusMeta,
+}: {
+  latestSyncJob: AdminSyncJob | null;
+  latestSyncJobStatusMeta: { label: string; cls: string } | null;
+}) {
+  return (
+    <section className="rounded-2xl border border-[#e2e8f0] bg-white px-5 py-4 shadow-sm">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-[14px] font-bold text-[#0f1c2e]">최근 Sync 상태</h2>
+          <p className="mt-1 text-[12px] text-[#8fa3bb]">정기 sync와 수동 sync의 최신 실행 결과입니다.</p>
+        </div>
+        {latestSyncJob ? (
+          <Link
+            href={`/admin/media/sync-jobs/${latestSyncJob.id}`}
+            className="transition hover:opacity-80"
+            aria-label="최근 sync 상세 보기"
+          >
+            <Badge
+              label={latestSyncJobStatusMeta?.label ?? latestSyncJob.status}
+              className={latestSyncJobStatusMeta?.cls ?? "bg-[#f1f5f9] text-[#64748b]"}
+            />
+          </Link>
+        ) : (
+          <Badge label="이력 없음" className="bg-[#f1f5f9] text-[#64748b]" />
+        )}
+      </div>
+
+      {latestSyncJob ? (
+        <div className="mt-4 grid gap-4 sm:grid-cols-4">
+          <div>
+            <p className="text-[11px] text-[#8fa3bb]">시작 시각</p>
+            <p className="mt-1 text-[13px] text-[#132033]">{formatAdminMediaDateTime(latestSyncJob.startedAt, "—")}</p>
+          </div>
+          <div>
+            <p className="text-[11px] text-[#8fa3bb]">대상 재생목록</p>
+            <p className="mt-1 text-[13px] text-[#132033]">{latestSyncJob.totalPlaylists}개</p>
+          </div>
+          <div>
+            <p className="text-[11px] text-[#8fa3bb]">성공 / 실패</p>
+            <p className="mt-1 text-[13px] text-[#132033]">
+              {latestSyncJob.succeededPlaylists} / {latestSyncJob.failedPlaylists}
+            </p>
+          </div>
+          <div>
+            <p className="text-[11px] text-[#8fa3bb]">오류 요약</p>
+            <p className="mt-1 text-[13px] text-[#132033]">{latestSyncJob.errorSummary || "없음"}</p>
+          </div>
+        </div>
+      ) : (
+        <p className="mt-4 text-[13px] text-[#5d6f86]">아직 실행된 sync 이력이 없습니다.</p>
+      )}
+    </section>
+  );
+}
+
 function PlaylistRow({ item, rowNum }: { item: AdminPlaylist; rowNum: number }) {
   const discoveredAt = formatAdminMediaDate(item.discoveredAt, "—");
+  const lastDiscoveredAt = formatAdminMediaDateTime(item.lastDiscoveredAt, "—");
   const lastSyncedAt = formatAdminMediaDate(item.lastSyncedAt, "미동기화");
+  const lastSyncSucceededAt = formatAdminMediaDateTime(item.lastSyncSucceededAt, "—");
+  const lastSyncFailedAt = formatAdminMediaDateTime(item.lastSyncFailedAt, "—");
 
   return (
     <tr className="border-b border-[#f0f4f8] transition hover:bg-[#fafcff]">
       <td className="px-5 py-4 align-middle text-[13px] text-[#5d6f86]">{rowNum}</td>
       <td className="px-5 py-4 align-middle">
-        <Badge {...ADMIN_PLAYLIST_STATUS_META[item.status]} />
+        <Badge label={ADMIN_PLAYLIST_STATUS_META[item.status].label} className={ADMIN_PLAYLIST_STATUS_META[item.status].cls} />
       </td>
       <td className="px-5 py-4 align-middle">
-        <Badge {...ADMIN_CONTENT_KIND_META[item.contentKind]} />
+        <Badge label={ADMIN_CONTENT_KIND_META[item.contentKind].label} className={ADMIN_CONTENT_KIND_META[item.contentKind].cls} />
       </td>
       <td className="px-5 py-4 align-middle">
         <Link
@@ -142,6 +229,12 @@ function PlaylistRow({ item, rowNum }: { item: AdminPlaylist; rowNum: number }) 
           {item.syncEnabled ? "Sync 사용" : "Sync 중지"}
         </span>
         <p className="mt-1 text-[11px] text-[#8fa3bb]">{lastSyncedAt}</p>
+        <div className="mt-1 space-y-0.5 text-[11px] text-[#8fa3bb]">
+          <p>발견 {lastDiscoveredAt}</p>
+          <p>성공 {lastSyncSucceededAt}</p>
+          <p>실패 {lastSyncFailedAt}</p>
+          <p>원본 {item.discoverySource ?? "—"}</p>
+        </div>
       </td>
       <td className="px-5 py-4 align-middle">
         <span
@@ -180,10 +273,7 @@ export default async function AdminMediaPage({ searchParams }: AdminMediaPagePro
   ]);
 
   const filteredPlaylists = filterAdminPlaylists(playlists, { status: currentStatus, sync: currentSync, search: currentSearch });
-  const draftCount = countByStatus(filteredPlaylists, "DRAFT");
-  const publishedCount = countByStatus(filteredPlaylists, "PUBLISHED");
-  const inactiveCount = countByStatus(filteredPlaylists, "INACTIVE");
-  const syncEnabledCount = countEnabledSync(filteredPlaylists);
+  const summaryCards = buildSummaryCards(filteredPlaylists);
   const latestSyncJob = syncJobs.data[0] ?? null;
   const latestSyncJobStatusMeta = latestSyncJob ? getAdminSyncJobStatusMeta(latestSyncJob.status) : null;
 
@@ -228,63 +318,12 @@ export default async function AdminMediaPage({ searchParams }: AdminMediaPagePro
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        {[
-          { label: "전체 메뉴", value: filteredPlaylists.length, tone: "bg-white border-[#e2e8f0]" },
-          { label: "초안", value: draftCount, tone: "bg-[#fffaf0] border-[#fde7c7]" },
-          { label: "게시", value: publishedCount, tone: "bg-[#f0fdf4] border-[#dcfce7]" },
-          { label: "비활성", value: inactiveCount, tone: "bg-[#f8fafc] border-[#e2e8f0]" },
-          { label: "Sync 사용", value: syncEnabledCount, tone: "bg-[#eff6ff] border-[#dbeafe]" },
-        ].map((card) => (
-          <section key={card.label} className={`rounded-2xl border px-5 py-4 shadow-sm ${card.tone}`}>
-            <p className="text-[12px] font-medium text-[#5d6f86]">{card.label}</p>
-            <p className="mt-2 text-2xl font-bold text-[#132033]">{card.value}</p>
-          </section>
+        {summaryCards.map((card) => (
+          <SummaryCard key={card.label} {...card} />
         ))}
       </div>
 
-      <section className="rounded-2xl border border-[#e2e8f0] bg-white px-5 py-4 shadow-sm">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h2 className="text-[14px] font-bold text-[#0f1c2e]">최근 Sync 상태</h2>
-            <p className="mt-1 text-[12px] text-[#8fa3bb]">정기 sync와 수동 sync의 최신 실행 결과입니다.</p>
-          </div>
-          {latestSyncJob ? (
-            <Link
-              href={`/admin/media/sync-jobs/${latestSyncJob.id}`}
-              className="transition hover:opacity-80"
-              aria-label="최근 sync 상세 보기"
-            >
-              <Badge label={latestSyncJobStatusMeta?.label ?? latestSyncJob.status} cls={latestSyncJobStatusMeta?.cls ?? "bg-[#f1f5f9] text-[#64748b]"} />
-            </Link>
-          ) : (
-            <Badge label="이력 없음" cls="bg-[#f1f5f9] text-[#64748b]" />
-          )}
-        </div>
-        {latestSyncJob ? (
-          <div className="mt-4 grid gap-4 sm:grid-cols-4">
-            <div>
-              <p className="text-[11px] text-[#8fa3bb]">시작 시각</p>
-              <p className="mt-1 text-[13px] text-[#132033]">{formatAdminMediaDateTime(latestSyncJob.startedAt, "—")}</p>
-            </div>
-            <div>
-              <p className="text-[11px] text-[#8fa3bb]">대상 재생목록</p>
-              <p className="mt-1 text-[13px] text-[#132033]">{latestSyncJob.totalPlaylists}개</p>
-            </div>
-            <div>
-              <p className="text-[11px] text-[#8fa3bb]">성공 / 실패</p>
-              <p className="mt-1 text-[13px] text-[#132033]">
-                {latestSyncJob.succeededPlaylists} / {latestSyncJob.failedPlaylists}
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] text-[#8fa3bb]">오류 요약</p>
-              <p className="mt-1 text-[13px] text-[#132033]">{latestSyncJob.errorSummary || "없음"}</p>
-            </div>
-          </div>
-        ) : (
-          <p className="mt-4 text-[13px] text-[#5d6f86]">아직 실행된 sync 이력이 없습니다.</p>
-        )}
-      </section>
+      <LatestSyncJobSummary latestSyncJob={latestSyncJob} latestSyncJobStatusMeta={latestSyncJobStatusMeta} />
 
       <div className="overflow-hidden rounded-2xl border border-[#e2e8f0] bg-white shadow-sm">
         <div className="overflow-x-auto">

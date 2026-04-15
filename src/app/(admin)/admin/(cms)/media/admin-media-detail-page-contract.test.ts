@@ -40,6 +40,11 @@ const _assertFormProps: AdminMediaDetailFormProps = {
     itemCount: 12,
     syncEnabled: true,
     lastSyncedAt: null,
+    lastDiscoveredAt: null,
+    lastSyncSucceededAt: null,
+    lastSyncFailedAt: null,
+    lastSyncErrorMessage: null,
+    discoverySource: null,
   } satisfies AdminPlaylistDetailResponse,
   saveAction: updateAdminMediaDetailAction.bind(null, "sermons"),
 };

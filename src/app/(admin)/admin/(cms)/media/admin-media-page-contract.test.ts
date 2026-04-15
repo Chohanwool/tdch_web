@@ -1,6 +1,7 @@
 import AdminMediaPage from "@/app/(admin)/admin/(cms)/media/page";
 import { discoverAdminPlaylistsAction } from "@/app/(admin)/admin/(cms)/media/actions";
 import DiscoverPlaylistsButton from "@/app/(admin)/admin/(cms)/media/_components/discover-playlists-button";
+import type { AdminPlaylist } from "@/lib/admin-media-api";
 
 void AdminMediaPage;
 void discoverAdminPlaylistsAction;
@@ -12,6 +13,32 @@ type DiscoverPlaylistsButtonProps = Parameters<typeof DiscoverPlaylistsButton>[0
 
 const _assertPageProps: AdminMediaPageProps = {};
 void _assertPageProps;
+
+const _assertPlaylist: AdminPlaylist = {
+  id: 1,
+  menuName: "주일예배",
+  siteKey: "sermons",
+  slug: "sunday-worship",
+  contentKind: "LONG_FORM",
+  status: "PUBLISHED",
+  active: true,
+  navigationVisible: true,
+  sortOrder: 0,
+  description: null,
+  discoveredAt: null,
+  publishedAt: null,
+  lastModifiedBy: null,
+  youtubePlaylistId: "PL_TEST",
+  itemCount: 12,
+  syncEnabled: true,
+  lastSyncedAt: null,
+  lastDiscoveredAt: null,
+  lastSyncSucceededAt: null,
+  lastSyncFailedAt: null,
+  lastSyncErrorMessage: null,
+  discoverySource: null,
+};
+void _assertPlaylist;
 
 const _assertDiscoverActionResult: DiscoverPlaylistsActionResult = {
   discoveredCount: 0,

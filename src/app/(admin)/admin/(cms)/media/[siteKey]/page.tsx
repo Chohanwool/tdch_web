@@ -6,6 +6,7 @@ import {
   ADMIN_CONTENT_KIND_META,
   ADMIN_PLAYLIST_STATUS_META,
   formatAdminMediaDate,
+  formatAdminMediaDateTime,
   getAdminPlaylist,
   getAdminPlaylistVideos,
   type AdminPlaylistDetailResponse,
@@ -32,6 +33,20 @@ function SectionTitle({ title, description }: { title: string; description: stri
     <div>
       <h2 className="text-[14px] font-bold text-[#0f1c2e]">{title}</h2>
       <p className="mt-1 text-[12px] text-[#8fa3bb]">{description}</p>
+    </div>
+  );
+}
+
+function DetailFieldGrid({
+  fields,
+}: {
+  fields: Array<{ label: string; value: string }>;
+}) {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+      {fields.map((field) => (
+        <DetailField key={field.label} label={field.label} value={field.value} />
+      ))}
     </div>
   );
 }
@@ -128,35 +143,42 @@ export default async function AdminMediaDetailPage({
         <AdminMediaDetailForm playlist={playlist} saveAction={saveAction} />
 
         <div className="space-y-5">
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-            {[
+          <DetailFieldGrid
+            fields={[
               { label: "YouTube Playlist", value: playlist.youtubePlaylistId },
               { label: "slug", value: playlist.slug },
               { label: "siteKey", value: playlist.siteKey },
               { label: "영상 수", value: `${playlist.itemCount}개` },
-            ].map((field) => (
-              <DetailField key={field.label} label={field.label} value={field.value} />
-            ))}
-          </div>
+            ]}
+          />
 
           <section className="rounded-2xl border border-[#e2e8f0] bg-white px-5 py-4 shadow-sm">
             <SectionTitle title="메타 정보" description="관리자가 입력한 부가 정보와 이력입니다." />
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-              <DetailField label="발견일" value={formatAdminMediaDate(playlist.discoveredAt, "—")} />
-              <DetailField label="게시일" value={formatAdminMediaDate(playlist.publishedAt, "—")} />
-              <DetailField label="마지막 수정자" value={playlist.lastModifiedBy ? String(playlist.lastModifiedBy) : "—"} />
-              <DetailField label="마지막 sync" value={formatAdminMediaDate(playlist.lastSyncedAt, "—")} />
-            </div>
+            <DetailFieldGrid
+              fields={[
+                { label: "발견일", value: formatAdminMediaDate(playlist.discoveredAt, "—") },
+                { label: "최근 발견", value: formatAdminMediaDateTime(playlist.lastDiscoveredAt, "—") },
+                { label: "게시일", value: formatAdminMediaDate(playlist.publishedAt, "—") },
+                { label: "마지막 수정자", value: playlist.lastModifiedBy ? String(playlist.lastModifiedBy) : "—" },
+                { label: "마지막 sync", value: formatAdminMediaDate(playlist.lastSyncedAt, "—") },
+                { label: "sync 성공", value: formatAdminMediaDateTime(playlist.lastSyncSucceededAt, "—") },
+                { label: "sync 실패", value: formatAdminMediaDateTime(playlist.lastSyncFailedAt, "—") },
+                { label: "sync 오류", value: playlist.lastSyncErrorMessage ?? "—" },
+                { label: "발견 원본", value: playlist.discoverySource ?? "—" },
+              ]}
+            />
           </section>
 
           <section className="rounded-2xl border border-[#e2e8f0] bg-white px-5 py-4 shadow-sm">
             <SectionTitle title="YouTube 정보" description="현재 연결된 재생목록의 원본 메타 정보입니다." />
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-              <DetailField label="채널명" value={playlist.channelTitle} />
-              <DetailField label="썸네일" value={playlist.thumbnailUrl} />
-              <DetailField label="원본 제목" value={playlist.youtubeTitle} />
-              <DetailField label="원본 설명" value={playlist.youtubeDescription || "—"} />
-            </div>
+            <DetailFieldGrid
+              fields={[
+                { label: "채널명", value: playlist.channelTitle },
+                { label: "썸네일", value: playlist.thumbnailUrl },
+                { label: "원본 제목", value: playlist.youtubeTitle },
+                { label: "원본 설명", value: playlist.youtubeDescription || "—" },
+              ]}
+            />
           </section>
         </div>
       </div>

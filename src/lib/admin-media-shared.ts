@@ -38,12 +38,17 @@ export interface AdminPlaylist {
   sortOrder: number;
   description: string | null;
   discoveredAt: string | null;
+  lastDiscoveredAt: string | null;
   publishedAt: string | null;
   lastModifiedBy: number | null;
   youtubePlaylistId: string;
   itemCount: number;
   syncEnabled: boolean;
   lastSyncedAt: string | null;
+  lastSyncSucceededAt: string | null;
+  lastSyncFailedAt: string | null;
+  lastSyncErrorMessage: string | null;
+  discoverySource: string | null;
 }
 
 export interface AdminPlaylistListResponse {
@@ -68,6 +73,7 @@ export interface AdminPlaylistDetailResponse {
   sortOrder: number;
   description: string | null;
   discoveredAt: string | null;
+  lastDiscoveredAt: string | null;
   publishedAt: string | null;
   lastModifiedBy: number | null;
   youtubePlaylistId: string;
@@ -78,6 +84,10 @@ export interface AdminPlaylistDetailResponse {
   itemCount: number;
   syncEnabled: boolean;
   lastSyncedAt: string | null;
+  lastSyncSucceededAt: string | null;
+  lastSyncFailedAt: string | null;
+  lastSyncErrorMessage: string | null;
+  discoverySource: string | null;
 }
 
 export interface AdminPlaylistDiscoveryItem {
