@@ -22,7 +22,7 @@ npm run dev
 - `/about/location` 오시는 길/문의
 - `/about/history` 교회 연혁
 - `/about/giving` 헌금 안내
-- 영상 메뉴 루트 예시: `/sermons`, `/videos`, `/worship/messages`
+- 영상 메뉴 루트 예시: `VIDEO_PAGE href`로 정의된 루트들
 - 영상 목록 예시: `{VIDEO_PAGE href}/{content_menu.slug}`
 - 영상 상세 예시: `{VIDEO_PAGE href}/{content_menu.slug}/{youtubeVideoId}`
 - `/newcomer` 새가족 안내
@@ -33,8 +33,8 @@ npm run dev
 
 - 헤더의 `교회 소식` 메뉴는 현재 숨김 상태입니다.
 - `/news`, `/contact` 라우트는 현재 구현되어 있지 않습니다.
-- `/about`, `/sermons` 같은 진입 경로는 메뉴 데이터의 `defaultLandingHref` 기준으로 결정됩니다.
-- 영상 공개 경로는 특정 `/sermons` 하드코딩이 아니라 `VIDEO_PAGE` 메뉴의 `href` 기준으로 결정됩니다.
+- `/about` 같은 진입 경로는 메뉴 데이터의 `defaultLandingHref` 기준으로 결정됩니다.
+- 영상 공개 경로는 특정 고정 경로 하드코딩이 아니라 `VIDEO_PAGE` 메뉴의 `href` 기준으로 결정됩니다.
 
 ## 단계 3) 배포 구성 (Vercel + Oracle VM)
 
@@ -135,6 +135,7 @@ npm run dev
 
 - [Navigation Operations](docs/navigation-operations.md)
 - [Navigation Admin API Draft](docs/navigation-admin-api-draft.md)
+- [admin media operations runbook](docs/admin-media-operations-runbook.md)
 
 ## 디자인 팔레트
 
