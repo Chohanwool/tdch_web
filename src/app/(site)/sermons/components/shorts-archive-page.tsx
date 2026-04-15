@@ -2,7 +2,8 @@ import type { MediaListResponse } from "@/lib/media-api";
 import ShortsInfiniteGrid from "@/app/(site)/sermons/components/shorts-infinite-grid";
 
 interface ShortsArchivePageProps {
-  siteKey: string;
+  rootHref: string;
+  siteKey?: string;
   response: MediaListResponse | null;
   title?: string;
   subtitle?: string;
@@ -11,6 +12,7 @@ interface ShortsArchivePageProps {
 }
 
 export default function ShortsArchivePage({
+  rootHref,
   siteKey,
   response,
   title,
@@ -46,7 +48,8 @@ export default function ShortsArchivePage({
       </div>
 
       <ShortsInfiniteGrid
-        siteKey={siteKey}
+        rootHref={rootHref}
+        siteKey={siteKey ?? response?.menu.slug ?? ""}
         initialItems={items}
         initialPage={response?.page ?? 0}
         totalPages={response?.totalPages ?? 0}

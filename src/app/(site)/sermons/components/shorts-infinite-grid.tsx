@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PUBLIC_MEDIA_API_BASE_URL } from "@/lib/site-config";
+import { buildVideoDetailPath } from "@/lib/video-route-utils";
 
 interface ShortsGridItem {
   youtubeVideoId: string;
@@ -14,6 +15,7 @@ interface ShortsGridItem {
 }
 
 interface ShortsInfiniteGridProps {
+  rootHref: string;
   siteKey: string;
   initialItems: ShortsGridItem[];
   initialPage: number;
@@ -29,7 +31,8 @@ interface MediaListResponseLite {
 }
 
 export default function ShortsInfiniteGrid({
-  siteKey: slug,
+  rootHref,
+  siteKey,
   initialItems,
   initialPage,
   totalPages,
@@ -70,15 +73,12 @@ export default function ShortsInfiniteGrid({
       setLoadError(false);
 
       try {
-        const response = await fetch(
-          `${PUBLIC_MEDIA_API_BASE_URL}/api/v1/media/menus/${slug}/videos?page=${nextPageRef.current}&size=${pageSize}`,
-          {
-            headers: {
-              Accept: "application/json",
-            },
-            cache: "no-store",
+        const response = await fetch(buildShortsPageUrl(siteKey, nextPageRef.current, pageSize), {
+          headers: {
+            Accept: "application/json",
           },
-        );
+          cache: "no-store",
+        });
 
         if (!response.ok) {
           throw new Error(`Failed to fetch shorts page: ${response.status}`);
@@ -101,7 +101,7 @@ export default function ShortsInfiniteGrid({
         setIsLoading(false);
       }
     };
-  }, [pageSize, slug]);
+  }, [pageSize, siteKey]);
 
   useEffect(() => {
     if (!hasMore || isLoading || loadError) {
@@ -137,7 +137,7 @@ export default function ShortsInfiniteGrid({
         {items.map((item) => (
           <Link
             key={item.youtubeVideoId}
-            href={`/sermons/${slug}/${item.youtubeVideoId}`}
+            href={buildVideoDetailPath(rootHref, item.youtubeVideoId)}
             className="group block lg:w-[210px]"
           >
             <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[8px] bg-black lg:h-[315px] lg:aspect-auto">
@@ -180,4 +180,8 @@ export default function ShortsInfiniteGrid({
       ) : null}
     </>
   );
+}
+
+function buildShortsPageUrl(siteKey: string, page: number, size: number): string {
+  return `${PUBLIC_MEDIA_API_BASE_URL}/api/v1/media/menus/${siteKey}/videos?page=${page}&size=${size}`;
 }

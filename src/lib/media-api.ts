@@ -146,20 +146,17 @@ export async function getMediaDetail(youtubeVideoId: string): Promise<VideoDetai
   }
 }
 
-export function buildMediaDetailPath(slug: SermonSiteKey, youtubeVideoId: string): string {
-  return `/sermons/${slug}/${youtubeVideoId}`;
-}
-
 export function toHomeSermonCards(
   items: MediaItemDto[] | undefined,
   fallbackCards: SermonCardData[],
+  resolveDetailHref?: (item: MediaItemDto) => string | undefined,
 ): SermonCardData[] {
   if (!items?.length) {
     return fallbackCards;
   }
 
   return items.slice(0, 2).map((item) => ({
-    href: item.menuSlug ? buildMediaDetailPath(item.menuSlug, item.youtubeVideoId) : "/sermons",
+    href: resolveDetailHref?.(item) ?? item.youtubeUrl,
     thumbnail: item.thumbnailUrl,
     thumbnailAlt: item.displayTitle,
     category: item.contentKind === "SHORT" ? "쇼츠" : "말씀",

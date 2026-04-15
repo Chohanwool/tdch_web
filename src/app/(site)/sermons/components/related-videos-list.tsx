@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { buildVideoDetailPath } from "@/lib/video-route-utils";
 
 interface RelatedVideoItem {
   youtubeVideoId: string;
@@ -15,19 +16,16 @@ interface RelatedVideoItem {
 }
 
 interface RelatedVideosListProps {
-  siteKey: string;
+  listHref: string;
   items: RelatedVideoItem[];
 }
 
 const INITIAL_VISIBLE_COUNT = 4;
 const LOAD_MORE_COUNT = 3;
 
-export default function RelatedVideosList({ siteKey, items }: RelatedVideosListProps) {
+export default function RelatedVideosList({ listHref, items }: RelatedVideosListProps) {
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
-  const visibleItems = useMemo(
-    () => items.slice(0, visibleCount),
-    [items, visibleCount],
-  );
+  const visibleItems = items.slice(0, visibleCount);
   const hasMore = visibleCount < items.length;
 
   if (items.length === 0) {
@@ -43,7 +41,7 @@ export default function RelatedVideosList({ siteKey, items }: RelatedVideosListP
       {visibleItems.map((item) => (
         <Link
           key={item.youtubeVideoId}
-          href={buildMediaDetailPath(siteKey, item.youtubeVideoId)}
+          href={buildVideoDetailPath(listHref, item.youtubeVideoId)}
           className="group flex gap-3 rounded-[18px] bg-white/88 p-2 transition hover:bg-white"
         >
           <div
@@ -81,10 +79,6 @@ export default function RelatedVideosList({ siteKey, items }: RelatedVideosListP
       ) : null}
     </div>
   );
-}
-
-function buildMediaDetailPath(siteKey: string, youtubeVideoId: string): string {
-  return `/sermons/${siteKey}/${youtubeVideoId}`;
 }
 
 function buildRelatedMeta(item: RelatedVideoItem): string {

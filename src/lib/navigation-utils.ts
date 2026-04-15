@@ -8,11 +8,13 @@ function normalizePath(path: string | null | undefined): string {
   return path.split("#")[0] ?? path;
 }
 
-function getNavigationMatchScore(
-  pathname: string,
-  path: string | null | undefined,
-): number {
-  const normalizedPath = normalizePath(path);
+interface NavigationMatchTarget {
+  href: string;
+  matchPath?: string | null;
+}
+
+function getNavigationMatchScore(pathname: string, target: NavigationMatchTarget): number {
+  const normalizedPath = normalizePath(target.matchPath ?? target.href);
   if (!normalizedPath) {
     return -1;
   }
@@ -28,6 +30,24 @@ function getNavigationMatchScore(
   return -1;
 }
 
+function findBestNavigationTarget<T extends NavigationMatchTarget>(
+  pathname: string,
+  targets: readonly T[],
+): T | undefined {
+  let bestTarget: T | undefined;
+  let bestScore = -1;
+
+  for (const target of targets) {
+    const targetScore = getNavigationMatchScore(pathname, target);
+    if (targetScore > bestScore) {
+      bestTarget = target;
+      bestScore = targetScore;
+    }
+  }
+
+  return bestTarget;
+}
+
 export function toNavMenuGroups(navigation: NavigationResponse): NavMenuGroup[] {
   return navigation.groups.map((group) => ({
     key: group.key,
@@ -35,6 +55,7 @@ export function toNavMenuGroups(navigation: NavigationResponse): NavMenuGroup[] 
     label: group.label,
     matchPath: group.matchPath,
     linkType: group.linkType,
+    contentSiteKey: group.contentSiteKey,
     hiddenInHeader: !group.headerVisible,
     hiddenInMobile: !group.mobileVisible,
     hiddenInLnb: !group.lnbVisible,
@@ -46,6 +67,7 @@ export function toNavMenuGroups(navigation: NavigationResponse): NavMenuGroup[] 
       label: item.label,
       matchPath: item.matchPath,
       linkType: item.linkType,
+      contentSiteKey: item.contentSiteKey,
       hiddenInHeader: !item.headerVisible,
       hiddenInMobile: !item.mobileVisible,
       hiddenInLnb: !item.lnbVisible,
@@ -56,51 +78,37 @@ export function toNavMenuGroups(navigation: NavigationResponse): NavMenuGroup[] 
 }
 
 export function matchesNavigationPath(pathname: string, path: string | null | undefined): boolean {
-  return getNavigationMatchScore(pathname, path) >= 0;
+  return getNavigationMatchScore(pathname, {
+    href: path ?? "",
+    matchPath: path,
+  }) >= 0;
 }
 
 export function findMatchedNavigationGroup(
   pathname: string,
   groups: NavMenuGroup[],
 ): NavMenuGroup | undefined {
-  return groups.reduce<NavMenuGroup | undefined>((bestGroup, group) => {
-    const groupScore = getNavigationMatchScore(pathname, group.matchPath ?? group.href);
-    const itemScore = group.items.reduce((bestScore, item) => {
-      return Math.max(bestScore, getNavigationMatchScore(pathname, item.matchPath ?? item.href));
-    }, -1);
+  let bestGroup: NavMenuGroup | undefined;
+  let bestScore = -1;
+
+  for (const group of groups) {
+    const groupScore = getNavigationMatchScore(pathname, group);
+    const matchedItem = findBestNavigationTarget(pathname, group.items);
+    const itemScore = matchedItem ? getNavigationMatchScore(pathname, matchedItem) : -1;
     const candidateScore = Math.max(groupScore, itemScore);
 
-    if (candidateScore < 0) {
-      return bestGroup;
+    if (candidateScore > bestScore) {
+      bestGroup = group;
+      bestScore = candidateScore;
     }
+  }
 
-    const bestGroupScore = bestGroup
-      ? Math.max(
-          getNavigationMatchScore(pathname, bestGroup.matchPath ?? bestGroup.href),
-          bestGroup.items.reduce((bestScore, item) => {
-            return Math.max(bestScore, getNavigationMatchScore(pathname, item.matchPath ?? item.href));
-          }, -1),
-        )
-      : -1;
-
-    return candidateScore > bestGroupScore ? group : bestGroup;
-  }, undefined);
+  return bestGroup;
 }
 
 export function findMatchedNavigationItem(
   pathname: string,
   group: NavMenuGroup | undefined,
 ): NavSubItem | undefined {
-  return group?.items.reduce<NavSubItem | undefined>((bestItem, item) => {
-    const itemScore = getNavigationMatchScore(pathname, item.matchPath ?? item.href);
-    if (itemScore < 0) {
-      return bestItem;
-    }
-
-    const bestItemScore = bestItem
-      ? getNavigationMatchScore(pathname, bestItem.matchPath ?? bestItem.href)
-      : -1;
-
-    return itemScore > bestItemScore ? item : bestItem;
-  }, undefined);
+  return group ? findBestNavigationTarget(pathname, group.items) : undefined;
 }

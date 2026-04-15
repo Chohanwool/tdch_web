@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import type { MediaItemDto, SermonSiteKey, VideoDetailResponse } from "@/lib/media-api";
+import type { MediaItemDto, VideoDetailResponse } from "@/lib/media-api";
 import { formatDisplayDate } from "@/lib/media-api";
 import RelatedVideosList from "@/app/(site)/sermons/components/related-videos-list";
 
@@ -9,7 +9,6 @@ const youtubeChannelUrl =
   "https://www.youtube.com/@%EB%8D%94%EC%A0%9C%EC%9E%90%EA%B5%90%ED%9A%8C";
 
 interface SermonDetailPageProps {
-  siteKey: SermonSiteKey;
   sectionTitle: string;
   listHref: string;
   detail: VideoDetailResponse | null;
@@ -92,7 +91,6 @@ function CollapsibleSection({ title, meta, children }: CollapsibleSectionProps) 
 }
 
 export default function SermonDetailPage({
-  siteKey,
   sectionTitle,
   listHref,
   detail,
@@ -252,7 +250,7 @@ export default function SermonDetailPage({
             </Link>
           </div>
 
-          <RelatedVideosList siteKey={siteKey} items={relatedItems} />
+          <RelatedVideosList listHref={listHref} items={relatedItems} />
         </aside>
       </div>
     </section>

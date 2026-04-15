@@ -6,6 +6,7 @@ export interface NavigationItemDto {
   href: string;
   matchPath: string | null;
   linkType: NavigationLinkType;
+  contentSiteKey?: string | null;
   visible: boolean;
   headerVisible: boolean;
   mobileVisible: boolean;
@@ -20,6 +21,7 @@ export interface NavigationGroupDto {
   href: string;
   matchPath: string | null;
   linkType: NavigationLinkType;
+  contentSiteKey?: string | null;
   visible: boolean;
   headerVisible: boolean;
   mobileVisible: boolean;
@@ -39,6 +41,7 @@ export interface NavSubItem {
   label: string;
   matchPath?: string | null;
   linkType: NavigationLinkType;
+  contentSiteKey?: string | null;
   hiddenInHeader?: boolean;
   hiddenInMobile?: boolean;
   hiddenInLnb?: boolean;
@@ -53,6 +56,7 @@ export interface NavMenuGroup {
   matchPath?: string | null;
   items: NavSubItem[];
   linkType: NavigationLinkType;
+  contentSiteKey?: string | null;
   hiddenInHeader?: boolean;
   hiddenInMobile?: boolean;
   hiddenInLnb?: boolean;

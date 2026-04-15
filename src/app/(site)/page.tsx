@@ -12,6 +12,7 @@ import {
   homeSermonList,
 } from "@/lib/site-data";
 import { getHomeMedia, toHomeSermonCards } from "@/lib/media-api";
+import { getNavMenuGroups } from "@/lib/navigation-api";
 import {
   CHURCH_ADDRESS,
   SITE_ALTERNATE_NAME,
@@ -22,6 +23,8 @@ import {
 } from "@/lib/site-config";
 import { gowunBatang } from "@/lib/fonts";
 import { createPageMetadata } from "@/lib/seo";
+import { buildVideoDetailPath, findVideoRootHrefBySiteKey } from "@/lib/video-route-utils";
+import type { NavMenuGroup } from "@/lib/navigation-types";
 
 export const metadata: Metadata = createPageMetadata({
   title: `${SITE_ALTERNATE_NAME} | ${SITE_NAME}`,
@@ -33,9 +36,11 @@ export const metadata: Metadata = createPageMetadata({
 function SermonSectionContent({
   sermonCards,
   youtubeUrl,
+  moreHref,
 }: {
   sermonCards: typeof homeSermonList;
   youtubeUrl: string;
+  moreHref: string;
 }) {
   return (
     <div>
@@ -45,7 +50,7 @@ function SermonSectionContent({
             <h2 className="font-serif text-3xl font-semibold text-ink md:text-4xl">말씀</h2>
             <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-cedar/70">Sermon</p>
           </div>
-          <Link href="/sermons" className="text-sm font-semibold text-cedar transition hover:text-clay">
+          <Link href={moreHref} className="text-sm font-semibold text-cedar transition hover:text-clay">
             더보기 &rarr;
           </Link>
         </div>
@@ -71,14 +76,31 @@ function SermonSectionContent({
 }
 
 async function HomeSermonSection({ youtubeUrl }: { youtubeUrl: string }) {
-  const homeMedia = await getHomeMedia();
-  const sermonCards = toHomeSermonCards(homeMedia?.latestSermons, homeSermonList);
+  const [homeMedia, navMenuGroups] = await Promise.all([
+    getHomeMedia(),
+    getNavMenuGroups(),
+  ]);
+  const moreHref = getPrimaryVideoGroupHref(navMenuGroups) ?? youtubeUrl;
+  const sermonCards = toHomeSermonCards(homeMedia?.latestSermons, homeSermonList, (item) => {
+    const siteKey = item.menuSiteKey ?? item.menuSlug;
+    if (!siteKey) {
+      return undefined;
+    }
 
-  return <SermonSectionContent sermonCards={sermonCards} youtubeUrl={youtubeUrl} />;
+    const rootHref = findVideoRootHrefBySiteKey(siteKey, navMenuGroups);
+    return rootHref ? buildVideoDetailPath(rootHref, item.youtubeVideoId) : undefined;
+  });
+
+  return <SermonSectionContent sermonCards={sermonCards} youtubeUrl={youtubeUrl} moreHref={moreHref} />;
 }
 
 function HomeSermonSectionFallback({ youtubeUrl }: { youtubeUrl: string }) {
-  return <SermonSectionContent sermonCards={homeSermonList} youtubeUrl={youtubeUrl} />;
+  return <SermonSectionContent sermonCards={homeSermonList} youtubeUrl={youtubeUrl} moreHref={youtubeUrl} />;
+}
+
+function getPrimaryVideoGroupHref(groups: NavMenuGroup[]): string | undefined {
+  const videoGroup = groups.find((group) => group.items.some((item) => item.contentSiteKey));
+  return videoGroup?.href;
 }
 
 export default function Home() {

@@ -1,8 +1,9 @@
 import SectionHeading from "@/components/section-heading";
 import SermonVideoCard from "@/app/(site)/sermons/components/sermon-video-card";
-import type { MediaItemDto, MediaListResponse, SermonSiteKey } from "@/lib/media-api";
-import { buildMediaDetailPath, buildMediaMeta } from "@/lib/media-api";
+import type { MediaItemDto, MediaListResponse } from "@/lib/media-api";
+import { buildMediaMeta } from "@/lib/media-api";
 import { YOUTUBE_CHANNEL_URL } from "@/lib/site-config";
+import { buildVideoDetailPath, buildVideoListPath } from "@/lib/video-route-utils";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -13,7 +14,7 @@ interface SermonArchivePageProps {
   description: string;
   emptyTitle: string;
   emptyDescription: string;
-  siteKey: SermonSiteKey;
+  listHref: string;
   response: MediaListResponse | null;
   showIntroCard?: boolean;
   showLatestEmbed?: boolean;
@@ -48,7 +49,7 @@ export default function SermonArchivePage({
   description,
   emptyTitle,
   emptyDescription,
-  siteKey,
+  listHref,
   response,
   showIntroCard = true,
   showLatestEmbed = false,
@@ -148,7 +149,7 @@ export default function SermonArchivePage({
                 {items.map((item) => (
                   <PlaylistRow
                     key={item.youtubeVideoId}
-                    href={buildMediaDetailPath(siteKey, item.youtubeVideoId)}
+                    href={buildVideoDetailPath(listHref, item.youtubeVideoId)}
                     thumbnail={item.thumbnailUrl}
                     thumbnailAlt={item.displayTitle}
                     label={getPlaylistLabel(item)}
@@ -159,7 +160,7 @@ export default function SermonArchivePage({
               </div>
 
               <Pagination
-                siteKey={siteKey}
+                listHref={listHref}
                 currentPage={currentPage}
                 totalPages={response?.totalPages ?? 0}
               />
@@ -170,7 +171,7 @@ export default function SermonArchivePage({
             {items.map((item) => (
               <SermonVideoCard
                 key={item.youtubeVideoId}
-                href={buildMediaDetailPath(siteKey, item.youtubeVideoId)}
+                href={buildVideoDetailPath(listHref, item.youtubeVideoId)}
                 thumbnail={item.thumbnailUrl}
                 thumbnailAlt={item.displayTitle}
                 category={getItemCategory(item, menuName)}
@@ -196,12 +197,12 @@ export default function SermonArchivePage({
 }
 
 interface PaginationProps {
-  siteKey: SermonSiteKey;
+  listHref: string;
   currentPage: number;
   totalPages: number;
 }
 
-function Pagination({ siteKey, currentPage, totalPages }: PaginationProps) {
+function Pagination({ listHref, currentPage, totalPages }: PaginationProps) {
   if (totalPages <= 0) {
     return null;
   }
@@ -212,7 +213,7 @@ function Pagination({ siteKey, currentPage, totalPages }: PaginationProps) {
   return (
     <nav className="flex flex-wrap items-center justify-center gap-2 pt-2" aria-label="페이지 이동">
       <PaginationLink
-        siteKey={siteKey}
+        listHref={listHref}
         page={normalizedCurrentPage - 1}
         disabled={normalizedCurrentPage <= 1}
       >
@@ -222,7 +223,7 @@ function Pagination({ siteKey, currentPage, totalPages }: PaginationProps) {
       {pages.map((page) => (
         <PaginationLink
           key={page}
-          siteKey={siteKey}
+          listHref={listHref}
           page={page}
           active={page === normalizedCurrentPage}
         >
@@ -231,7 +232,7 @@ function Pagination({ siteKey, currentPage, totalPages }: PaginationProps) {
       ))}
 
       <PaginationLink
-        siteKey={siteKey}
+        listHref={listHref}
         page={normalizedCurrentPage + 1}
         disabled={normalizedCurrentPage >= totalPages}
       >
@@ -242,7 +243,7 @@ function Pagination({ siteKey, currentPage, totalPages }: PaginationProps) {
 }
 
 interface PaginationLinkProps {
-  siteKey: SermonSiteKey;
+  listHref: string;
   page: number;
   active?: boolean;
   disabled?: boolean;
@@ -250,7 +251,7 @@ interface PaginationLinkProps {
 }
 
 function PaginationLink({
-  siteKey,
+  listHref,
   page,
   active = false,
   disabled = false,
@@ -266,7 +267,7 @@ function PaginationLink({
 
   return (
     <Link
-      href={buildSermonListPath(siteKey, page)}
+      href={buildSermonListPath(listHref, page)}
       scroll={false}
       prefetch
       aria-current={active ? "page" : undefined}
@@ -282,12 +283,13 @@ function PaginationLink({
   );
 }
 
-function buildSermonListPath(siteKey: SermonSiteKey, page: number): string {
+function buildSermonListPath(listHref: string, page: number): string {
+  const normalizedListHref = buildVideoListPath(listHref);
   if (page <= 1) {
-    return `/sermons/${siteKey}`;
+    return normalizedListHref;
   }
 
-  return `/sermons/${siteKey}?page=${page}`;
+  return `${normalizedListHref}?page=${page}`;
 }
 
 function buildPageNumbers(currentPage: number, totalPages: number): number[] {
