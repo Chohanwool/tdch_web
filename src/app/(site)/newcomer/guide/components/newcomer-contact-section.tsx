@@ -31,7 +31,7 @@ export default function NewcomerContactSection() {
 
         <Link
           href="/newcomer/care#apply"
-          className="mt-6 inline-flex h-10 items-center justify-center rounded-[6px] bg-[#c9a84c] px-[18px] type-body font-bold tracking-[0.05em] text-white transition hover:bg-[#d4b261] md:mt-0"
+          className="mt-6 inline-flex items-center justify-center rounded-[8px] bg-[#c9a84c] px-[18px] py-[14px] text-[0.9375rem] font-bold leading-none tracking-[0.04em] text-white transition hover:bg-[#b79436] md:mt-0"
         >
           신청하기 →
         </Link>

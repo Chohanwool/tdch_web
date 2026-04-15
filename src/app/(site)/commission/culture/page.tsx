@@ -91,7 +91,7 @@ function GoldButton({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href}
-      className="type-body-small inline-flex items-center justify-center rounded-[8px] bg-[#c9a84c] px-[18px] py-[14px] font-bold tracking-[0.04em] text-white transition hover:bg-[#b79436]"
+      className="inline-flex items-center justify-center rounded-[8px] bg-[#c9a84c] px-[18px] py-[14px] text-[0.9375rem] font-bold leading-none tracking-[0.04em] text-white transition hover:bg-[#b79436]"
     >
       <span>{children}</span>
       <span className="ml-1">→</span>

@@ -60,7 +60,7 @@ export default function DisciplesApplicationForm({
 
       <button
         type="button"
-        className="mt-10 flex h-10 w-full items-center justify-center rounded-[6px] bg-[#b8955a] type-body-small font-bold tracking-[0.08em] text-white transition hover:bg-[#c9a84c]"
+        className="mt-10 flex h-10 w-full items-center justify-center rounded-[6px] bg-[#b8955a] text-[0.9375rem] font-bold leading-none tracking-[0.08em] text-white transition hover:bg-[#c9a84c]"
       >
         신청하기
       </button>

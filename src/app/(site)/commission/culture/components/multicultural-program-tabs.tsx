@@ -127,7 +127,7 @@ function TabButton({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`type-body-small border-b-2 px-1 pb-4 font-bold tracking-[0.04em] transition ${
+      className={`type-body-small shrink-0 whitespace-nowrap border-b-2 px-1 pb-4 font-bold tracking-[0.04em] transition ${
         active ? "border-[#0f2044] text-[#0f2044]" : "border-transparent text-[#888580]"
       }`}
     >
@@ -249,7 +249,7 @@ function ColumnPanel({
   columns: ReadonlyArray<{ title: string; items: readonly string[] }>;
 }) {
   return (
-    <div className="grid gap-8 md:grid-cols-3 md:gap-10">
+    <div className="grid gap-8 min-[551px]:grid-cols-3 min-[551px]:gap-6 md:grid-cols-3 md:gap-10">
       {columns.map((column) => (
         <div key={column.title}>
           <p className="type-label font-medium tracking-[0.08em] text-[#c9a84c]">{column.title}</p>
@@ -265,7 +265,7 @@ function ColumnPanel({
 function CulturalExchangePanel() {
   return (
     <div className="grid gap-8 md:grid-cols-[0.92fr_1.08fr] md:gap-10">
-      <div className="space-y-8">
+      <div className="grid gap-8 min-[500px]:grid-cols-2 md:grid-cols-1">
         <div>
           <p className="type-label font-medium tracking-[0.08em] text-[#c9a84c]">다문화 축제 (연 1회)</p>
           <div className="mt-4">
@@ -304,7 +304,7 @@ export default function MulticulturalProgramTabs() {
   return (
     <div className="mt-8">
       <div className="border-b-2 border-[#d0cdca]">
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
+        <div className="no-scrollbar flex w-full min-w-0 flex-nowrap gap-4 overflow-x-auto pb-1">
           {tabLabels.map((tab) => (
             <TabButton
               key={tab.key}

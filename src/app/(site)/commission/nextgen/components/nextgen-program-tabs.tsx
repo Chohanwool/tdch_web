@@ -150,7 +150,7 @@ export default function NextgenProgramTabs() {
         </div>
       </div>
 
-      <div className="mt-8 pb-8 flex flex-col gap-10 md:flex-row md:items-start md:gap-[68px]">
+      <div className="mt-8 pb-8 flex flex-col gap-8 md:flex-row md:items-start md:gap-[68px]">
         <div className="md:w-[180px] md:shrink-0">
           <AgeLabel ageParts={activeTab.ageParts} />
           <h3 className="mt-4 type-subsection-title font-section-title font-extrabold tracking-[0.02em] text-black">
@@ -163,11 +163,15 @@ export default function NextgenProgramTabs() {
           </p>
         </div>
 
-        <div className={`grid flex-1 gap-8 ${activeTab.sections.length >= 3 ? "md:grid-cols-3 md:gap-10" : "md:grid-cols-2 md:gap-12"}`}>
+        <div
+          className={`grid grid-cols-1 gap-x-4 gap-y-8 flex-1 min-[491px]:grid-cols-3 min-[491px]:gap-y-4 md:gap-8 ${
+            activeTab.sections.length >= 3 ? "md:grid-cols-3 md:gap-10" : "md:grid-cols-2 md:gap-12"
+          }`}
+        >
           {activeTab.sections.map((section) => (
-            <div key={section.label}>
+            <div key={section.label} className="text-left">
               <p className="type-label font-medium tracking-[0.08em] text-[#c9a84c]">{section.label}</p>
-              <div className="mt-3 space-y-3">
+              <div className="mt-3 space-y-2 min-[491px]:space-y-3">
                 {section.items.map((item) => (
                   <div key={item} className="type-body-small flex items-start gap-2 tracking-[0.04em]">
                     <span className="pt-[2px] text-[#888580]">·</span>

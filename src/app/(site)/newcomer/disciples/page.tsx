@@ -555,7 +555,7 @@ export default function NewcomerDisciplesPage() {
           aria-labelledby="disciples-apply-title"
           className="mt-20 scroll-mt-32 md:mt-[68px] md:scroll-mt-36"
         >
-          <div className="rounded-[12px] bg-[#1a2744] p-10 md:flex md:items-start md:justify-between md:gap-10 md:p-9">
+          <div className="rounded-[12px] bg-[#1a2744] p-8 md:flex md:items-start md:justify-between md:gap-10 md:p-9">
             <div className="md:max-w-[320px] lg:max-w-[360px]">
               <SectionHeading
                 id="disciples-apply-title"

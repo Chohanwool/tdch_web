@@ -78,7 +78,7 @@ function AccordionItem({
       </button>
 
       {open ? (
-        <div className="space-y-4 px-4 py-5">
+        <div className="space-y-2 px-4 py-5">
           {items.map((item) => (
             <div key={item} className="type-body-small flex items-start gap-3 tracking-[0.02em] text-[#4a4845]">
               <span className="pt-1 text-[#c9a84c]">·</span>

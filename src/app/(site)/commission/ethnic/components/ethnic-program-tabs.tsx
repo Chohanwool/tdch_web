@@ -146,7 +146,15 @@ export default function EthnicProgramTabs() {
       </div>
 
       {activeTab.columns ? (
-        <div className="mt-8 grid gap-8 md:grid-cols-3 md:gap-10">
+        <div
+          className={`mt-8 grid gap-8 ${
+            activeKey === "prayer"
+              ? "min-[841px]:grid-cols-3 min-[841px]:gap-10"
+              : activeKey === "financial"
+              ? "min-[641px]:grid-cols-3 min-[641px]:gap-10"
+              : "md:grid-cols-3 md:gap-10"
+          }`}
+        >
           {activeTab.columns.map((column) => (
             <div key={column.title}>
               <p className="type-label font-medium tracking-[0.08em] text-[#c9a84c]">{column.title}</p>
@@ -167,7 +175,7 @@ export default function EthnicProgramTabs() {
 
       {shortTermPrimary ? (
         <div className="mt-8">
-          <div className="grid gap-8 md:grid-cols-2 md:gap-10">
+          <div className="grid gap-8 min-[836px]:grid-cols-2 min-[836px]:gap-10">
             <div>
               <p className="type-label font-medium tracking-[0.08em] text-[#c9a84c]">{shortTermPrimary.title}</p>
               <div className="mt-4 overflow-hidden rounded-[8px] border border-[#d0cdca]">
@@ -237,7 +245,7 @@ export default function EthnicProgramTabs() {
           {activeTab.listRows.map((row, index) => (
             <div
               key={row.title}
-              className={`flex flex-col gap-4 py-5 md:flex-row md:items-center md:gap-10 ${
+              className={`flex flex-col gap-1 py-5 md:flex-row md:items-center md:gap-10 ${
                 index === 0 ? "" : "border-t border-[#f2f0ec]"
               }`}
             >

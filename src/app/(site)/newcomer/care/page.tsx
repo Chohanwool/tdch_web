@@ -275,7 +275,7 @@ export default function NewcomerCarePage() {
           className="mt-20 scroll-mt-32 md:mt-[68px] md:scroll-mt-36"
           aria-labelledby="newcomer-care-apply-title"
         >
-          <div className="rounded-[12px] bg-[#1a2744] p-10 md:flex md:items-start md:justify-between md:gap-10 md:p-9">
+          <div className="rounded-[12px] bg-[#1a2744] p-8 md:flex md:items-start md:justify-between md:gap-10 md:p-9">
             <div className="md:max-w-[300px]">
               <SectionHeading
                 id="newcomer-care-apply-title"
@@ -285,10 +285,17 @@ export default function NewcomerCarePage() {
               />
 
               <ul className="mt-6 flex flex-col gap-3">
-                {applicationNotes.map((note) => (
+                {applicationNotes.map((note, index) => (
                   <li key={note} className="flex items-start gap-1 type-body text-white">
                     <span aria-hidden="true">·</span>
-                    <span>{note}</span>
+                    {index === 0 ? (
+                      <span>
+                        <span className="md:hidden">온라인 신청: 아래 양식 작성</span>
+                        <span className="hidden md:inline">온라인 신청: 우측 양식 작성</span>
+                      </span>
+                    ) : (
+                      <span>{note}</span>
+                    )}
                   </li>
                 ))}
               </ul>
