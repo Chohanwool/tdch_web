@@ -74,6 +74,8 @@ export interface AdminPlaylist {
   lastSyncErrorMessage: string | null;
   discoverySource: string | null;
   operationStatus: AdminPlaylistOperationStatus;
+  operationStatusLabel: string;
+  operationStatusDescription: string;
 }
 
 export interface AdminPlaylistListResponse {
@@ -114,6 +116,8 @@ export interface AdminPlaylistDetailResponse {
   lastSyncErrorMessage: string | null;
   discoverySource: string | null;
   operationStatus: AdminPlaylistOperationStatus;
+  operationStatusLabel: string;
+  operationStatusDescription: string;
 }
 
 export interface AdminPlaylistDiscoveryItem {

@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getAdminSession, isAdminSession } from "@/auth";
 import {
   ADMIN_CONTENT_KIND_META,
-  ADMIN_PLAYLIST_OPERATION_STATUS_META,
   ADMIN_PLAYLIST_STATUS_META,
   formatAdminMediaDateTime,
   formatAdminMediaDate,
@@ -193,8 +192,6 @@ function PlaylistRow({ item, rowNum }: { item: AdminPlaylist; rowNum: number }) 
   const lastSyncedAt = formatAdminMediaDate(item.lastSyncedAt, "미동기화");
   const lastSyncSucceededAt = formatAdminMediaDateTime(item.lastSyncSucceededAt, "—");
   const lastSyncFailedAt = formatAdminMediaDateTime(item.lastSyncFailedAt, "—");
-  const operationStatusMeta = ADMIN_PLAYLIST_OPERATION_STATUS_META[item.operationStatus];
-
   return (
     <tr className="border-b border-[#f0f4f8] transition hover:bg-[#fafcff]">
       <td className="px-5 py-4 align-middle text-[13px] text-[#5d6f86]">{rowNum}</td>
@@ -223,8 +220,16 @@ function PlaylistRow({ item, rowNum }: { item: AdminPlaylist; rowNum: number }) 
         <p className="mt-0.5 text-[11px] text-[#8fa3bb]">정렬 {item.sortOrder}</p>
       </td>
       <td className="px-5 py-4 align-middle">
-        <Badge label={operationStatusMeta.label} className={operationStatusMeta.cls} />
-        <p className="mt-1 text-[11px] text-[#8fa3bb]">{operationStatusMeta.description}</p>
+        <Badge label={item.operationStatusLabel} className={
+          item.operationStatus === "SYNC_FAILED"
+            ? "bg-rose-50 text-rose-700"
+            : item.operationStatus === "READY"
+              ? "bg-emerald-50 text-emerald-700"
+              : item.operationStatus === "SYNC_DISABLED"
+                ? "bg-slate-100 text-slate-700"
+                : "bg-amber-50 text-amber-700"
+        } />
+        <p className="mt-1 text-[11px] text-[#8fa3bb]">{item.operationStatusDescription}</p>
       </td>
       <td className="px-5 py-4 align-middle">
         <span

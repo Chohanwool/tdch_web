@@ -38,6 +38,8 @@ const _assertPlaylist: AdminPlaylist = {
   lastSyncErrorMessage: null,
   discoverySource: null,
   operationStatus: "READY",
+  operationStatusLabel: "정상 운영",
+  operationStatusDescription: "최근 sync 기준으로 운영 상태가 정상입니다.",
 };
 void _assertPlaylist;
 

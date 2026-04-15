@@ -4,7 +4,6 @@ import { getAdminSession, isAdminSession } from "@/auth";
 import { AdminApiError } from "@/lib/admin-api";
 import {
   ADMIN_CONTENT_KIND_META,
-  ADMIN_PLAYLIST_OPERATION_STATUS_META,
   ADMIN_PLAYLIST_STATUS_META,
   formatAdminMediaDate,
   formatAdminMediaDateTime,
@@ -112,7 +111,6 @@ export default async function AdminMediaDetailPage({
   ]);
   const saveAction = updateAdminMediaDetailAction.bind(null, siteKey);
   const videos = videosResponse.data;
-  const operationStatusMeta = ADMIN_PLAYLIST_OPERATION_STATUS_META[playlist.operationStatus];
 
   return (
     <div className="space-y-5">
@@ -138,13 +136,24 @@ export default async function AdminMediaDetailPage({
         <div className="flex flex-wrap items-center gap-2">
           <Badge {...ADMIN_PLAYLIST_STATUS_META[playlist.status]} />
           <Badge {...ADMIN_CONTENT_KIND_META[playlist.contentKind]} />
-          <Badge label={operationStatusMeta.label} cls={operationStatusMeta.cls} />
+          <Badge
+            label={playlist.operationStatusLabel}
+            cls={
+              playlist.operationStatus === "SYNC_FAILED"
+                ? "bg-rose-50 text-rose-700"
+                : playlist.operationStatus === "READY"
+                  ? "bg-emerald-50 text-emerald-700"
+                  : playlist.operationStatus === "SYNC_DISABLED"
+                    ? "bg-slate-100 text-slate-700"
+                    : "bg-amber-50 text-amber-700"
+            }
+          />
         </div>
       </div>
 
       <section className="rounded-2xl border border-[#e2e8f0] bg-[#f8fafc] px-5 py-4 shadow-sm">
         <h2 className="text-[14px] font-bold text-[#0f1c2e]">운영 안내</h2>
-        <p className="mt-2 text-[13px] text-[#45576e]">{operationStatusMeta.description}</p>
+        <p className="mt-2 text-[13px] text-[#45576e]">{playlist.operationStatusDescription}</p>
         {playlist.operationStatus === "SYNC_FAILED" && playlist.lastSyncErrorMessage ? (
           <p className="mt-1 text-[12px] text-[#8fa3bb]">최근 오류: {playlist.lastSyncErrorMessage}</p>
         ) : null}
