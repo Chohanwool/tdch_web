@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import type { AdminMediaDiscoveryActionState } from "../actions";
+import AdminMediaDiscoveryResultsDialog from "./admin-media-discovery-results-dialog";
 
 interface DiscoverPlaylistsButtonProps {
   action: (
@@ -12,35 +13,39 @@ interface DiscoverPlaylistsButtonProps {
 
 export default function DiscoverPlaylistsButton({ action }: DiscoverPlaylistsButtonProps) {
   const [state, formAction, isPending] = useActionState<AdminMediaDiscoveryActionState, FormData>(action, {});
-  const [toast, setToast] = useState<AdminMediaDiscoveryActionState | null>(null);
+  const [toastState, setToastState] = useState<AdminMediaDiscoveryActionState | null>(null);
+  const [discoveryResult, setDiscoveryResult] = useState<AdminMediaDiscoveryActionState | null>(null);
 
   useEffect(() => {
     if (!state.message) return;
-    setToast(state);
-    const timer = window.setTimeout(() => setToast(null), 4000);
+    setToastState(state);
+    if (state.success && state.items?.length) {
+      setDiscoveryResult(state);
+    }
+    const timer = window.setTimeout(() => setToastState(null), 4000);
     return () => window.clearTimeout(timer);
   }, [state]);
 
   return (
     <>
-      {toast?.message && (
+      {toastState?.message && (
         <div
           role="status"
           className={`fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3 rounded-2xl border px-4 py-3.5 shadow-lg ${
-            toast.success ? "border-emerald-100 bg-white" : "border-red-100 bg-white"
+            toastState.success ? "border-emerald-100 bg-white" : "border-red-100 bg-white"
           }`}
         >
           <span
             className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
-              toast.success ? "bg-emerald-100 text-emerald-600" : "bg-red-100 text-red-600"
+              toastState.success ? "bg-emerald-100 text-emerald-600" : "bg-red-100 text-red-600"
             }`}
           >
-            {toast.success ? "✓" : "!"}
+            {toastState.success ? "✓" : "!"}
           </span>
-          <p className="text-[13px] text-[#1e2f45]">{toast.message}</p>
+          <p className="text-[13px] text-[#1e2f45]">{toastState.message}</p>
           <button
             type="button"
-            onClick={() => setToast(null)}
+            onClick={() => setToastState(null)}
             className="ml-auto shrink-0 text-[#8fa3bb] hover:text-[#374151]"
             aria-label="닫기"
           >
@@ -64,6 +69,14 @@ export default function DiscoverPlaylistsButton({ action }: DiscoverPlaylistsBut
           {isPending ? "불러오는 중..." : "미연결 재생목록 불러오기"}
         </button>
       </form>
+
+      <AdminMediaDiscoveryResultsDialog
+        open={Boolean(discoveryResult)}
+        discoveredCount={discoveryResult?.discoveredCount ?? 0}
+        skippedCount={discoveryResult?.skippedCount ?? 0}
+        items={discoveryResult?.items ?? []}
+        onClose={() => setDiscoveryResult(null)}
+      />
     </>
   );
 }

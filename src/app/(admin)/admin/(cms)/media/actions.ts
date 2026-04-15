@@ -3,24 +3,50 @@
 import { revalidatePath } from "next/cache";
 import { getAdminSession, isAdminSession } from "@/auth";
 import { discoverAdminPlaylists, runAdminMediaSync, toFriendlyAdminMediaMessage } from "@/lib/admin-media-api";
+import type { AdminContentKind, AdminPlaylistStatus } from "@/lib/admin-media-shared";
+
+export interface AdminMediaDiscoveryActionItem {
+  siteKey: string;
+  menuName: string;
+  contentKind: AdminContentKind;
+  status: AdminPlaylistStatus;
+  editHref: `/admin/media/${string}`;
+}
 
 export interface AdminMediaDiscoveryActionState {
   message?: string;
   success?: boolean;
   discoveredCount?: number;
   skippedCount?: number;
+  items?: AdminMediaDiscoveryActionItem[];
   messageKey?: number;
+}
+
+function toDiscoveryActionItem(
+  item: Awaited<ReturnType<typeof discoverAdminPlaylists>>["items"][number],
+): AdminMediaDiscoveryActionItem {
+  return {
+    siteKey: item.siteKey,
+    menuName: item.menuName,
+    contentKind: item.contentKind,
+    status: "DRAFT",
+    editHref: `/admin/media/${item.siteKey}`,
+  };
 }
 
 function buildState(
   message: string,
-  options?: Pick<AdminMediaDiscoveryActionState, "success" | "discoveredCount" | "skippedCount">,
+  options?: Pick<
+    AdminMediaDiscoveryActionState,
+    "success" | "discoveredCount" | "skippedCount" | "items"
+  >,
 ): AdminMediaDiscoveryActionState {
   return {
     message,
     success: options?.success ?? false,
     discoveredCount: options?.discoveredCount,
     skippedCount: options?.skippedCount,
+    items: options?.items,
     messageKey: Date.now(),
   };
 }
@@ -79,6 +105,7 @@ export async function discoverAdminPlaylistsAction(
         success: true,
         discoveredCount: result.discoveredCount,
         skippedCount: result.skippedCount,
+        items: result.items.map(toDiscoveryActionItem),
       },
     );
   } catch (error) {
@@ -113,11 +140,11 @@ export async function runAdminMediaSyncAction(
     return buildSyncState(
       `수동 sync를 완료했습니다. 성공 ${result.succeededPlaylists}건, 실패 ${result.failedPlaylists}건`,
       {
-      success: true,
-      totalPlaylists: result.totalPlaylists,
-      succeededPlaylists: result.succeededPlaylists,
-      failedPlaylists: result.failedPlaylists,
-      completedAt: result.completedAt,
+        success: true,
+        totalPlaylists: result.totalPlaylists,
+        succeededPlaylists: result.succeededPlaylists,
+        failedPlaylists: result.failedPlaylists,
+        completedAt: result.completedAt,
       },
     );
   } catch (error) {
