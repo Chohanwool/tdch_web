@@ -38,6 +38,7 @@ import type {
   UpdateAdminPlaylistPayload,
   UpdateAdminVideoMetadataPayload,
 } from "@/lib/admin-media-shared";
+import type { AdminMediaSyncResponse } from "@/lib/admin-api";
 
 async function fetchAdminMediaJson<T>(
   actorId: string,
@@ -126,6 +127,12 @@ export async function getAdminSyncJob(
   jobId: string | number,
 ): Promise<AdminSyncJobDetailResponse> {
   return fetchAdminMediaJson<AdminSyncJobDetailResponse>(actorId, `/api/v1/admin/media/sync-jobs/${encodeURIComponent(String(jobId))}`);
+}
+
+export async function runAdminMediaSync(actorId: string): Promise<AdminMediaSyncResponse> {
+  return fetchAdminMediaJson<AdminMediaSyncResponse>(actorId, "/api/v1/admin/media/sync", {
+    method: "POST",
+  });
 }
 
 export async function getAdminPlaylistVideos(

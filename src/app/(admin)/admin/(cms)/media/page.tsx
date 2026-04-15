@@ -12,7 +12,8 @@ import {
   type AdminPlaylist,
 } from "@/lib/admin-media-api";
 import DiscoverPlaylistsButton from "./_components/discover-playlists-button";
-import { discoverAdminPlaylistsAction } from "./actions";
+import AdminMediaSyncButton from "./_components/admin-media-sync-button";
+import { discoverAdminPlaylistsAction, runAdminMediaSyncAction } from "./actions";
 
 function Badge({ label, cls }: { label: string; cls: string }) {
   return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${cls}`}>{label}</span>;
@@ -122,7 +123,10 @@ export default async function AdminMediaPage(props: Record<string, never>) {
             메뉴, 유튜브 재생목록, sync 상태를 한 화면에서 확인합니다.
           </p>
         </div>
-        <DiscoverPlaylistsButton action={discoverAdminPlaylistsAction} />
+        <div className="flex flex-wrap items-center gap-3">
+          <AdminMediaSyncButton action={runAdminMediaSyncAction} />
+          <DiscoverPlaylistsButton action={discoverAdminPlaylistsAction} />
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
