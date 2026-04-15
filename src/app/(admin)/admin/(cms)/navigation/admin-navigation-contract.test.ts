@@ -7,8 +7,8 @@ const _assertVideoPageItem = {
   id: 101,
   parentId: null,
   label: "주일예배",
-  href: "/sermons",
-  matchPath: "/sermons",
+  href: "/videos",
+  matchPath: "/videos",
   linkType: "INTERNAL",
   menuType: "VIDEO_PAGE",
   videoRootKey: "sermons",
@@ -30,8 +30,8 @@ void _assertVideoPageItem;
 const _assertVideoPagePayload = {
   parentId: null,
   label: "주일예배",
-  href: "/sermons",
-  matchPath: "/sermons",
+  href: "/videos",
+  matchPath: "/videos",
   linkType: "INTERNAL",
   menuType: "VIDEO_PAGE",
   videoRootKey: "sermons",
@@ -47,4 +47,3 @@ const _assertVideoPagePayload = {
 } satisfies NavigationItemPayload;
 
 void _assertVideoPagePayload;
-

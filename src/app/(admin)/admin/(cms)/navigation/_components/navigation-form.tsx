@@ -34,6 +34,7 @@ const MENU_TYPES: { value: AdminNavigationMenuType; label: string; desc: string 
 ];
 
 const VIDEO_ROOT_OPTIONS = [{ value: "sermons", label: "예배 영상" }] as const;
+const DEFAULT_VIDEO_ROOT_KEY = VIDEO_ROOT_OPTIONS[0].value;
 const VIDEO_CONTENT_KIND_FILTER_OPTIONS: { value: AdminNavigationContentKindFilter | ""; label: string }[] = [
   { value: "", label: "전체 영상" },
   { value: "LONG_FORM", label: "말씀/설교" },
@@ -356,42 +357,52 @@ export default function NavigationForm({
 
           {/* 연결 주소 */}
           <div className="sm:col-span-2">
-            <FieldLabel required={!isVideoPage}>
+            <FieldLabel required>
               {isVideoPage ? "루트 경로" : isBoardPage ? "게시판 경로" : "연결 주소 (href)"}
             </FieldLabel>
             <TextInput
               key={`href-${selectedMenuType}`}
               name="href"
-              defaultValue={item?.href ?? (isVideoPage ? "/sermons" : "")}
+              defaultValue={item?.href ?? ""}
               placeholder={
                 isVideoPage
-                  ? "영상 페이지에서는 자동으로 설정됩니다."
+                  ? "예) /videos, /worship/messages"
                   : isBoardPage
                     ? "예) /boards/notices"
                     : "예) /about"
               }
-              disabled={isVideoPage}
               error={state.errors?.href}
             />
+            {isVideoPage ? (
+              <p className="mt-1 text-[11px] text-[#8fa3bb]">
+                영상 메뉴의 실제 공개 루트입니다. 목록은 <code className="rounded bg-white/70 px-1 py-0.5">/루트경로/영상메뉴슬러그</code> 형식으로 연결됩니다.
+              </p>
+            ) : null}
           </div>
 
           {/* 매치 경로 */}
-          {!isVideoPage && (
-            <div className="sm:col-span-2">
-              <FieldLabel>{isBoardPage ? "매치 경로 (선택)" : "매치 경로 (match_path)"}</FieldLabel>
-              <TextInput
-                key={`match-${selectedMenuType}`}
-                name="matchPath"
-                defaultValue={item?.matchPath ?? ""}
-                placeholder={isBoardPage ? "비우면 게시판 경로를 그대로 사용합니다." : "예) /about/location (비우면 href 사용)"}
-              />
-              <p className="mt-1 text-[11px] text-[#8fa3bb]">
-                {isBoardPage
+          <div className="sm:col-span-2">
+            <FieldLabel>{isBoardPage ? "매치 경로 (선택)" : "매치 경로 (match_path)"}</FieldLabel>
+            <TextInput
+              key={`match-${selectedMenuType}`}
+              name="matchPath"
+              defaultValue={item?.matchPath ?? ""}
+              placeholder={
+                isVideoPage
+                  ? "비우면 루트 경로를 그대로 사용합니다."
+                  : isBoardPage
+                    ? "비우면 게시판 경로를 그대로 사용합니다."
+                    : "예) /about/location (비우면 href 사용)"
+              }
+            />
+            <p className="mt-1 text-[11px] text-[#8fa3bb]">
+              {isVideoPage
+                ? "현재 메뉴와 연결할 기준 경로입니다. 보통은 비워두고, 루트 경로와 다른 패턴을 매칭해야 할 때만 입력합니다."
+                : isBoardPage
                   ? "보통은 비워두고, 게시판 상세를 별도 패턴으로 매칭해야 할 때만 사용합니다."
                   : "현재 보고 있는 페이지와 메뉴를 연결할 기준 경로입니다. 보통은 비워두고, 앵커 메뉴처럼 href에 #이 들어갈 때만 hash 없는 경로를 입력합니다."}
-              </p>
-            </div>
-          )}
+            </p>
+          </div>
 
           {isStaticPage && (
             <div className="sm:col-span-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -457,7 +468,7 @@ export default function NavigationForm({
                   <FieldLabel required>연결된 영상 관리 영역</FieldLabel>
                   <select
                     name="videoRootKey"
-                    defaultValue={item?.videoRootKey ?? "sermons"}
+                    defaultValue={item?.videoRootKey ?? DEFAULT_VIDEO_ROOT_KEY}
                     className="h-9 w-full rounded-lg border border-[#d1dbe6] bg-white px-3 text-[13px] text-[#132033]
                       focus:border-[#3f74c7] focus:outline-none focus:ring-1 focus:ring-[#3f74c7]/40 transition"
                   >

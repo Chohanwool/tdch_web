@@ -137,7 +137,7 @@ function parsePayload(formData: FormData): {
   if (!label) errors.label = "메뉴명을 입력해주세요.";
   if (!VALID_MENU_TYPES.includes(menuType as AdminNavigationMenuType))
     errors.menuType = "올바른 메뉴 타입을 선택해주세요.";
-  if (!isVideoPage && !href) errors.href = "연결 주소를 입력해주세요.";
+  if (!href) errors.href = isVideoPage ? "영상 메뉴 루트 경로를 입력해주세요." : "연결 주소를 입력해주세요.";
   if (!VALID_LINK_TYPES.includes(linkType as AdminNavigationEditableLinkType))
     errors.linkType = "올바른 링크 타입을 선택해주세요.";
   if (isBoardPage && !boardKey) {
@@ -155,8 +155,8 @@ function parsePayload(formData: FormData): {
     payload: {
       parentId: parseNullableNumber(formData.get("parentId")),
       label,
-      href: isVideoPage ? "/sermons" : href,
-      matchPath: isVideoPage ? "/sermons" : parseNullableString(formData.get("matchPath")),
+      href,
+      matchPath: parseNullableString(formData.get("matchPath")) ?? href,
       linkType: (isBoardPage || isVideoPage ? "INTERNAL" : linkType) as AdminNavigationEditableLinkType,
       menuType: menuType as AdminNavigationMenuType,
       pageKey: menuType === "STATIC_PAGE" ? pageKey : null,
