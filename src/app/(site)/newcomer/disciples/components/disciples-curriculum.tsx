@@ -31,6 +31,12 @@ export default function DisciplesCurriculum({
 
   return (
     <div className="space-y-7">
+      <p className="type-body-small tracking-[0.02em] text-[#888580]">
+        대상: {selectedStage.target}
+        <span className="mx-2">·</span>
+        목표: <span className="font-bold text-[#1a2744]">{selectedStage.objective}</span>
+      </p>
+
       <div className="overflow-hidden rounded-[12px] border border-black/20 bg-white">
         <div className="grid grid-cols-3">
           {stages.map((stage, index) => {
@@ -45,12 +51,12 @@ export default function DisciplesCurriculum({
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => setSelectedIndex(index)}
-                className={`px-3 py-5 text-center transition-colors ${activeClassName} ${index < stages.length - 1 ? "border-r border-black/10" : ""}`}
+                className={`px-3 py-4 text-center transition-colors md:py-2 ${activeClassName} ${index < stages.length - 1 ? "border-r border-black/10" : ""}`}
               >
-                <p className="text-[1.125rem] font-black leading-none tracking-[0.02em]">
+                <p className="type-body font-bold leading-none tracking-[0.02em] md:type-lead">
                   {stage.level}
                 </p>
-                <p className="mt-2 text-[1rem] leading-none tracking-[0.02em] md:mt-3 md:text-[1.125rem]">
+                <p className="mt-[10px] type-body-small leading-none tracking-[0.02em] md:mt-0 md:type-body">
                   {stage.title}
                   <span className="mx-3 opacity-70">·</span>
                   {stage.duration}
@@ -61,19 +67,13 @@ export default function DisciplesCurriculum({
         </div>
       </div>
 
-      <p className="type-body-small tracking-[0.02em] text-[#888580]">
-        대상: {selectedStage.target}
-        <span className="mx-2">·</span>
-        목표: <span className="font-bold text-[#1a2744]">{selectedStage.objective}</span>
-      </p>
-
       <div className="overflow-hidden rounded-[12px] border border-[#7a7060]/30 bg-white">
         <div className="grid grid-cols-[64px_minmax(0,1fr)] md:grid-cols-[80px_minmax(0,1fr)]">
           <div className="flex items-center rounded-tl-[12px] bg-[#1a2744] px-4 py-2">
-            <p className="type-body-small tracking-[0.08em] text-white">주차</p>
+            <p className="type-body-small tracking-[0.08em] text-white md:type-body">주차</p>
           </div>
           <div className="flex items-center rounded-tr-[12px] bg-[#1a2744] px-4 py-2 md:px-6">
-            <p className="type-body-small tracking-[0.08em] text-white">과목</p>
+            <p className="type-body-small tracking-[0.08em] text-white md:type-body">과목</p>
           </div>
         </div>
 
@@ -98,7 +98,7 @@ export default function DisciplesCurriculum({
               <div
                 className={`px-4 py-4 md:px-6 ${!isLast ? "border-b border-[#7a7060]/20" : "rounded-br-[12px]"}`}
               >
-                <p className="type-body font-medium leading-[1.5] tracking-[0.02em] text-[#1a2744]">
+                <p className="type-body-small font-medium leading-[1.5] tracking-[0.02em] text-[#1a2744] md:type-body">
                   {course.title}
                 </p>
               </div>

@@ -11,13 +11,13 @@ export default function TextField({
 }: TextFieldProps) {
   return (
     <label className="flex w-full flex-col gap-[6px]">
-      <span className="type-label font-medium tracking-[0.08em] text-white/50">
+      <span className="type-body-xsmall font-medium tracking-[0.08em] text-white/50">
         {label}
       </span>
       <input
         type={type}
         placeholder={placeholder}
-        className="h-9 rounded-[6px] border border-[#4f5a75] bg-[#2f3d5d] px-5 type-label text-white outline-none placeholder:text-[#757575] focus:border-[#b8955a]"
+        className="h-9 rounded-[6px] border border-[#4f5a75] bg-[#2f3d5d] px-5 type-body-xsmall text-white outline-none placeholder:text-[#757575] focus:border-[#b8955a]"
       />
     </label>
   );

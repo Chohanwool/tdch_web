@@ -65,7 +65,7 @@ function RoadmapIcon({
   numberClassName: string;
 }) {
   const commonClassName =
-    "relative z-10 flex h-[54px] w-[54px] items-center justify-center rounded-full md:h-[60px] md:w-[60px]";
+    "relative z-10 flex h-[44px] w-[44px] items-center justify-center rounded-full md:h-[48px] md:w-[48px]";
 
   if (item.kind === "newcomer") {
     return (
@@ -87,7 +87,9 @@ function RoadmapIcon({
     <span
       className={`${commonClassName} border-[2px] border-[#d1ad45] bg-[#1a2744] text-[#d1ad45]`}
     >
-      <span className={`${numberClassName} text-[1.5rem] font-bold leading-none tracking-[0.08em] md:text-[1.625rem]`}>
+      <span
+        className={`${numberClassName} -translate-y-[0.1em] text-[1.5rem] font-bold leading-none tracking-[0.08em] md:text-[1.625rem]`}
+      >
         {item.number}
       </span>
     </span>
@@ -183,7 +185,7 @@ function RoadmapRow({
 }) {
   return (
     <div className="relative flex gap-5 md:gap-7">
-      <div className="relative z-10 flex w-[54px] shrink-0 justify-center md:w-[60px]">
+      <div className="relative z-10 flex w-[44px] shrink-0 justify-center md:w-[48px]">
         <RoadmapIcon item={item} numberClassName={numberClassName} />
       </div>
 
@@ -219,7 +221,7 @@ export default function DisciplesRoadmap({
       </div>
 
       <div className="relative mt-8">
-        <span className="absolute left-[26px] top-[28px] bottom-[28px] w-px bg-[#d7d1c5] md:left-[29px]" />
+        <span className="absolute left-[21px] top-[22px] bottom-[22px] w-px bg-[#d7d1c5] md:left-[23px] md:top-[24px] md:bottom-[24px]" />
 
         <div className="space-y-7 md:space-y-8">
           {items.map((item, index) => (

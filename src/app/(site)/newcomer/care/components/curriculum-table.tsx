@@ -15,10 +15,10 @@ export default function CurriculumTable({ weeks }: CurriculumTableProps) {
     <div className="overflow-hidden rounded-[12px] border border-[#7a7060]/30 bg-white">
       <div className="grid grid-cols-[64px_minmax(0,1fr)] md:grid-cols-[80px_minmax(0,1fr)]">
         <div className="flex h-10 items-center rounded-tl-[12px] bg-[#1a2744] px-4">
-          <p className="type-body tracking-[0.08em] text-white">주차</p>
+          <p className="type-body-small tracking-[0.08em] text-white md:type-body">주차</p>
         </div>
         <div className="flex h-10 items-center rounded-tr-[12px] bg-[#1a2744] px-4 md:px-6">
-          <p className="type-body tracking-[0.08em] text-white">주제 및 내용</p>
+          <p className="type-body-small tracking-[0.08em] text-white md:type-body">주제 및 내용</p>
         </div>
       </div>
 
@@ -41,12 +41,12 @@ export default function CurriculumTable({ weeks }: CurriculumTableProps) {
               </span>
             </div>
             <div
-              className={`px-4 py-3 md:px-6 md:py-[14px] ${!isLast ? "border-b border-[#7a7060]/20" : "rounded-br-[12px]"}`}
+              className={`px-[18px] py-[14px] md:px-6 md:py-[14px] ${!isLast ? "border-b border-[#7a7060]/20" : "rounded-br-[12px]"}`}
             >
-              <p className="type-body font-bold leading-[1.3] tracking-[-0.01em] text-[#1a2744]">
+              <p className="type-body-small font-bold leading-[1.3] tracking-[-0.01em] text-[#1a2744] md:type-body">
                 {week.title}
               </p>
-              <p className="mt-1 type-body-small leading-[1.5] tracking-[0.02em] text-[#7a7060]">
+              <p className="mt-[6px] type-body-xsmall leading-[1.5] tracking-[0.02em] text-[#7a7060] md:type-body-small">
                 {week.details.join(" · ")}
               </p>
             </div>

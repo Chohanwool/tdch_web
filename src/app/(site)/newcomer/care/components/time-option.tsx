@@ -23,7 +23,7 @@ export default function TimeOption({
         aria-hidden="true"
         className="h-[14px] w-[14px] shrink-0 rounded-full border border-white/35 bg-transparent transition peer-checked:border-[#b8955a] peer-checked:bg-[#b8955a]"
       />
-      <span className="type-label font-medium tracking-[0.02em] text-white/55 transition peer-checked:text-white">
+      <span className="type-body-xsmall font-medium tracking-[0.02em] text-white/55 transition peer-checked:text-white">
         {label}
       </span>
     </label>

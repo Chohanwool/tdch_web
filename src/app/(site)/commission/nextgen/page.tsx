@@ -277,7 +277,9 @@ export default function CommissionNextgenPage() {
         <div className="mt-4 grid gap-8 border-y border-[#ece6db] py-6 md:grid-cols-3 md:gap-10 md:px-4">
           {crisisReasons.map((item) => (
             <article key={item.number} className="text-center">
-              <p className="type-label-fixed font-section-title font-bold tracking-[0.16em] text-[#c9a84c]">
+              <p
+                className={`${cormorantGaramond.className} text-[2rem] font-normal leading-none tracking-[0.08em] text-[#c9a84c]`}
+              >
                 {item.number}
               </p>
               <h3
@@ -313,8 +315,10 @@ export default function CommissionNextgenPage() {
                 index === 0 ? "border-[#b7ab94]/60" : "border-[#f2f0ec]"
               }`}
             >
-              <div className="flex items-center justify-center gap-5 md:w-[260px] md:shrink-0 md:justify-end">
-                <span className="type-label-fixed w-[28px] text-right font-section-title font-bold tracking-[0.16em] text-[#c9a84c]">
+              <div className="flex justify-center gap-5 md:w-[260px] md:shrink-0 md:justify-end">
+                <span
+                  className={`${cormorantGaramond.className} w-[32px] translate-y-[0.02em] text-right text-[2rem] font-normal leading-[0.5] tracking-[0.08em] text-[#c9a84c]`}
+                >
                   {step.number}
                 </span>
                 <h3
