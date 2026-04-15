@@ -204,11 +204,11 @@ export default async function AdminNavigationPage({ searchParams }: AdminNavigat
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
           <path d="M4.5 2.5l3 3-3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <span className="font-medium text-[#132033]">내비게이션 메뉴</span>
+        <span className="font-medium text-[#132033]">메뉴 관리</span>
       </nav>
 
       {/* ── 페이지 헤더 ── */}
-      <h1 className="text-xl font-bold text-[#0f1c2e]">내비게이션 메뉴</h1>
+      <h1 className="text-xl font-bold text-[#0f1c2e]">메뉴 관리</h1>
 
       {/* ── 세트 탭 ── */}
       <Suspense fallback={<div className="h-9 w-48 animate-pulse rounded-xl bg-[#e9edf3]" />}>

@@ -9,7 +9,7 @@ const NAV_GROUPS = [
     items: [
       {
         href: "/admin",
-        label: "내비게이션",
+        label: "메뉴 관리",
         exact: false,
         icon: (
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">

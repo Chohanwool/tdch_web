@@ -49,7 +49,7 @@ export default async function NavigationNewPage({ searchParams }: NavigationNewP
         <span className="text-[#4a6484]">운영</span>
         <Chevron />
         <Link href={`/admin/navigation?set=${currentSetKey}`} className="text-[#4a6484] transition hover:text-[#3f74c7]">
-          내비게이션 메뉴
+          메뉴 관리
         </Link>
         <Chevron />
         <span className="font-medium text-[#132033]">메뉴 추가</span>
