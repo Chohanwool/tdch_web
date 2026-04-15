@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { AdminMediaDiscoveryActionItem } from "../actions";
 import { ADMIN_CONTENT_KIND_META, ADMIN_PLAYLIST_STATUS_META } from "@/lib/admin-media-shared";
+import { discoveryEmptyTitle, discoveryResultTitle } from "@/lib/admin-media-copy";
 
 interface AdminMediaDiscoveryResultsDialogProps {
   open: boolean;
@@ -19,7 +20,7 @@ function MetaBadge({ label, cls }: { label: string; cls: string }) {
 function DiscoveryResultEmptyState() {
   return (
     <div className="rounded-2xl border border-dashed border-[#dbe5f0] bg-[#f8fbff] px-5 py-8 text-center">
-      <p className="text-[14px] font-semibold text-[#31445f]">새로 생성된 초안이 없습니다.</p>
+      <p className="text-[14px] font-semibold text-[#31445f]">{discoveryEmptyTitle}</p>
       <p className="mt-1 text-[12px] text-[#7b8ba1]">이미 연결된 재생목록만 있었는지 확인해 보세요.</p>
     </div>
   );
@@ -72,7 +73,7 @@ export default function AdminMediaDiscoveryResultsDialog({
         <div className="flex items-start justify-between gap-4 border-b border-[#e2e8f0] px-6 py-5">
           <div>
             <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#8fa3bb]">Discovery Result</p>
-            <h2 className="mt-1 text-xl font-bold text-[#0f1c2e]">미연결 재생목록 불러오기 결과</h2>
+            <h2 className="mt-1 text-xl font-bold text-[#0f1c2e]">{discoveryResultTitle}</h2>
             <p className="mt-2 text-[13px] text-[#5d6f86]">
               신규 {discoveredCount}건, 건너뜀 {skippedCount}건
             </p>

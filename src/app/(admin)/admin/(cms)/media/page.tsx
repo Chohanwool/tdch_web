@@ -12,6 +12,7 @@ import {
   type AdminSyncJob,
   type AdminPlaylist,
 } from "@/lib/admin-media-api";
+import { playlistListEmptyDescription, playlistListEmptyTitle, playlistSearchEmptyTitle } from "@/lib/admin-media-copy";
 import DiscoverPlaylistsButton from "./_components/discover-playlists-button";
 import AdminMediaSyncButton from "./_components/admin-media-sync-button";
 import AdminMediaFilterForm from "./_components/admin-media-filter-form";
@@ -352,14 +353,14 @@ export default async function AdminMediaPage({ searchParams }: AdminMediaPagePro
               {playlists.length === 0 ? (
                 <tr>
                   <td colSpan={10} className="px-5 py-12 text-center">
-                    <p className="text-[13px] font-semibold text-[#132033]">등록된 예배 영상 메뉴가 없습니다.</p>
-                    <p className="mt-1 text-[12px] text-[#8fa3bb]">우측 상단 버튼으로 미연결 재생목록을 먼저 불러오세요.</p>
+                    <p className="text-[13px] font-semibold text-[#132033]">{playlistListEmptyTitle}</p>
+                    <p className="mt-1 text-[12px] text-[#8fa3bb]">{playlistListEmptyDescription}</p>
                   </td>
                 </tr>
               ) : filteredPlaylists.length === 0 ? (
                 <tr>
                   <td colSpan={10} className="px-5 py-12 text-center">
-                    <p className="text-[13px] font-semibold text-[#132033]">검색 결과가 없습니다.</p>
+                    <p className="text-[13px] font-semibold text-[#132033]">{playlistSearchEmptyTitle}</p>
                     <p className="mt-1 text-[12px] text-[#8fa3bb]">상태, Sync, 검색어를 다시 조정해 보세요.</p>
                   </td>
                 </tr>

@@ -12,6 +12,7 @@ import {
   type AdminPlaylistDetailResponse,
   type AdminVideo,
 } from "@/lib/admin-media-api";
+import { playlistVideosEmpty } from "@/lib/admin-media-copy";
 import AdminMediaDetailForm from "./_components/admin-media-detail-form";
 import { updateAdminMediaDetailAction } from "./actions";
 
@@ -225,7 +226,7 @@ export default async function AdminMediaDetailPage({
               {videos.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-5 py-10 text-center text-[13px] text-[#5d6f86]">
-                    아직 sync된 영상이 없습니다.
+                    {playlistVideosEmpty}
                   </td>
                 </tr>
               ) : (
