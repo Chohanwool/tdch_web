@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import PageHeader from "@/components/page-header";
-import CommissionPathBar from "./_components/commission-path-bar";
-import CommissionSubnav from "./_components/commission-subnav";
+import Breadcrumb from "@/components/breadcrumb";
 
 export default function CommissionLayout({ children }: { children: ReactNode }) {
   return (
@@ -11,8 +10,7 @@ export default function CommissionLayout({ children }: { children: ReactNode }) 
         subtitle="THE GREAT COMMISSION"
         backgroundImageUrl="/images/main_bg/main_bg_sec1.png"
       />
-      <CommissionPathBar />
-      <CommissionSubnav />
+      <Breadcrumb />
       {children}
     </div>
   );
