@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAdminSession, isAdminSession } from "@/auth";
+import { getCurrentAdminAccount } from "@/lib/admin-accounts-api";
+import { AdminApiError } from "@/lib/admin-api";
 import CredentialsLoginForm from "./credentials-login-form";
 
 export const metadata: Metadata = {
@@ -24,7 +26,16 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
   const session = await getAdminSession();
 
   if (isAdminSession(session)) {
-    redirect("/admin");
+    try {
+      if (session.user.id) {
+        await getCurrentAdminAccount(session.user.id);
+        redirect("/admin");
+      }
+    } catch (error) {
+      if (!(error instanceof AdminApiError) || (error.status !== 401 && error.status !== 403)) {
+        throw error;
+      }
+    }
   }
 
   const { error, callbackUrl } = await searchParams;
