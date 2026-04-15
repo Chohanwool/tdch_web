@@ -90,6 +90,19 @@ export interface AdminPlaylistDiscoveryResponse {
   items: AdminPlaylistDiscoveryItem[];
 }
 
+export interface UpdateAdminPlaylistPayload {
+  menuName: string;
+  slug: string;
+  contentKind: AdminContentKind;
+  youtubePlaylistId?: string | null;
+  syncEnabled: boolean;
+  active: boolean;
+  status: AdminPlaylistStatus;
+  navigationVisible: boolean;
+  sortOrder: number;
+  description?: string | null;
+}
+
 export interface AdminSyncJob {
   id: number;
   triggerType: string;
@@ -161,6 +174,23 @@ export async function discoverAdminPlaylists(
   return response.json() as Promise<AdminPlaylistDiscoveryResponse>;
 }
 
+export async function updateAdminPlaylist(
+  actorId: string,
+  siteKey: string,
+  payload: UpdateAdminPlaylistPayload,
+): Promise<AdminPlaylistDetailResponse> {
+  const response = await adminApiFetch(`/api/v1/admin/media/playlists/${encodeURIComponent(siteKey)}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Admin-Actor-Id": actorId,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  return response.json() as Promise<AdminPlaylistDetailResponse>;
+}
+
 export async function getAdminSyncJobs(actorId: string): Promise<AdminSyncJobListResponse> {
   const response = await adminApiFetch("/api/v1/admin/media/sync-jobs", {
     headers: { "X-Admin-Actor-Id": actorId },
@@ -185,6 +215,12 @@ export function toFriendlyAdminMediaMessage(error: unknown, fallback: string): s
   const message = error.message.trim();
   if (message.includes("관리자 키")) {
     return "관리자 API 키가 올바르지 않습니다. 서버 설정을 확인해 주세요.";
+  }
+  if (message.includes("slug")) {
+    return message;
+  }
+  if (message.includes("youtubePlaylistId")) {
+    return message;
   }
   if (message.includes("channel")) {
     return "유튜브 채널 설정을 확인한 뒤 다시 시도해 주세요.";
