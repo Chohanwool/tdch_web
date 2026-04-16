@@ -20,14 +20,26 @@ export interface PublicVideoDetail {
   siblings: PublicVideoSibling[];
 }
 
+function normalizeSlug(slug: string): string {
+  try {
+    return decodeURIComponent(slug);
+  } catch {
+    return slug;
+  }
+}
+
 export async function getPublicVideoDetail(slug: string): Promise<PublicVideoDetail | null> {
   try {
-    const response = await fetch(`${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/${encodeURIComponent(slug)}`, {
-      next: {
-        revalidate: 300,
-        tags: ["menu"],
+    const normalizedSlug = normalizeSlug(slug);
+    const response = await fetch(
+      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/${encodeURIComponent(normalizedSlug)}`,
+      {
+        next: {
+          revalidate: 300,
+          tags: ["menu"],
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       return null;

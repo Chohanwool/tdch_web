@@ -44,6 +44,22 @@ export const STATIC_PAGE_SEO: Record<string, StaticPageSeoEntry> = {
     title: "제자 훈련",
     description: "The 제자교회 제자훈련 단계와 커리큘럼, 신청 안내를 확인하세요.",
   },
+  "commission.summary": {
+    title: "지상명령 개요",
+    description: "The 제자교회 지상명령 개요와 3D 선교 비전을 소개합니다.",
+  },
+  "commission.nextgen": {
+    title: "지상명령 다음세대",
+    description: "The 제자교회 지상명령 다음세대 사역과 부모·교사 참여 안내를 소개합니다.",
+  },
+  "commission.culture": {
+    title: "지상명령 다문화",
+    description: "The 제자교회 지상명령 다문화 사역과 참여 안내를 소개합니다.",
+  },
+  "commission.ethnic": {
+    title: "지상명령 다민족",
+    description: "The 제자교회 지상명령 다민족 사역과 선교 참여 안내를 소개합니다.",
+  },
 };
 
 export function getStaticPageSeoEntry(staticPageKey: string): StaticPageSeoEntry | null {

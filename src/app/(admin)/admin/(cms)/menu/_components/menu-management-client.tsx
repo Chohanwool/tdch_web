@@ -37,6 +37,10 @@ const STATIC_PAGE_OPTIONS = [
   { value: "newcomer.guide", label: "제자 양육 / 새가족 안내" },
   { value: "newcomer.care", label: "제자 양육 / 새가족 양육" },
   { value: "newcomer.disciples", label: "제자 양육 / 제자 훈련" },
+  { value: "commission.summary", label: "지상명령 / 개요" },
+  { value: "commission.nextgen", label: "지상명령 / 다음세대" },
+  { value: "commission.culture", label: "지상명령 / 다문화" },
+  { value: "commission.ethnic", label: "지상명령 / 다민족" },
 ];
 
 const STATIC_PAGE_ROUTE_MAP: Record<string, string> = {
@@ -49,6 +53,10 @@ const STATIC_PAGE_ROUTE_MAP: Record<string, string> = {
   "newcomer.guide": "/newcomer/guide",
   "newcomer.care": "/newcomer/care",
   "newcomer.disciples": "/newcomer/disciples",
+  "commission.summary": "/commission/summary",
+  "commission.nextgen": "/commission/nextgen",
+  "commission.culture": "/commission/culture",
+  "commission.ethnic": "/commission/ethnic",
 };
 
 function flattenTree(nodes: EditorNode[], depth = 0): Array<{ node: EditorNode; depth: number }> {

@@ -10,6 +10,10 @@ import GivingPage from "@/app/(site)/about/giving/page";
 import NewcomerGuidePage from "@/app/(site)/newcomer/guide/page";
 import NewcomerCarePage from "@/app/(site)/newcomer/care/page";
 import NewcomerDisciplesPage from "@/app/(site)/newcomer/disciples/page";
+import CommissionSummaryPage from "@/app/(site)/commission/summary/page";
+import CommissionNextgenPage from "@/app/(site)/commission/nextgen/page";
+import CommissionCulturePage from "@/app/(site)/commission/culture/page";
+import CommissionEthnicPage from "@/app/(site)/commission/ethnic/page";
 
 function AboutStaticPageShell({
   subtitle,
@@ -32,6 +36,24 @@ function AboutStaticPageShell({
         />
       )}
       {showBreadcrumb && <Breadcrumb />}
+      <main className="flex-1 w-full">{children}</main>
+    </div>
+  );
+}
+
+function CommissionStaticPageShell({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex w-full flex-col bg-white">
+      <PageHeader
+        title="지상명령"
+        subtitle="THE GREAT COMMISSION"
+        backgroundImageUrl="/images/main_bg/main_bg_sec1.png"
+      />
+      <Breadcrumb />
       <main className="flex-1 w-full">{children}</main>
     </div>
   );
@@ -85,6 +107,30 @@ export default function MenuStaticPageRenderer({
       return <NewcomerCarePage />;
     case "newcomer.disciples":
       return <NewcomerDisciplesPage />;
+    case "commission.summary":
+      return (
+        <CommissionStaticPageShell>
+          <CommissionSummaryPage />
+        </CommissionStaticPageShell>
+      );
+    case "commission.nextgen":
+      return (
+        <CommissionStaticPageShell>
+          <CommissionNextgenPage />
+        </CommissionStaticPageShell>
+      );
+    case "commission.culture":
+      return (
+        <CommissionStaticPageShell>
+          <CommissionCulturePage />
+        </CommissionStaticPageShell>
+      );
+    case "commission.ethnic":
+      return (
+        <CommissionStaticPageShell>
+          <CommissionEthnicPage />
+        </CommissionStaticPageShell>
+      );
     default:
       notFound();
   }
