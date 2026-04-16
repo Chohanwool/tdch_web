@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Reveal from "./components/reveal";
-import { redirectToCanonicalStaticPathIfNeeded } from "@/lib/canonical-menu-path";
+import { getCanonicalStaticHref, redirectToCanonicalStaticPathIfNeeded } from "@/lib/canonical-menu-path";
 import { dmSerifDisplay, gowunBatang } from "@/lib/fonts";
 import { createPageMetadata } from "@/lib/seo";
 
@@ -423,20 +423,26 @@ function PastorSectionFive() {
   );
 }
 
-function PastorFinalSection() {
+function PastorFinalSection({
+  locationHref,
+  contactHref,
+}: {
+  locationHref: string;
+  contactHref: string;
+}) {
   return (
     <section className="w-full bg-white">
       <div className="section-shell section-shell--narrow py-12 md:py-16 lg:py-[52px]">
         <Reveal className="md:hidden" origin="up">
           <div className="flex flex-col gap-4">
             <Link
-              href="/about/location"
+              href={locationHref}
               className="type-body-strong inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl bg-[#e2c47a] px-6 font-semibold tracking-[-0.02em] text-[#22345c] transition-colors duration-200 hover:bg-[#f4d486]"
             >
               오시는 길 →
             </Link>
             <Link
-              href="/about/location#contact-info"
+              href={contactHref}
               className="type-body-strong inline-flex min-h-[58px] w-full items-center justify-center rounded-2xl border border-white/30 bg-[#26345d] px-6 font-semibold tracking-[-0.02em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a]"
             >
               문의하기
@@ -463,13 +469,13 @@ function PastorFinalSection() {
 
             <div className="flex shrink-0 items-center gap-5">
               <Link
-                href="/about/location"
+                href={locationHref}
                 className="type-body inline-flex min-h-[60px] min-w-[150px] items-center justify-center rounded-xl bg-[#e2c47a] px-8 font-semibold tracking-[-0.03em] text-[#22345c] transition-colors duration-200 hover:bg-[#f4d486] lg:min-h-[50px] lg:min-w-[170px]"
               >
                 오시는 길 →
               </Link>
               <Link
-                href="/about/location#contact-info"
+                href={contactHref}
                 className="type-body inline-flex min-h-[60px] min-w-[150px] items-center justify-center rounded-xl border border-white/30 px-8 font-semibold tracking-[-0.03em] text-white/60 transition-colors duration-200 hover:border-[#e2c47a] hover:text-[#e2c47a] lg:min-h-[50px] lg:min-w-[170px]"
               >
                 문의하기
@@ -484,6 +490,8 @@ function PastorFinalSection() {
 
 export default async function PastorPage() {
   await redirectToCanonicalStaticPathIfNeeded("about.pastor", "/about/pastor");
+  const locationHref = (await getCanonicalStaticHref("about.location")) ?? "/about/location";
+  const contactHref = (await getCanonicalStaticHref("about.location", "contact-info")) ?? "/about/location#contact-info";
 
   return (
     <div className="w-full bg-white">
@@ -492,7 +500,7 @@ export default async function PastorPage() {
       <PastorSectionThree />
       <PastorSectionFour />
       <PastorSectionFive />
-      <PastorFinalSection />
+      <PastorFinalSection locationHref={locationHref} contactHref={contactHref} />
     </div>
   );
 }

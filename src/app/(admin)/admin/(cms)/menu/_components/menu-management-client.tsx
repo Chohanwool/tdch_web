@@ -39,6 +39,18 @@ const STATIC_PAGE_OPTIONS = [
   { value: "newcomer.disciples", label: "제자 양육 / 제자 훈련" },
 ];
 
+const STATIC_PAGE_ROUTE_MAP: Record<string, string> = {
+  "about.greeting": "/about/greeting",
+  "about.pastor": "/about/pastor",
+  "about.service-times": "/about/service-times",
+  "about.location": "/about/location",
+  "about.history": "/about/history",
+  "about.giving": "/about/giving",
+  "newcomer.guide": "/newcomer/guide",
+  "newcomer.care": "/newcomer/care",
+  "newcomer.disciples": "/newcomer/disciples",
+};
+
 function flattenTree(nodes: EditorNode[], depth = 0): Array<{ node: EditorNode; depth: number }> {
   return nodes.flatMap((node) => [
     { node, depth },
@@ -169,6 +181,22 @@ function moveNodeWithinSiblings(nodes: EditorNode[], targetId: number, direction
   return moveInList(tree);
 }
 
+function findSiblingList(nodes: EditorNode[], targetId: number): EditorNode[] | null {
+  const index = nodes.findIndex((node) => node.id === targetId);
+  if (index !== -1) {
+    return nodes;
+  }
+
+  for (const node of nodes) {
+    const childResult = findSiblingList(node.children, targetId);
+    if (childResult) {
+      return childResult;
+    }
+  }
+
+  return null;
+}
+
 function toPayload(nodes: EditorNode[]): MenuTreeNodePayload[] {
   return nodes.map((node) => ({
     id: node.id > 0 ? node.id : null,
@@ -222,6 +250,22 @@ function gatherVideoNodes(nodes: EditorNode[]): EditorNode[] {
     .filter((node) => node.type === "YOUTUBE_PLAYLIST");
 }
 
+function getPublicRouteSummary(node: EditorNode): string {
+  switch (node.type) {
+    case "STATIC":
+      return node.staticPageKey ? STATIC_PAGE_ROUTE_MAP[node.staticPageKey] ?? "개발자가 등록한 경로" : "연결 페이지를 선택해 주세요";
+    case "BOARD":
+      return node.boardKey ? `/news#${node.boardKey}` : "/news";
+    case "YOUTUBE_PLAYLIST":
+      return `/videos/${node.slug}`;
+    case "EXTERNAL_LINK":
+      return node.externalUrl ?? "외부 URL을 입력해 주세요";
+    case "FOLDER":
+    case "YOUTUBE_PLAYLIST_GROUP":
+      return "첫 번째 하위 메뉴로 이동";
+  }
+}
+
 export default function MenuManagementClient({
   initialItems,
 }: {
@@ -271,6 +315,16 @@ export default function MenuManagementClient({
     () => (selectedNode ? collectDescendantIds(selectedNode) : new Set<number>()),
     [selectedNode],
   );
+  const siblingNodes = useMemo(
+    () => (selectedNode ? findSiblingList(items, selectedNode.id) ?? [] : []),
+    [items, selectedNode],
+  );
+  const selectedSiblingIndex = selectedNode
+    ? siblingNodes.findIndex((node) => node.id === selectedNode.id)
+    : -1;
+  const canMoveUp = selectedSiblingIndex > 0;
+  const canMoveDown =
+    selectedSiblingIndex !== -1 && selectedSiblingIndex < siblingNodes.length - 1;
 
   const parentCandidates = flatItems.filter(({ node }) => {
     if (!selectedNode) {
@@ -628,7 +682,7 @@ export default function MenuManagementClient({
                       <span className="min-w-0">
                         <span className="block truncate text-[13px] font-semibold">{node.label}</span>
                         <span className="mt-0.5 block truncate text-[11px] text-[#8fa3bb]">
-                          {MENU_TYPE_LABEL[node.type]} · /{node.slug}
+                          {MENU_TYPE_LABEL[node.type]}
                         </span>
                       </span>
                       <span className="ml-3 flex items-center gap-2">
@@ -665,17 +719,6 @@ export default function MenuManagementClient({
                       value={selectedNode.label}
                       onChange={(event) =>
                         updateSelectedNode((node) => ({ ...node, label: event.target.value }))
-                      }
-                      className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px]"
-                    />
-                  </label>
-
-                  <label className="space-y-1.5">
-                    <span className="text-[12px] font-semibold text-[#334155]">slug</span>
-                    <input
-                      value={selectedNode.slug}
-                      onChange={(event) =>
-                        updateSelectedNode((node) => ({ ...node, slug: event.target.value }))
                       }
                       className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px]"
                     />
@@ -718,6 +761,15 @@ export default function MenuManagementClient({
                       </select>
                     </label>
                   </div>
+
+                  <label className="space-y-1.5">
+                    <span className="text-[12px] font-semibold text-[#334155]">공개 주소</span>
+                    <input
+                      value={getPublicRouteSummary(selectedNode)}
+                      readOnly
+                      className="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2 text-[13px] text-[#475569]"
+                    />
+                  </label>
 
                   {selectedNode.type === "FOLDER" && selectedNode.parentId === null && (
                     <div className="grid gap-2 sm:grid-cols-3">
@@ -861,15 +913,27 @@ export default function MenuManagementClient({
                 <div className="flex flex-wrap gap-2 border-t border-[#edf2f7] pt-4">
                   <button
                     type="button"
-                    onClick={() => markDirty(moveNodeWithinSiblings(items, selectedNode.id, -1))}
-                    className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]"
+                    onClick={() => {
+                      if (!canMoveUp) {
+                        return;
+                      }
+                      markDirty(moveNodeWithinSiblings(items, selectedNode.id, -1));
+                    }}
+                    disabled={!canMoveUp}
+                    className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     위로 이동
                   </button>
                   <button
                     type="button"
-                    onClick={() => markDirty(moveNodeWithinSiblings(items, selectedNode.id, 1))}
-                    className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]"
+                    onClick={() => {
+                      if (!canMoveDown) {
+                        return;
+                      }
+                      markDirty(moveNodeWithinSiblings(items, selectedNode.id, 1));
+                    }}
+                    disabled={!canMoveDown}
+                    className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     아래로 이동
                   </button>

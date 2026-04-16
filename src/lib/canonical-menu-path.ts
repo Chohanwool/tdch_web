@@ -17,6 +17,22 @@ export async function getCanonicalStaticPath(contentSiteKey: string): Promise<st
   return null;
 }
 
+export async function getCanonicalStaticHref(
+  contentSiteKey: string,
+  hash?: string,
+): Promise<string | null> {
+  const canonicalPath = await getCanonicalStaticPath(contentSiteKey);
+  if (!canonicalPath) {
+    return null;
+  }
+
+  if (!hash) {
+    return canonicalPath;
+  }
+
+  return `${canonicalPath}${hash.startsWith("#") ? hash : `#${hash}`}`;
+}
+
 export async function redirectToCanonicalStaticPathIfNeeded(
   contentSiteKey: string,
   currentPath: string,

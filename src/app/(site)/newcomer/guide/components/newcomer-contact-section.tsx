@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getCanonicalStaticHref } from "@/lib/canonical-menu-path";
 import {
   CHURCH_EMAIL,
   CHURCH_PHONE,
@@ -6,7 +7,9 @@ import {
   NEWCOMER_CONTACT_DEPARTMENT,
 } from "@/lib/site-config";
 
-export default function NewcomerContactSection() {
+export default async function NewcomerContactSection() {
+  const applyHref = (await getCanonicalStaticHref("newcomer.care", "apply")) ?? "/newcomer/care#apply";
+
   return (
     <section className="mt-20 md:mt-[68px]" aria-labelledby="newcomer-contact-title">
       <div className="rounded-[16px] bg-[#1a2744] px-6 py-8 md:flex md:items-end md:justify-between md:px-9 md:py-9">
@@ -30,7 +33,7 @@ export default function NewcomerContactSection() {
         </div>
 
         <Link
-          href="/newcomer/care#apply"
+          href={applyHref}
           className="mt-6 inline-flex h-10 items-center justify-center rounded-[6px] bg-[#c9a84c] px-[18px] type-body font-bold tracking-[0.05em] text-white transition hover:bg-[#d4b261] md:mt-0"
         >
           신청하기 →
