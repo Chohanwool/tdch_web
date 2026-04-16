@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 
 const NAV_GROUPS = [
   {
@@ -9,22 +10,12 @@ const NAV_GROUPS = [
     items: [
       {
         href: "/admin",
-        label: "메뉴 관리",
+        label: "관리자 계정",
         exact: false,
         icon: (
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
-            <path d="M2 4h13M2 8.5h9M2 13h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        ),
-      },
-      {
-        href: "/admin/media",
-        label: "예배 영상",
-        exact: false,
-        icon: (
-          <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
-            <rect x="2.25" y="3" width="12.5" height="11" rx="2" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M7 6.25 11 8.5 7 10.75V6.25Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+            <path d="M8.5 9.2a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2Z" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M3 14.3c.9-2 3.1-3.3 5.5-3.3s4.6 1.3 5.5 3.3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         ),
       },
@@ -34,9 +25,15 @@ const NAV_GROUPS = [
 
 interface CmsSidebarProps {
   canManageAccounts: boolean;
+  operatorEntries?: Array<{
+    href: string;
+    label: string;
+    exact?: boolean;
+    icon?: ReactNode;
+  }>;
 }
 
-export default function CmsSidebar({ canManageAccounts }: CmsSidebarProps) {
+export default function CmsSidebar({ canManageAccounts, operatorEntries = [] }: CmsSidebarProps) {
   const pathname = usePathname();
   const currentPath = pathname ?? "";
   const navGroups = NAV_GROUPS.map((group) =>
@@ -44,18 +41,8 @@ export default function CmsSidebar({ canManageAccounts }: CmsSidebarProps) {
       ? {
         ...group,
         items: [
+          ...operatorEntries,
           ...group.items,
-          {
-            href: "/admin/accounts",
-            label: "관리자 계정",
-            exact: false,
-            icon: (
-              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
-                <path d="M8.5 9.2a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2Z" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M3 14.3c.9-2 3.1-3.3 5.5-3.3s4.6 1.3 5.5 3.3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            ),
-          },
         ],
       }
       : group
@@ -90,7 +77,7 @@ export default function CmsSidebar({ canManageAccounts }: CmsSidebarProps) {
             )}
             <ul className="space-y-0.5">
               {group.items.map((item) => {
-                const active = isActive(item.href, item.exact);
+                const active = isActive(item.href, item.exact ?? false);
                 return (
                   <li key={item.href}>
                     <Link
