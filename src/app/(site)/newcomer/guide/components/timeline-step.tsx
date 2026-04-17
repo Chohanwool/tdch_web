@@ -18,15 +18,15 @@ export default function TimelineStep({
   isLast,
 }: TimelineStepProps) {
   return (
-    <article className="relative pl-10 md:pl-14">
+    <article className="relative pl-16">
       {!isFirst ? (
-        <div className="absolute left-[10.5px] top-[-16px] bottom-1/2 w-px bg-[#d0cdca] md:left-[28.5px]" />
+        <div className="absolute left-[28.5px] top-[-16px] bottom-1/2 w-px bg-[#d0cdca]" />
       ) : null}
       {!isLast ? (
-        <div className="absolute left-[10.5px] top-1/2 bottom-[-16px] w-px bg-[#d0cdca] md:left-[28.5px]" />
+        <div className="absolute left-[28.5px] top-1/2 bottom-[-16px] w-px bg-[#d0cdca]" />
       ) : null}
-      <div className="absolute left-0 top-1/2 flex h-[22px] w-[22px] -translate-y-1/2 items-center justify-center rounded-full border border-[#c9a84c] bg-[#1a2744] md:left-2 md:h-[42px] md:w-[42px] md:border-[1.5px]">
-        <span className={`${cormorantGaramond.className} text-[0.75rem] font-bold leading-none tracking-[0.08em] text-[#c9a84c] md:text-[1.125rem]`}>
+      <div className="absolute left-2 top-1/2 flex h-[42px] w-[42px] -translate-y-1/2 items-center justify-center rounded-full border-[1.5px] border-[#c9a84c] bg-[#1a2744]">
+        <span className={`${cormorantGaramond.className} text-[1.125rem] font-bold leading-none tracking-[0.08em] text-[#c9a84c]`}>
           {number}
         </span>
       </div>

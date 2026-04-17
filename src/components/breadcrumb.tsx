@@ -74,7 +74,7 @@ export default function Breadcrumb({
       {/* 2. LNB (Local Navigation Bar) - 소메뉴 목록 */}
       {!hideLnb && menuGroup && !menuGroup.hiddenInLnb && menuGroup.items.some((item) => !item.hiddenInLnb) && (
         <nav className="w-full border-b border-cedar/8 bg-white overflow-x-auto no-scrollbar" aria-label="LNB">
-          <ul className="section-shell flex items-center justify-start md:justify-center gap-1 min-w-max px-4">
+          <ul className="section-shell mx-auto flex w-max min-w-max items-center justify-center gap-1 px-4">
             {menuGroup.items.filter((item) => !item.hiddenInLnb).map((item) => {
               const isActive = item === currentItem;
 

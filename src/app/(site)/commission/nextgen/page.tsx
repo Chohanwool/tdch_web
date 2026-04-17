@@ -168,7 +168,7 @@ function GoldButton({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href}
-      className="type-body-small inline-flex items-center justify-center rounded-[8px] bg-[#c9a84c] px-[18px] py-[14px] font-bold tracking-[0.04em] text-white transition hover:bg-[#b79436]"
+      className="inline-flex items-center justify-center rounded-[8px] bg-[#c9a84c] px-[18px] py-[14px] text-[0.9375rem] font-bold leading-none tracking-[0.04em] text-white transition hover:bg-[#b79436]"
     >
       <span>{children}</span>
       <span className="ml-1">→</span>
@@ -266,37 +266,68 @@ export default function CommissionNextgenPage() {
           <p className="type-section-title font-section-title font-bold tracking-[0.02em]">
             &quot;청소년 10명 중 7명 교회 이탈&quot;
           </p>
-          <p className="type-body mt-3 tracking-[0.08em] text-white/70">20-30대 이탈률 급증 · 다음세대 신앙 공백</p>
+          <p className="type-body mt-0 tracking-[0.08em] text-white/70 md:mt-3">20-30대 이탈률 급증 · 다음세대 신앙 공백</p>
         </div>
 
         <div className="mt-6 flex flex-col items-center">
           <div className="h-6 w-px bg-[#d8d0c2]" />
-          <p className="type-label font-medium tracking-[0.08em] text-[#7a7060]">원인</p>
+          <p className="mt-2 type-label font-medium tracking-[0.08em] text-[#7a7060]">원인</p>
         </div>
 
-        <div className="mt-4 grid gap-8 border-y border-[#ece6db] py-6 md:grid-cols-3 md:gap-10 md:px-4">
-          {crisisReasons.map((item) => (
-            <article key={item.number} className="text-center">
-              <p className="type-label-fixed font-section-title font-bold tracking-[0.16em] text-[#c9a84c]">
-                {item.number}
-              </p>
-              <h3
-                className={`${nanumMyeongjo.className} mt-2 type-lead font-bold tracking-[0.02em] text-[#0f2044]`}
+        <div className="mt-4 border-y border-[#ece6db] py-6">
+          <div className="md:hidden">
+            {crisisReasons.map((item, index) => (
+              <div
+                key={item.number}
+                className={`flex flex-col items-center gap-0 px-1 py-5 text-center md:gap-4 ${
+                  index === 0 ? "" : "border-t border-[#f2f0ec]"
+                }`}
               >
-                {item.title}
-              </h3>
-              <div className="mt-4 space-y-1 type-body-small leading-[1.5] tracking-[0.04em] text-[#888580]">
-                {item.details.map((detail) => (
-                  <p key={detail}>{detail}</p>
-                ))}
+                <div className="flex justify-center gap-5">
+                  <span
+                    className={`${cormorantGaramond.className} w-[32px] translate-y-[0.02em] text-right text-[2rem] font-normal leading-[0.5] tracking-[0.08em] text-[#c9a84c]`}
+                  >
+                    {item.number}
+                  </span>
+                  <h3
+                    className={`${nanumMyeongjo.className} type-lead w-[132px] whitespace-nowrap text-left font-bold tracking-[0.02em] text-[#0f2044]`}
+                  >
+                    {item.title}
+                  </h3>
+                </div>
+                <p className="type-body-small leading-[1.7] tracking-[0.02em] text-[#888580]">
+                  {item.details.join(" · ")}
+                </p>
               </div>
-            </article>
-          ))}
+            ))}
+          </div>
+
+          <div className="hidden gap-8 md:grid md:grid-cols-3 md:gap-10 md:px-4">
+            {crisisReasons.map((item) => (
+              <article key={item.number} className="text-center">
+                <p
+                  className={`${cormorantGaramond.className} text-[2rem] font-normal leading-none tracking-[0.08em] text-[#c9a84c]`}
+                >
+                  {item.number}
+                </p>
+                <h3
+                  className={`${nanumMyeongjo.className} mt-2 type-lead font-bold tracking-[0.02em] text-[#0f2044]`}
+                >
+                  {item.title}
+                </h3>
+                <div className="mt-4 space-y-1 type-body-small leading-[1.5] tracking-[0.04em] text-[#888580]">
+                  {item.details.map((detail) => (
+                    <p key={detail}>{detail}</p>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
 
         <div className="mt-6 flex flex-col items-center">
           <div className="h-6 w-px bg-[#d8d0c2]" />
-          <p className="type-label font-medium tracking-[0.08em] text-[#7a7060]">해결</p>
+          <p className="mt-2 type-label font-medium tracking-[0.08em] text-[#7a7060]">해결</p>
           <div className="mt-4 text-center">
             <p className="type-card-title font-section-title font-bold tracking-[0.02em] text-[#111111]">
               &quot;가정에서 시작되는 신앙 회복&quot;
@@ -309,16 +340,18 @@ export default function CommissionNextgenPage() {
           {recoverySteps.map((step, index) => (
             <div
               key={step.number}
-              className={`flex flex-col items-center gap-4 border-t px-1 py-5 text-center md:flex-row md:justify-center md:gap-6 ${
+              className={`flex flex-col items-center gap-0 border-t px-1 py-5 text-center md:flex-row md:justify-center md:gap-6 ${
                 index === 0 ? "border-[#b7ab94]/60" : "border-[#f2f0ec]"
               }`}
             >
-              <div className="flex items-center justify-center gap-5 md:w-[260px] md:shrink-0 md:justify-end">
-                <span className="type-label-fixed w-[28px] text-right font-section-title font-bold tracking-[0.16em] text-[#c9a84c]">
+              <div className="flex justify-center gap-5 md:w-[260px] md:shrink-0 md:justify-end">
+                <span
+                  className={`${cormorantGaramond.className} w-[32px] translate-y-[0.02em] text-right text-[2rem] font-normal leading-[0.5] tracking-[0.08em] text-[#c9a84c]`}
+                >
                   {step.number}
                 </span>
                 <h3
-                  className={`${nanumMyeongjo.className} type-lead w-[132px] text-left font-bold tracking-[0.02em] text-[#0f2044]`}
+                  className={`${nanumMyeongjo.className} type-lead w-auto text-left font-bold tracking-[0.02em] text-[#0f2044] md:w-[132px]`}
                 >
                   {step.title}
                 </h3>
@@ -340,7 +373,7 @@ export default function CommissionNextgenPage() {
           신앙 계승의 핵심은 가정입니다. 쉐마 교육의 4가지 실천으로 가정에서 신앙을 전수합니다.
         </p>
 
-        <div className="mt-8">
+        <div className="mt-0 lg:mt-3">
           {shemaPractices.map((practice) => (
             <div
               key={practice.number}
@@ -384,21 +417,54 @@ export default function CommissionNextgenPage() {
       </SectionBlock>
 
       <SectionBlock label="yearly roadmap" title="연간 일정" className="mt-20 md:mt-[68px]">
-        <div className="mt-8 overflow-hidden rounded-[12px] border border-[#d0cdca] md:grid md:grid-cols-4">
-          {calendarItems.map((item, index) => (
+        <div className="mt-8 min-[500px]:hidden">
+          <div className="overflow-hidden rounded-[12px] border border-[#d0cdca]">
+            {calendarItems.map((item, index) => (
               <article
                 key={`${item.monthEng}-${item.monthKr}`}
-                className={`px-4 py-[18px] ${
-                  item.tone === "cream" ? "bg-[#f8f7f4]" : "bg-white"
-                } ${index % 4 !== 3 ? "md:border-r md:border-[#d0cdca]" : ""} ${
-                  index < 8 ? "border-b border-[#d0cdca]" : ""
+                className={`flex items-start gap-6 px-4 py-4 ${
+                  index % 2 === 1 ? "bg-[#f8f7f4]" : "bg-white"
+                } ${
+                  index === 0 ? "" : "border-t border-[#d0cdca]"
                 }`}
               >
-                <p className={`${cormorantGaramond.className} text-[22px] tracking-[0.04em] text-[#c9a84c]`}>{item.monthEng}</p>
-                <h3 className="type-card-title font-section-title font-bold tracking-[0.02em] text-[#0f2044]">{item.monthKr}</h3>
-                <p className="mt-2 type-body-small leading-[1.55] tracking-[0.02em] text-[#888580]">{item.label}</p>
+                <div className="flex shrink-0 items-baseline gap-3">
+                  <p
+                    className={`${cormorantGaramond.className} w-[40px] shrink-0 text-[22px] tracking-[0.04em] text-[#c9a84c]`}
+                  >
+                    {item.monthEng}
+                  </p>
+                  <h3 className="type-card-title w-[40px] shrink-0 font-section-title font-bold tracking-[0.02em] text-[#0f2044]">
+                    {item.monthKr}
+                  </h3>
+                </div>
+                <p className="min-w-0 flex-1 pt-1 type-body-small leading-[1.55] tracking-[0.02em] text-[#888580]">
+                  {item.label}
+                </p>
               </article>
             ))}
+          </div>
+        </div>
+
+        <div className="mt-8 hidden min-[500px]:grid min-[500px]:grid-cols-3 overflow-hidden rounded-[12px] border border-[#d0cdca] md:grid-cols-4">
+          {calendarItems.map((item, index) => (
+            <article
+              key={`${item.monthEng}-${item.monthKr}`}
+              className={`px-4 py-[18px] ${
+                index >= 3 && index <= 5 ? "bg-[#f8f7f4]" : index >= 9 && index <= 11 ? "bg-[#f8f7f4]" : "bg-white"
+              } ${
+                item.tone === "cream" ? "md:bg-[#f8f7f4]" : "md:bg-white"
+              } ${index % 3 !== 2 ? "border-r border-[#d0cdca]" : ""} ${
+                index < 9 ? "border-b border-[#d0cdca]" : ""
+              } ${index % 4 !== 3 ? "md:border-r md:border-[#d0cdca]" : "md:border-r-0"} ${
+                index < 8 ? "md:border-b md:border-[#d0cdca]" : "md:border-b-0"
+              }`}
+            >
+              <p className={`${cormorantGaramond.className} text-[22px] tracking-[0.04em] text-[#c9a84c]`}>{item.monthEng}</p>
+              <h3 className="type-card-title font-section-title font-bold tracking-[0.02em] text-[#0f2044]">{item.monthKr}</h3>
+              <p className="mt-2 type-body-small leading-[1.55] tracking-[0.02em] text-[#888580]">{item.label}</p>
+            </article>
+          ))}
         </div>
       </SectionBlock>
 

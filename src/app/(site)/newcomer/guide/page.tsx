@@ -8,7 +8,7 @@ import PageHeader from "@/components/page-header";
 import SectionHeading from "@/components/section-heading";
 import ScriptureQuoteCard from "@/components/scripture-quote-card";
 import { redirectToCanonicalStaticPathIfNeeded } from "@/lib/canonical-menu-path";
-import { nanumMyeongjo } from "@/lib/fonts";
+import { cormorantGaramond, nanumMyeongjo } from "@/lib/fonts";
 import { createPageMetadata } from "@/lib/seo";
 
 const newcomerIntroParagraphs = [
@@ -139,18 +139,39 @@ export default async function NewcomerGuidePage() {
               5대 핵심가치
             </h3>
             <div className="mt-3 border-y border-black/10 py-4 md:py-5">
-              <div className="grid grid-cols-2 gap-y-0 md:grid-cols-5">
+              <div className="lg:hidden">
+                {coreValues.map((item, index) => (
+                  <div
+                    key={item.number}
+                    className={`flex items-start gap-4 px-1 py-5 text-left md:gap-6 ${
+                      index === 0 ? "" : "border-t border-[#f2f0ec]"
+                    }`}
+                  >
+                    <div className="flex w-[112px] shrink-0 gap-4 md:w-[210px] md:gap-5">
+                      <span
+                        className={`${cormorantGaramond.className} w-[32px] translate-y-[0.02em] text-left text-[1.8rem] font-normal leading-[0.8] tracking-[0.08em] text-[#c9a84c] md:text-[2rem] md:leading-[0.5]`}
+                      >
+                        {item.number}
+                      </span>
+                      <h3
+                        className={`${nanumMyeongjo.className} text-[1.125rem] font-bold leading-[2] tracking-[0.02em] text-[#0f2044] md:text-[1.375rem] md:leading-[1.3]`}
+                      >
+                        {item.title}
+                      </h3>
+                    </div>
+                    <p className="flex-1 pt-0.5 type-body-small leading-[1.7] tracking-[0.02em] text-[#888580] md:leading-[1.2]">
+                      {item.description.replace(/\n/g, " ")}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden lg:grid lg:grid-cols-5 lg:gap-y-0">
                 {coreValues.map((item, index) => (
                   <CoreValueCard
                     key={item.number}
                     {...item}
-                    className={
-                      index === coreValues.length - 1
-                        ? "col-span-2 border-t border-black/10 md:col-span-1 md:border-t-0 md:border-r-0"
-                        : index >= 2
-                          ? "border-t border-black/10 border-r border-black/10 md:border-t-0"
-                          : "border-r border-black/10"
-                    }
+                    className={index === coreValues.length - 1 ? "border-r-0" : "border-r border-black/10"}
                   />
                 ))}
               </div>

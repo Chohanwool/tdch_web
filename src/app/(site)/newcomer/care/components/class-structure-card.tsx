@@ -21,10 +21,10 @@ export default function ClassStructureCard({
         </span>
         <span className="pb-[2px] type-body leading-none text-[#888580]">분</span>
       </div>
-      <h3 className="type-body font-bold leading-none tracking-[-0.01em] text-[#1a2744]">
+      <h3 className="type-body font-bold leading-none tracking-[-0.01em] text-[#1a2744] md:type-lead">
         {title}
       </h3>
-      <div className="flex flex-col items-start gap-3 type-label leading-none text-[#888580]">
+      <div className="mt-2 flex flex-col items-start gap-3 type-body-xsmall leading-none text-[#888580] md:mt-0 md:gap-0 md:type-body-small">
         {details.map((detail) => (
           <p key={detail}>{detail}</p>
         ))}

@@ -58,7 +58,7 @@ function CheckItem({ task, withTopBorder }: { task: string; withTopBorder: boole
           />
         </svg>
       </span>
-      <span className="text-[16px] font-normal leading-[1.35] tracking-[0.02em] text-[#7a7060]">
+      <span className="type-body-small font-normal leading-[1.35] tracking-[0.02em] text-[#7a7060] md:type-body">
         {task}
       </span>
     </li>
@@ -66,7 +66,7 @@ function CheckItem({ task, withTopBorder }: { task: string; withTopBorder: boole
 }
 
 export default function PracticeAssignmentSection() {
-  const [openIndex, setOpenIndex] = useState(-1);
+  const [openItems, setOpenItems] = useState<Set<number>>(() => new Set());
 
   return (
     <section
@@ -87,7 +87,7 @@ export default function PracticeAssignmentSection() {
 
         <div>
           {practiceAssignments.map((item, index) => {
-            const isOpen = openIndex === index;
+            const isOpen = openItems.has(index);
 
             return (
               <article
@@ -99,7 +99,15 @@ export default function PracticeAssignmentSection() {
                   className="flex w-full items-center justify-between gap-4 py-4 text-left md:py-5"
                   aria-expanded={isOpen}
                   onClick={() => {
-                    setOpenIndex((current) => (current === index ? -1 : index));
+                    setOpenItems((current) => {
+                      const next = new Set(current);
+                      if (next.has(index)) {
+                        next.delete(index);
+                      } else {
+                        next.add(index);
+                      }
+                      return next;
+                    });
                   }}
                 >
                   <div className="flex flex-col gap-2 tracking-[0.02em]">

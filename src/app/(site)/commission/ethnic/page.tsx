@@ -281,7 +281,7 @@ function GoldButton({
   return (
     <Link
       href={href}
-      className={`type-body-small inline-flex items-center justify-center rounded-[8px] bg-[#c9a84c] px-[18px] py-[14px] font-bold tracking-[0.04em] text-white transition hover:bg-[#b79436] ${className}`}
+      className={`inline-flex items-center justify-center rounded-[8px] bg-[#c9a84c] px-[18px] py-[14px] text-[0.9375rem] font-bold leading-none tracking-[0.04em] text-white transition hover:bg-[#b79436] ${className}`}
     >
       <span>{children}</span>
       <span className="ml-1">→</span>
@@ -310,11 +310,11 @@ function SectionBlock({
 
 function BulletLines({ items, className = "" }: { items: readonly string[]; className?: string }) {
   return (
-    <div className={`space-y-3 ${className}`}>
+    <div className={`space-y-2 ${className}`}>
       {items.map((item) => (
         <div key={item} className="type-body-small flex items-start gap-2 tracking-[0.02em] text-[#4a4845]">
           <span className="pt-[2px] text-[#888580]">·</span>
-          <span className="leading-[1.6]">{item}</span>
+          <span className="leading-[2]">{item}</span>
         </div>
       ))}
     </div>
@@ -395,25 +395,46 @@ export default function CommissionEthnicPage() {
       </SectionBlock>
 
       <SectionBlock label="Global Status" title="세계 선교 현황" className="mt-20 md:mt-[68px]">
-        <div className="mt-8 overflow-hidden rounded-[12px] border border-[#d0cdca] md:grid md:grid-cols-3">
-          {globalStats.map((stat, index) => (
-            <article
-              key={stat.label}
-              className={`px-6 py-6 text-center ${
-                stat.emphasized ? "bg-[#f8f7f4]" : "bg-white"
-              } ${index < globalStats.length - 1 ? "border-b border-[#d0cdca] md:border-b-0 md:border-r" : ""}`}
-            >
-              <p className="type-label tracking-[0.08em] text-[#888580]">{stat.label}</p>
-              <h3 className="mt-3 type-subsection-title font-section-title font-black tracking-[0.02em] text-[#0f2044]">
-                {stat.title}
-              </h3>
-              <div className="mt-4 space-y-2 type-body-small tracking-[0.02em] text-[#888580]">
-                {stat.lines.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
-              </div>
-            </article>
-          ))}
+        <div className="mt-8 overflow-hidden rounded-[12px] border border-[#d0cdca]">
+          <div className="md:hidden">
+            {globalStats.map((stat, index) => (
+              <article
+                key={stat.label}
+                className={`px-5 py-5 text-left ${
+                  stat.emphasized ? "bg-[#f8f7f4]" : "bg-white"
+                } ${index < globalStats.length - 1 ? "border-b border-[#d0cdca]" : ""}`}
+              >
+                <p className="type-label tracking-[0.08em] text-[#888580]">{stat.label}</p>
+                <h3 className="mt-2 type-subsection-title font-section-title font-black tracking-[0.02em] text-[#0f2044]">
+                  {stat.title}
+                </h3>
+                <p className="mt-1 type-body-small leading-[1.7] tracking-[0.02em] text-[#888580]">
+                  {stat.lines.join(" · ")}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-3">
+            {globalStats.map((stat, index) => (
+              <article
+                key={stat.label}
+                className={`px-6 py-6 text-center ${
+                  stat.emphasized ? "bg-[#f8f7f4]" : "bg-white"
+                } ${index < globalStats.length - 1 ? "md:border-r md:border-[#d0cdca]" : ""}`}
+              >
+                <p className="type-label tracking-[0.08em] text-[#888580]">{stat.label}</p>
+                <h3 className="mt-3 type-subsection-title font-section-title font-black tracking-[0.02em] text-[#0f2044]">
+                  {stat.title}
+                </h3>
+                <div className="mt-4 space-y-2 type-body-small tracking-[0.02em] text-[#888580]">
+                  {stat.lines.map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-[1fr_1.05fr]">
@@ -489,29 +510,54 @@ export default function CommissionEthnicPage() {
 
         <div className="mt-10 border-t border-[#d0cdca] pt-8">
           <p className="type-label font-bold tracking-[0.22em] text-[#c9a84c]">선교에서 배운 교훈</p>
-          <div className="mt-5 overflow-hidden rounded-[12px] border border-[#d0cdca] md:grid md:grid-cols-4">
-            {missionLessons.map((lesson, index) => (
-              <article
-                key={lesson.number}
-                className={`px-5 py-6 ${lesson.emphasized ? "bg-[#f8f7f4]" : "bg-white"} ${
-                  index < missionLessons.length - 1 ? "border-b border-[#d0cdca] md:border-b-0 md:border-r" : ""
-                }`}
-              >
-                <p className={`${cormorantGaramond.className} text-[20px] tracking-[0.1em] text-[#c9a84c]`}>
-                  {lesson.number}
-                </p>
-                <h3 className="mt-2 type-card-title font-section-title font-bold tracking-[0.02em] text-[#0f2044]">
-                  {lesson.title}
-                </h3>
-                <div className="type-body-small leading-[1.6] tracking-[0.02em] text-[#888580]">
-                  {lesson.lines.map((line, lineIndex) => (
-                    <p key={line} className={lineIndex === 0 ? "mt-3" : "mt-1"}>
-                      {line}
-                    </p>
-                  ))}
-                </div>
-              </article>
-            ))}
+          <div className="mt-5 overflow-hidden rounded-[12px] border border-[#d0cdca]">
+            <div className="min-[771px]:hidden">
+              {missionLessons.map((lesson, index) => (
+                <article
+                  key={lesson.number}
+                  className={`flex items-center gap-4 px-5 py-5 ${
+                    lesson.emphasized ? "bg-[#f8f7f4]" : "bg-white"
+                  } ${index < missionLessons.length - 1 ? "border-b border-[#d0cdca]" : ""}`}
+                >
+                  <p
+                    className={`${cormorantGaramond.className} w-[28px] shrink-0 -translate-y-[0.18em] text-[20px] tracking-[0.1em] text-[#c9a84c]`}
+                  >
+                    {lesson.number}
+                  </p>
+                  <h3 className="w-[120px] shrink-0 type-card-title font-section-title font-bold tracking-[0.02em] text-[#0f2044]">
+                    {lesson.title}
+                  </h3>
+                  <p className="min-w-0 flex-1 type-body-small leading-[1.7] tracking-[0.02em] text-[#888580]">
+                    {lesson.lines.join(" · ")}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            <div className="hidden min-[771px]:grid min-[771px]:grid-cols-4">
+              {missionLessons.map((lesson, index) => (
+                <article
+                  key={lesson.number}
+                  className={`px-5 py-6 ${lesson.emphasized ? "bg-[#f8f7f4]" : "bg-white"} ${
+                    index < missionLessons.length - 1 ? "border-r border-[#d0cdca]" : ""
+                  }`}
+                >
+                  <p className={`${cormorantGaramond.className} text-[20px] tracking-[0.1em] text-[#c9a84c]`}>
+                    {lesson.number}
+                  </p>
+                  <h3 className="mt-2 type-card-title font-section-title font-bold tracking-[0.02em] text-[#0f2044]">
+                    {lesson.title}
+                  </h3>
+                  <div className="type-body-small leading-[1.6] tracking-[0.02em] text-[#888580]">
+                    {lesson.lines.map((line, lineIndex) => (
+                      <p key={line} className={lineIndex === 0 ? "mt-3" : "mt-1"}>
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </SectionBlock>
@@ -541,14 +587,14 @@ export default function CommissionEthnicPage() {
       </SectionBlock>
 
       <SectionBlock label="Mission Fields" title="선교 지역 소개" className="mt-20 md:mt-[68px]">
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
+        <div className="mt-8 grid gap-5 min-[896px]:grid-cols-3">
           {missionFields.map((field) => (
             <article key={field.title} className="overflow-hidden rounded-[12px] border border-[#d0cdca] bg-white">
               <div className="bg-[#1a2744] px-4 py-[14px]">
                 <p className={`${cormorantGaramond.className} text-[12px] tracking-[0.28em] text-[#c9a84c] uppercase`}>
                   {field.label}
                 </p>
-                <h3 className="mt-2 type-card-title font-section-title font-extrabold tracking-[0.02em] text-white">
+                <h3 className="mt-2 text-[20px] leading-[1.35] font-section-title font-extrabold tracking-[0.02em] text-white min-[1281px]:text-[22px]">
                   {field.title}
                 </h3>
               </div>
@@ -606,24 +652,64 @@ export default function CommissionEthnicPage() {
       </SectionBlock>
 
       <SectionBlock label="Annual Calendar" title="선교 달력" className="mt-20 md:mt-[68px]">
-        <div className="mt-8 overflow-hidden rounded-[12px] border border-[#d0cdca] md:grid md:grid-cols-4">
-          {calendarItems.map(([eng, kr, desc], index) => {
-            const isCreamRow = index >= 4 && index <= 7;
-            return (
+        <div className="mt-8 min-[591px]:hidden">
+          <div className="overflow-hidden rounded-[12px] border border-[#d0cdca]">
+            {calendarItems.map(([eng, kr, desc], index) => (
               <article
                 key={eng}
-                className={`px-4 py-[18px] ${isCreamRow ? "bg-[#f8f7f4]" : "bg-white"} ${
-                  index % 4 !== 3 ? "md:border-r md:border-[#d0cdca]" : ""
-                } ${
-                  index < 8 ? "border-b border-[#d0cdca]" : ""
-                }`}
+                className={`flex items-start gap-6 px-4 py-4 ${
+                  index % 2 === 1 ? "bg-[#f8f7f4]" : "bg-white"
+                } ${index === 0 ? "" : "border-t border-[#d0cdca]"}`}
               >
-                <p className={`${cormorantGaramond.className} text-[22px] tracking-[0.04em] text-[#c9a84c]`}>{eng}</p>
-                <h3 className="type-card-title font-section-title font-bold tracking-[0.02em] text-[#0f2044]">{kr}</h3>
-                <p className="mt-2 type-body-small leading-[1.55] tracking-[0.02em] text-[#888580]">{desc}</p>
+                <div className="flex shrink-0 items-baseline gap-3">
+                  <p
+                    className={`${cormorantGaramond.className} w-[40px] shrink-0 text-[22px] tracking-[0.04em] text-[#c9a84c]`}
+                  >
+                    {eng}
+                  </p>
+                  <h3 className="type-card-title w-[40px] shrink-0 font-section-title font-bold tracking-[0.02em] text-[#0f2044]">
+                    {kr}
+                  </h3>
+                </div>
+                <p className="min-w-0 flex-1 pt-1 type-body-small leading-[1.55] tracking-[0.02em] text-[#888580]">
+                  {desc}
+                </p>
               </article>
-            );
-          })}
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-8 hidden min-[591px]:grid min-[591px]:grid-cols-3 overflow-hidden rounded-[12px] border border-[#d0cdca] md:grid-cols-4">
+          {calendarItems.map(([eng, kr, desc], index) => (
+            <article
+              key={eng}
+              className={`px-4 py-[18px] ${
+                index >= 3 && index <= 5 ? "bg-[#f8f7f4]" : index >= 9 && index <= 11 ? "bg-[#f8f7f4]" : "bg-white"
+              } ${index >= 4 && index <= 7 ? "md:bg-[#f8f7f4]" : "md:bg-white"
+              } ${index % 3 !== 2 ? "border-r border-[#d0cdca]" : ""} ${
+                index < 9 ? "border-b border-[#d0cdca]" : ""
+              } ${index % 4 !== 3 ? "md:border-r md:border-[#d0cdca]" : "md:border-r-0"} ${
+                index < 8 ? "md:border-b md:border-[#d0cdca]" : "md:border-b-0"
+              }`}
+            >
+              <p className={`${cormorantGaramond.className} text-[22px] tracking-[0.04em] text-[#c9a84c]`}>{eng}</p>
+              <h3 className="type-card-title font-section-title font-bold tracking-[0.02em] text-[#0f2044]">{kr}</h3>
+              {index === 0 ? (
+                <>
+                  <p className="mt-2 type-body-small leading-[1.55] tracking-[0.02em] text-[#888580] max-[1280px]:hidden">
+                    {desc}
+                  </p>
+                  <p className="mt-2 hidden type-body-small leading-[1.55] tracking-[0.02em] text-[#888580] max-[1280px]:block">
+                    신년 선교 기도회
+                    <br />
+                    단기 선교
+                  </p>
+                </>
+              ) : (
+                <p className="mt-2 type-body-small leading-[1.55] tracking-[0.02em] text-[#888580]">{desc}</p>
+              )}
+            </article>
+          ))}
         </div>
       </SectionBlock>
 
@@ -638,7 +724,7 @@ export default function CommissionEthnicPage() {
           <div className="grid gap-10 bg-white p-7 md:grid-cols-2">
             <div className="space-y-10">
               <div>
-                <p className="type-label font-bold tracking-[0.08em] text-[#c9a84c]">기본 정보</p>
+                <p className="type-body-small font-bold tracking-[0.08em] text-[#c9a84c]">기본 정보</p>
                 <div className="mt-5 space-y-4">
                   <div>
                     <label className="type-body-small font-medium tracking-[0.02em] text-[#888580]">이름</label>
@@ -646,7 +732,7 @@ export default function CommissionEthnicPage() {
                       value=""
                       readOnly
                       placeholder="이름을 입력하세요"
-                      className="mt-1.5 h-[42px] w-full rounded-[6px] border border-[#d0cdca] bg-[#f8f7f4] px-5 text-[12px] text-[#888580] outline-none"
+                      className="type-body-small mt-1.5 h-[42px] w-full rounded-[6px] border border-[#d0cdca] bg-[#f8f7f4] px-5 text-[#888580] outline-none"
                     />
                   </div>
                   <div>
@@ -655,14 +741,14 @@ export default function CommissionEthnicPage() {
                       value=""
                       readOnly
                       placeholder="연락처를 입력하세요"
-                      className="mt-1.5 h-[42px] w-full rounded-[6px] border border-[#d0cdca] bg-[#f8f7f4] px-5 text-[12px] text-[#888580] outline-none"
+                      className="type-body-small mt-1.5 h-[42px] w-full rounded-[6px] border border-[#d0cdca] bg-[#f8f7f4] px-5 text-[#888580] outline-none"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <p className="type-label font-bold tracking-[0.08em] text-[#c9a84c]">참여 방법</p>
+                <p className="type-body-small font-bold tracking-[0.08em] text-[#c9a84c]">참여 방법</p>
                 <div className="mt-5 space-y-4">
                   {participationMethods.map((item) => (
                     <StaticCheckbox key={item} label={item} />
@@ -673,7 +759,7 @@ export default function CommissionEthnicPage() {
 
             <div className="flex flex-col justify-between gap-10">
               <div>
-                <p className="type-label font-bold tracking-[0.08em] text-[#c9a84c]">관심 지역</p>
+                <p className="type-body-small font-bold tracking-[0.08em] text-[#c9a84c]">관심 지역</p>
                 <div className="mt-5 space-y-4">
                   {interestRegions.map((item) => (
                     <StaticCheckbox key={item} label={item} />
@@ -682,15 +768,15 @@ export default function CommissionEthnicPage() {
                     value=""
                     readOnly
                     placeholder="기타 지역을 입력하세요"
-                    className="h-[42px] w-full rounded-[6px] border border-[#d0cdca] bg-[#f8f7f4] px-5 text-[12px] text-[#888580] outline-none"
+                    className="type-body-small h-[42px] w-full rounded-[6px] border border-[#d0cdca] bg-[#f8f7f4] px-5 text-[#888580] outline-none"
                   />
                 </div>
               </div>
 
               <div className="border-t border-[#f0ece5] pt-5">
-                <div className="space-y-2 type-body-small font-medium tracking-[0.02em] text-[#888580]">
-                  <p>담당자가 연락드립니다.</p>
-                  <p>선교부 문의: 선교 위원회</p>
+                <div className="space-y-2 font-medium tracking-[0.02em] text-[#888580]">
+                  <p className="type-body-small">담당자가 연락드립니다.</p>
+                  <p className="type-body-small">선교부 문의: 선교 위원회</p>
                 </div>
                 <GoldButton href="/about/location#contact-info" className="mt-5 w-full">
                   신청하기

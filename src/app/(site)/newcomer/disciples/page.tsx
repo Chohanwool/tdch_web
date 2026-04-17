@@ -495,17 +495,41 @@ export default async function NewcomerDisciplesPage() {
           />
 
           <div className="mt-8 overflow-hidden border-y border-black/10 py-5">
-            <div className="grid grid-cols-2 gap-y-6 lg:grid-cols-4 lg:gap-y-0">
+            <div className="md:hidden">
+              {multiplicationStages.map((stage, index) => (
+                <div
+                  key={stage.year}
+                  className={`flex items-center gap-4 px-1 py-5 text-left ${
+                    index === 0 ? "" : "border-t border-[#f2f0ec]"
+                  }`}
+                >
+                  <div className="w-[72px] shrink-0">
+                    <span
+                      className={`${nanumMyeongjo.className} type-body font-bold leading-none tracking-[0.02em] ${
+                        stage.highlight ? "text-[#c9a84c]" : "text-[#1a2744]"
+                      }`}
+                    >
+                      {stage.generation}세대
+                    </span>
+                  </div>
+                  <p className="flex-1 type-body-small leading-[1.6] tracking-[0.02em] text-[#7a7060]">
+                    {stage.items.join(" · ")}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="hidden md:grid md:grid-cols-4 md:gap-y-0">
               {multiplicationStages.map((stage, index) => (
                 <div
                   key={stage.year}
                   className={
                     index === 0
-                      ? "border-b border-r border-black/10 lg:border-b-0"
+                      ? "border-b border-r border-black/10 md:border-b-0"
                       : index === 1
-                        ? "border-b border-black/10 lg:border-b-0 lg:border-r lg:border-black/10"
+                        ? "border-b border-black/10 md:border-b-0 md:border-r md:border-black/10"
                         : index === 2
-                          ? "border-r border-black/10 lg:border-r lg:border-black/10"
+                          ? "border-r border-black/10 md:border-r md:border-black/10"
                           : ""
                   }
                 >
@@ -534,7 +558,7 @@ export default async function NewcomerDisciplesPage() {
           aria-labelledby="disciples-apply-title"
           className="mt-20 scroll-mt-32 md:mt-[68px] md:scroll-mt-36"
         >
-          <div className="rounded-[12px] bg-[#1a2744] p-6 md:flex md:items-start md:justify-between md:gap-10 md:p-9">
+          <div className="rounded-[12px] bg-[#1a2744] p-8 md:flex md:items-start md:justify-between md:gap-10 md:p-9">
             <div className="md:max-w-[320px] lg:max-w-[360px]">
               <SectionHeading
                 id="disciples-apply-title"

@@ -65,7 +65,7 @@ export default function NewcomerFaqAccordion({
                       <span className="shrink-0 text-[14px] font-normal leading-[1.7] text-[#c9a84c]">
                         A.
                       </span>
-                      <span className="type-body whitespace-pre-wrap leading-[1.7] tracking-[0.02em] text-[#7a7060]">
+                      <span className="type-body-small whitespace-pre-wrap leading-[1.7] tracking-[0.02em] text-[#7a7060] md:type-body">
                         {answerLine}
                       </span>
                     </li>

@@ -97,17 +97,17 @@ const visionPhotos = [
   {
     src: "/images/commission/vision-culture.jpg",
     alt: "다문화 공동체",
-    frameClassName: "z-[2] right-[-144px] top-[-160px] w-[232px] -rotate-[7deg]",
+    frameClassName: "z-[12] right-[-144px] top-[-130px] w-[232px] -rotate-[7deg]",
   },
   {
     src: "/images/commission/vision-nextgen.jpg",
     alt: "다음세대 아이들",
-    frameClassName: "z-[3] right-[48px] top-[-36px] w-[274px] rotate-[4deg]",
+    frameClassName: "z-[13] right-[48px] top-[-6px] w-[274px] rotate-[4deg]",
   },
   {
     src: "/images/commission/vision-ethnic.jpg",
     alt: "다민족 공동체",
-    frameClassName: "z-[1] right-[-156px] top-[144px] w-[226px] rotate-[9deg]",
+    frameClassName: "z-[11] right-[-156px] top-[174px] w-[226px] rotate-[9deg]",
   },
 ] as const;
 
@@ -126,7 +126,7 @@ function MissionRingDiagram() {
   ] as const;
 
   return (
-    <div className="relative h-[200px] w-full max-w-[420px] overflow-hidden md:h-[230px]">
+    <div className="relative h-[200px] w-[420px] max-w-none overflow-hidden md:h-[230px]">
       <svg
         className="h-full w-full"
         viewBox="0 0 420 240"
@@ -182,7 +182,6 @@ export default function CommissionSummaryPage() {
           quote="그러므로 너희는 가서 모든 민족을 제자로 삼아 아버지와 아들과 성령의 이름으로 침례를 베풀고 내가 너희에게 분부한 모든 것을 가르쳐 지키게 하라 볼지어다 내가 세상 끝날까지 너희와 항상 함께 있으리라"
           reference="마태복음 28:19-20"
           className="mt-8"
-          quoteClassName="text-[14px] md:text-[15px]"
         />
 
         <div className="mt-6 max-w-[780px] space-y-3">
@@ -204,8 +203,8 @@ export default function CommissionSummaryPage() {
         />
 
         <p className="mt-5 max-w-[720px] type-body leading-[1.8] tracking-[0.02em] text-[#4f4a42]">
-          &quot;모든 민족을 제자로&quot; - 지상명령의 부르심에 따라 더 제자교회는 세 방향으로
-          사명을 감당합니다.
+          &quot;모든 민족을 제자로&quot; - 지상명령의 부르심에 따라
+          <br className="hidden md:block lg:hidden" />더 제자교회는 세 방향으로 사명을 감당합니다.
         </p>
 
         <div className="relative mt-8">
@@ -267,14 +266,17 @@ export default function CommissionSummaryPage() {
           quote="오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅 끝까지 이르러 내 증인이 되리라"
           reference="사도행전 1:8"
           className="mt-8 py-4 md:px-[28px]"
-          quoteClassName="text-[12px] leading-[1.8] tracking-[0.02em] text-[#4b463e]"
+          quoteClassName="leading-[1.8] tracking-[0.02em] text-[#4b463e]"
           referenceClassName="mt-2 text-[#8d7f67]"
         />
 
-        <div className="mt-8 border-b border-[#eee6db] pb-5 md:flex md:items-center md:gap-10">
-          <MissionRingDiagram />
+        <div className="mt-8 border-b border-[#eee6db] pb-5 md:flex md:items-center md:overflow-visible lg:justify-between">
+          <div className="relative z-0 md:w-[420px] md:shrink-0">
+            <MissionRingDiagram />
+          </div>
 
-          <div className="mt-8 grid gap-x-8 gap-y-6 md:mt-0 md:grid-cols-2">
+          <div className="relative z-10 mt-8 md:mt-0 md:shrink-0 md:[margin-left:clamp(-120px,calc(100vw-920px),0px)] lg:ml-auto">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-6 min-[500px]:grid-cols-2 md:grid-cols-2">
             {scopeItems.map((item) => (
               <div key={item.title} className="flex gap-3">
                 <span className="flex h-[24px] w-[14px] shrink-0 items-start justify-center pt-[10px]">
@@ -284,14 +286,14 @@ export default function CommissionSummaryPage() {
                   />
                 </span>
                 <div>
-                  <h3 className="type-card-title font-section-title font-bold tracking-[0.02em] text-[#1a2744]">
+                  <h3 className="type-card-title whitespace-nowrap font-section-title font-bold tracking-[0.02em] text-[#1a2744]">
                     {item.title}
                   </h3>
                   <div className="mt-2 space-y-1">
                     {item.lines.map((line) => (
                       <p
                         key={line}
-                        className="type-body-small leading-[1.45] tracking-[0.02em] text-[#6d6558]"
+                        className="type-body-small whitespace-nowrap leading-[1.45] tracking-[0.02em] text-[#6d6558]"
                       >
                         {line}
                       </p>
@@ -300,6 +302,7 @@ export default function CommissionSummaryPage() {
                 </div>
               </div>
             ))}
+            </div>
           </div>
         </div>
       </section>
@@ -331,7 +334,7 @@ export default function CommissionSummaryPage() {
             </p>
             <ul className="mt-6 space-y-3">
               {historyLeftItems.map((item) => (
-                <li key={item} className="type-body-small flex items-start gap-2 tracking-[0.02em] text-[#4a4840]">
+                <li key={item} className="type-body-small flex items-start gap-2 leading-[1.3] tracking-[0.02em] text-[#4a4840] md:leading-[1.76]">
                   <span className="mt-[5px] text-[#c9a84c]">·</span>
                   <span>{item}</span>
                 </li>
@@ -364,7 +367,7 @@ export default function CommissionSummaryPage() {
             </p>
             <ul className="mt-6 space-y-3">
               {historyRightItems.map((item) => (
-                <li key={item} className="type-body-small flex items-start gap-2 tracking-[0.02em] text-[#4a4840]">
+                <li key={item} className="type-body-small flex items-start gap-2 leading-[1.3] tracking-[0.02em] text-[#4a4840] md:leading-[1.76]">
                   <span className="mt-[5px] text-[#c9a84c]">·</span>
                   <span>{item}</span>
                 </li>
@@ -382,12 +385,43 @@ export default function CommissionSummaryPage() {
         />
 
         <div className="mt-8 border-y border-[#eee6db] py-5">
-          <div className="grid gap-6 md:grid-cols-4 md:gap-0">
+          <div className="lg:hidden">
             {participateItems.map((item, index) => (
               <div
                 key={item.number}
-                className={`px-4 text-center md:px-6 ${index < participateItems.length - 1 ? "md:border-r md:border-[#ece5da]" : ""
-                  }`}
+                className={`flex items-center gap-4 px-1 py-5 text-left md:gap-6 ${
+                  index === 0 ? "" : "border-t border-[#f2f0ec]"
+                }`}
+              >
+                <div className="flex w-[112px] shrink-0 items-center gap-4 md:w-[210px] md:gap-5">
+                  <span
+                    className={`${cormorantGaramond.className} w-[32px] -translate-y-[0.14em] text-left text-[1.8rem] font-normal leading-[0.8] tracking-[0.08em] text-[#c9a84c] md:text-[2rem] md:leading-[0.5]`}
+                  >
+                    {item.number}
+                  </span>
+                  <div>
+                    <p className="type-label-fixed font-semibold uppercase tracking-[0.28em] text-[#c9a84c]">
+                      {item.label}
+                    </p>
+                    <h3 className="mt-2 text-[1.125rem] font-section-title font-bold leading-[1.3] tracking-[0.02em] text-[#0f2044] md:text-[1.375rem]">
+                      {item.title}
+                    </h3>
+                  </div>
+                </div>
+                <p className="flex-1 pt-0.5 type-body-small leading-[1.7] tracking-[0.02em] text-[#888580] md:leading-[1.7]">
+                  {item.details.join(" · ")}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="hidden lg:grid lg:grid-cols-4 lg:gap-0">
+            {participateItems.map((item, index) => (
+              <div
+                key={item.number}
+                className={`px-4 text-center lg:px-6 ${
+                  index < participateItems.length - 1 ? "lg:border-r lg:border-[#ece5da]" : ""
+                }`}
               >
                 <p className="type-label-fixed font-semibold uppercase tracking-[0.28em] text-[#c9a84c]">
                   {item.label}
@@ -439,7 +473,7 @@ export default function CommissionSummaryPage() {
           <div className="mt-6 flex flex-col items-start gap-2 md:mt-0 md:items-end">
             <Link
               href="/about/location"
-              className="type-body-small inline-flex h-11 items-center justify-center rounded-[8px] bg-[#c9a84c] px-5 font-bold tracking-[0.05em] text-white transition hover:bg-[#d4b261]"
+              className="inline-flex h-11 items-center justify-center rounded-[8px] bg-[#c9a84c] px-5 text-[0.9375rem] font-bold leading-none tracking-[0.05em] text-white transition hover:bg-[#d4b261]"
             >
               지금 참여하기 →
             </Link>

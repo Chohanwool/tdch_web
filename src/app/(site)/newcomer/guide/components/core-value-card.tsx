@@ -18,7 +18,7 @@ export default function CoreValueCard({
       className={`flex min-h-[132px] flex-col items-center justify-start px-5 py-5 text-center tracking-[0.02em] md:min-h-[154px] md:px-6 md:py-4 ${className}`}
     >
       <p
-        className={`${cormorantGaramond.className} text-[2.5rem] font-bold leading-none tracking-[0.06em] text-site-ink/5 md:text-[3.25rem]`}
+        className={`${cormorantGaramond.className} text-[2.3rem] font-bold leading-none tracking-[0.06em] text-site-ink/5 md:text-[2.5rem]`}
       >
         {number}
       </p>
