@@ -43,22 +43,6 @@ const STATIC_PAGE_OPTIONS = [
   { value: "commission.ethnic", label: "지상명령 / 다민족" },
 ];
 
-const STATIC_PAGE_ROUTE_MAP: Record<string, string> = {
-  "about.greeting": "/about/greeting",
-  "about.pastor": "/about/pastor",
-  "about.service-times": "/about/service-times",
-  "about.location": "/about/location",
-  "about.history": "/about/history",
-  "about.giving": "/about/giving",
-  "newcomer.guide": "/newcomer/guide",
-  "newcomer.care": "/newcomer/care",
-  "newcomer.disciples": "/newcomer/disciples",
-  "commission.summary": "/commission/summary",
-  "commission.nextgen": "/commission/nextgen",
-  "commission.culture": "/commission/culture",
-  "commission.ethnic": "/commission/ethnic",
-};
-
 function flattenTree(nodes: EditorNode[], depth = 0): Array<{ node: EditorNode; depth: number }> {
   return nodes.flatMap((node) => [
     { node, depth },
@@ -227,7 +211,7 @@ function buildNewNode(id: number, type: MenuType): EditorNode {
     type,
     status: "DRAFT",
     label: "새 메뉴",
-    slug: `menu-${Math.abs(id)}`,
+    slug: "",
     isAuto: false,
     labelCustomized: false,
     staticPageKey: type === "STATIC" ? "about.greeting" : null,
@@ -258,10 +242,18 @@ function gatherVideoNodes(nodes: EditorNode[]): EditorNode[] {
     .filter((node) => node.type === "YOUTUBE_PLAYLIST");
 }
 
-function getPublicRouteSummary(node: EditorNode): string {
+function getPublicRouteSummary(node: EditorNode, menuById: Map<number, EditorNode>): string {
   switch (node.type) {
     case "STATIC":
-      return node.staticPageKey ? STATIC_PAGE_ROUTE_MAP[node.staticPageKey] ?? "개발자가 등록한 경로" : "연결 페이지를 선택해 주세요";
+      if (!node.staticPageKey) {
+        return "연결 페이지를 선택해 주세요";
+      }
+      if (!node.parentId) {
+        return "상위 메뉴를 먼저 선택해 주세요";
+      }
+      return node.slug
+        ? `/${menuById.get(node.parentId)?.slug ?? "root"}/${node.slug}`
+        : `/${menuById.get(node.parentId)?.slug ?? "root"}/(저장 시 자동 생성)`;
     case "BOARD":
       return node.boardKey ? `/news#${node.boardKey}` : "/news";
     case "YOUTUBE_PLAYLIST":
@@ -732,6 +724,35 @@ export default function MenuManagementClient({
                     />
                   </label>
 
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-[12px] font-semibold text-[#334155]">Slug</span>
+                      {!selectedNode.isAuto && selectedNode.slug.trim().length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => updateSelectedNode((node) => ({ ...node, slug: "" }))}
+                          className="text-[11px] font-semibold text-[#2d5da8]"
+                        >
+                          자동 생성으로 되돌리기
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      value={selectedNode.slug}
+                      onChange={(event) =>
+                        updateSelectedNode((node) => ({ ...node, slug: event.target.value }))
+                      }
+                      readOnly={selectedNode.isAuto}
+                      placeholder="비워두면 저장 시 메뉴명 기준으로 자동 생성됩니다."
+                      className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px] read-only:bg-[#f8fafc]"
+                    />
+                    <p className="text-[11px] leading-5 text-[#6d7f95]">
+                      {selectedNode.isAuto
+                        ? "자동 생성된 유튜브 메뉴의 slug는 동기화 기준으로 유지됩니다."
+                        : "공개 URL에 들어가는 주소 조각입니다. 영문 소문자, 숫자, 하이픈 기준으로 저장되며, 비워두면 서버가 메뉴명에서 자동 생성합니다."}
+                    </p>
+                  </div>
+
                   <div className="grid gap-4 sm:grid-cols-2">
                     <label className="space-y-1.5">
                       <span className="text-[12px] font-semibold text-[#334155]">타입</span>
@@ -773,7 +794,7 @@ export default function MenuManagementClient({
                   <label className="space-y-1.5">
                     <span className="text-[12px] font-semibold text-[#334155]">공개 주소</span>
                     <input
-                      value={getPublicRouteSummary(selectedNode)}
+                      value={getPublicRouteSummary(selectedNode, menuById)}
                       readOnly
                       className="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2 text-[13px] text-[#475569]"
                     />

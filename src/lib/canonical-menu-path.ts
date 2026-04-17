@@ -1,5 +1,6 @@
 import "server-only";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getNavigationResponse } from "@/lib/navigation-api";
 
@@ -38,7 +39,11 @@ export async function redirectToCanonicalStaticPathIfNeeded(
   currentPath: string,
 ): Promise<void> {
   const canonicalPath = await getCanonicalStaticPath(contentSiteKey);
-  if (canonicalPath && canonicalPath !== currentPath) {
+  const headerStore = await headers();
+  const requestPath = headerStore.get("x-current-path")?.trim();
+  const comparePath = requestPath && requestPath.length > 0 ? requestPath : currentPath;
+
+  if (canonicalPath && canonicalPath !== comparePath) {
     redirect(canonicalPath);
   }
 }

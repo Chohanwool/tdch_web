@@ -31,6 +31,16 @@ function shouldBypassMaintenance(pathname: string) {
   return /\.[^/]+$/.test(pathname);
 }
 
+function continueWithCurrentPath(request: NextRequest) {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-current-path", `${request.nextUrl.pathname}${request.nextUrl.search}`);
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
@@ -39,11 +49,11 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!pathname.startsWith("/admin")) {
-    return NextResponse.next();
+    return continueWithCurrentPath(request);
   }
 
   if (pathname === ADMIN_LOGIN_PATH) {
-    return NextResponse.next();
+    return continueWithCurrentPath(request);
   }
 
   const token = await getToken({
@@ -52,7 +62,7 @@ export async function middleware(request: NextRequest) {
   });
 
   if (token?.role === "admin" && hasAdminIdentity(token)) {
-    return NextResponse.next();
+    return continueWithCurrentPath(request);
   }
 
   const loginUrl = new URL(ADMIN_LOGIN_PATH, request.url);
