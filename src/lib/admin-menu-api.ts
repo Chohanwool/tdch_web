@@ -22,6 +22,7 @@ export interface AdminMenuTreeNode {
   slug: string;
   isAuto: boolean;
   labelCustomized: boolean;
+  slugCustomized: boolean;
   staticPageKey: string | null;
   boardKey: string | null;
   externalUrl: string | null;
@@ -65,6 +66,7 @@ export interface MenuTreeNodePayload {
   status: MenuStatus;
   label: string;
   slug: string;
+  slugCustomized?: boolean;
   staticPageKey?: string | null;
   boardKey?: string | null;
   externalUrl?: string | null;

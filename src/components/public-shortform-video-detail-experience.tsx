@@ -392,6 +392,9 @@ export default function PublicShortformVideoDetailExperience({
   const dragOffsetRef = useRef(0);
   const skipPushRef = useRef(true);
   const resetTimerRef = useRef<number | null>(null);
+  const previousHtmlOverflowRef = useRef<string | null>(null);
+  const previousBodyOverflowRef = useRef<string | null>(null);
+  const scrollLockAppliedRef = useRef(false);
   const initialPlaybackState = useMemo(
     () => buildInitialPlaybackState(playlist, initialVideo),
     [initialVideo, playlist],
@@ -594,12 +597,36 @@ export default function PublicShortformVideoDetailExperience({
     const mediaQuery = window.matchMedia("(max-width: 767px)");
     setIsMobileViewport(mediaQuery.matches);
 
+    const releaseScrollLock = () => {
+      if (!scrollLockAppliedRef.current) {
+        return;
+      }
+
+      document.documentElement.style.overflow = previousHtmlOverflowRef.current ?? "";
+      document.body.style.overflow = previousBodyOverflowRef.current ?? "";
+      previousHtmlOverflowRef.current = null;
+      previousBodyOverflowRef.current = null;
+      scrollLockAppliedRef.current = false;
+    };
+
     const applyScrollLock = () => {
       const shouldLock = mediaQuery.matches;
       setIsMobileViewport(shouldLock);
       setIsViewportReady(true);
-      document.documentElement.style.overflow = shouldLock ? "hidden" : "";
-      document.body.style.overflow = shouldLock ? "hidden" : "";
+
+      if (shouldLock) {
+        if (!scrollLockAppliedRef.current) {
+          previousHtmlOverflowRef.current = document.documentElement.style.overflow;
+          previousBodyOverflowRef.current = document.body.style.overflow;
+          scrollLockAppliedRef.current = true;
+        }
+
+        document.documentElement.style.overflow = "hidden";
+        document.body.style.overflow = "hidden";
+        return;
+      }
+
+      releaseScrollLock();
     };
 
     applyScrollLock();
@@ -607,8 +634,7 @@ export default function PublicShortformVideoDetailExperience({
 
     return () => {
       mediaQuery.removeEventListener("change", applyScrollLock);
-      document.documentElement.style.overflow = "";
-      document.body.style.overflow = "";
+      releaseScrollLock();
     };
   }, []);
 

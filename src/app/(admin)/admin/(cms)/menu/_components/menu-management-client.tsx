@@ -197,6 +197,7 @@ function toPayload(nodes: EditorNode[]): MenuTreeNodePayload[] {
     status: node.status,
     label: node.label,
     slug: node.slug,
+    slugCustomized: node.slugCustomized,
     staticPageKey: node.staticPageKey,
     boardKey: node.boardKey,
     externalUrl: node.externalUrl,
@@ -216,6 +217,7 @@ function buildNewNode(id: number, type: MenuType): EditorNode {
     slug: "",
     isAuto: false,
     labelCustomized: false,
+    slugCustomized: false,
     staticPageKey: type === "STATIC" ? "about.greeting" : null,
     boardKey: type === "BOARD" ? "notice" : null,
     externalUrl: type === "EXTERNAL_LINK" ? "https://example.com" : null,
@@ -764,6 +766,21 @@ export default function MenuManagementClient({
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between gap-3">
                       <span className="text-[12px] font-semibold text-[#334155]">Slug</span>
+                      {selectedNode.isAuto && selectedNode.slugCustomized && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateSelectedNode((node) => ({
+                              ...node,
+                              slug: "",
+                              slugCustomized: false,
+                            }))
+                          }
+                          className="text-[11px] font-semibold text-[#2d5da8]"
+                        >
+                          자동 생성으로 되돌리기
+                        </button>
+                      )}
                       {!selectedNode.isAuto && selectedNode.slug.trim().length > 0 && (
                         <button
                           type="button"
@@ -777,15 +794,20 @@ export default function MenuManagementClient({
                     <input
                       value={selectedNode.slug}
                       onChange={(event) =>
-                        updateSelectedNode((node) => ({ ...node, slug: event.target.value }))
+                        updateSelectedNode((node) => ({
+                          ...node,
+                          slug: event.target.value,
+                          slugCustomized: node.isAuto ? event.target.value.trim().length > 0 : node.slugCustomized,
+                        }))
                       }
-                      readOnly={selectedNode.isAuto}
                       placeholder="비워두면 저장 시 메뉴명 기준으로 자동 생성됩니다."
-                      className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px] read-only:bg-[#f8fafc]"
+                      className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px]"
                     />
                     <p className="text-[11px] leading-5 text-[#6d7f95]">
                       {selectedNode.isAuto
-                        ? "자동 생성된 유튜브 메뉴의 slug는 동기화 기준으로 유지됩니다."
+                        ? selectedNode.slugCustomized
+                          ? "커스텀 slug를 사용 중입니다. 비우거나 자동 생성으로 되돌리면 유튜브 동기화 기준 slug로 복원됩니다."
+                          : "현재는 유튜브 동기화 기준 slug를 사용 중입니다. 값을 입력하면 커스텀 slug로 고정됩니다."
                         : "공개 URL에 들어가는 주소 조각입니다. 영문 소문자, 숫자, 하이픈 기준으로 저장되며, 비워두면 서버가 메뉴명에서 자동 생성합니다."}
                     </p>
                   </div>
