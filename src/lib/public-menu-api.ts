@@ -1,7 +1,12 @@
 import "server-only";
 
-import { SERVER_MEDIA_API_BASE_URL } from "@/lib/server-config";
 import type { MenuType } from "@/lib/admin-menu-api";
+import { type ServerFetchInit, serverFetchJsonOrNull } from "@/lib/server-fetch";
+
+const MENU_REVALIDATE_OPTIONS: NonNullable<ServerFetchInit["next"]> = {
+  revalidate: 300,
+  tags: ["menu"],
+};
 
 export interface PublicResolvedMenuPage {
   type: MenuType;
@@ -15,23 +20,10 @@ export interface PublicResolvedMenuPage {
 }
 
 export async function resolvePublicMenuPath(path: string): Promise<PublicResolvedMenuPage | null> {
-  try {
-    const response = await fetch(
-      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/menu/resolve?path=${encodeURIComponent(path)}`,
-      {
-        next: {
-          revalidate: 300,
-          tags: ["menu"],
-        },
-      },
-    );
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return response.json() as Promise<PublicResolvedMenuPage>;
-  } catch {
-    return null;
-  }
+  return serverFetchJsonOrNull<PublicResolvedMenuPage>(
+    `/api/v1/public/menu/resolve?path=${encodeURIComponent(path)}`,
+    {
+      next: MENU_REVALIDATE_OPTIONS,
+    },
+  );
 }

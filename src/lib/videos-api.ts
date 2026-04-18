@@ -1,6 +1,16 @@
 import "server-only";
 
-import { SERVER_MEDIA_API_BASE_URL } from "@/lib/server-config";
+import { type ServerFetchInit, serverFetchJsonOrNull } from "@/lib/server-fetch";
+
+const MENU_REVALIDATE_OPTIONS: NonNullable<ServerFetchInit["next"]> = {
+  revalidate: 300,
+  tags: ["menu"],
+};
+
+const VIDEO_REVALIDATE_OPTIONS: NonNullable<ServerFetchInit["next"]> = {
+  revalidate: 300,
+  tags: ["menu", "videos"],
+};
 
 export interface PublicVideoSibling {
   label: string;
@@ -85,49 +95,29 @@ function normalizeSlug(slug: string): string {
   }
 }
 
+function fetchVideoResourceOrNull<T>(
+  path: string,
+  next: NonNullable<ServerFetchInit["next"]>,
+): Promise<T | null> {
+  return serverFetchJsonOrNull<T>(path, { next });
+}
+
+function buildPlaylistSlugPath(slug: string): string {
+  return encodeURIComponent(normalizeSlug(slug));
+}
+
 export async function getPublicPlaylistDetail(slug: string): Promise<PublicPlaylistDetail | null> {
-  try {
-    const normalizedSlug = normalizeSlug(slug);
-    const response = await fetch(
-      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/${encodeURIComponent(normalizedSlug)}`,
-      {
-        next: {
-          revalidate: 300,
-          tags: ["menu"],
-        },
-      },
-    );
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return response.json() as Promise<PublicPlaylistDetail>;
-  } catch {
-    return null;
-  }
+  return fetchVideoResourceOrNull<PublicPlaylistDetail>(
+    `/api/v1/public/videos/${buildPlaylistSlugPath(slug)}`,
+    MENU_REVALIDATE_OPTIONS,
+  );
 }
 
 export async function getPublicPlaylistDetailByPath(path: string): Promise<PublicPlaylistDetail | null> {
-  try {
-    const response = await fetch(
-      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos?path=${encodeURIComponent(path)}`,
-      {
-        next: {
-          revalidate: 300,
-          tags: ["menu"],
-        },
-      },
-    );
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return response.json() as Promise<PublicPlaylistDetail>;
-  } catch {
-    return null;
-  }
+  return fetchVideoResourceOrNull<PublicPlaylistDetail>(
+    `/api/v1/public/videos?path=${encodeURIComponent(path)}`,
+    MENU_REVALIDATE_OPTIONS,
+  );
 }
 
 export async function getPublicPlaylistVideoList(
@@ -135,26 +125,10 @@ export async function getPublicPlaylistVideoList(
   page = 1,
   size = 6,
 ): Promise<PublicVideoList | null> {
-  try {
-    const normalizedSlug = normalizeSlug(slug);
-    const response = await fetch(
-      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/${encodeURIComponent(normalizedSlug)}/items?page=${page}&size=${size}`,
-      {
-        next: {
-          revalidate: 300,
-          tags: ["menu", "videos"],
-        },
-      },
-    );
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return response.json() as Promise<PublicVideoList>;
-  } catch {
-    return null;
-  }
+  return fetchVideoResourceOrNull<PublicVideoList>(
+    `/api/v1/public/videos/${buildPlaylistSlugPath(slug)}/items?page=${page}&size=${size}`,
+    VIDEO_REVALIDATE_OPTIONS,
+  );
 }
 
 export async function getPublicPlaylistVideoListByPath(
@@ -162,97 +136,36 @@ export async function getPublicPlaylistVideoListByPath(
   page = 1,
   size = 6,
 ): Promise<PublicVideoList | null> {
-  try {
-    const response = await fetch(
-      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/items?path=${encodeURIComponent(path)}&page=${page}&size=${size}`,
-      {
-        next: {
-          revalidate: 300,
-          tags: ["menu", "videos"],
-        },
-      },
-    );
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return response.json() as Promise<PublicVideoList>;
-  } catch {
-    return null;
-  }
+  return fetchVideoResourceOrNull<PublicVideoList>(
+    `/api/v1/public/videos/items?path=${encodeURIComponent(path)}&page=${page}&size=${size}`,
+    VIDEO_REVALIDATE_OPTIONS,
+  );
 }
 
 export async function getPublicPlaylistVideoDetail(
   slug: string,
   videoId: string,
 ): Promise<PublicVideoDetail | null> {
-  try {
-    const normalizedSlug = normalizeSlug(slug);
-    const response = await fetch(
-      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/${encodeURIComponent(normalizedSlug)}/${encodeURIComponent(videoId)}`,
-      {
-        next: {
-          revalidate: 300,
-          tags: ["menu", "videos"],
-        },
-      },
-    );
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return response.json() as Promise<PublicVideoDetail>;
-  } catch {
-    return null;
-  }
+  return fetchVideoResourceOrNull<PublicVideoDetail>(
+    `/api/v1/public/videos/${buildPlaylistSlugPath(slug)}/${encodeURIComponent(videoId)}`,
+    VIDEO_REVALIDATE_OPTIONS,
+  );
 }
 
 export async function getPublicPlaylistVideoDetailByPath(
   path: string,
   videoId: string,
 ): Promise<PublicVideoDetail | null> {
-  try {
-    const response = await fetch(
-      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/detail?path=${encodeURIComponent(path)}&videoId=${encodeURIComponent(videoId)}`,
-      {
-        next: {
-          revalidate: 300,
-          tags: ["menu", "videos"],
-        },
-      },
-    );
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return response.json() as Promise<PublicVideoDetail>;
-  } catch {
-    return null;
-  }
+  return fetchVideoResourceOrNull<PublicVideoDetail>(
+    `/api/v1/public/videos/detail?path=${encodeURIComponent(path)}&videoId=${encodeURIComponent(videoId)}`,
+    VIDEO_REVALIDATE_OPTIONS,
+  );
 }
 
 export async function getLegacyVideoHref(videoId: string): Promise<string | null> {
-  try {
-    const response = await fetch(
-      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/by-id/${encodeURIComponent(videoId)}`,
-      {
-        next: {
-          revalidate: 300,
-          tags: ["menu", "videos"],
-        },
-      },
-    );
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const payload = (await response.json()) as { href?: string | null };
-    return payload.href ?? null;
-  } catch {
-    return null;
-  }
+  const payload = await fetchVideoResourceOrNull<{ href?: string | null }>(
+    `/api/v1/public/videos/by-id/${encodeURIComponent(videoId)}`,
+    VIDEO_REVALIDATE_OPTIONS,
+  );
+  return payload?.href ?? null;
 }

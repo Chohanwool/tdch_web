@@ -1,30 +1,22 @@
 import "server-only";
 
 import type { NavigationResponse, NavMenuGroup } from "@/lib/navigation-types";
+import { type ServerFetchInit, serverFetchJson } from "@/lib/server-fetch";
 import { toNavMenuGroups } from "@/lib/navigation-utils";
-import { SERVER_MEDIA_API_BASE_URL } from "@/lib/server-config";
 
-const EMPTY_NAVIGATION_RESPONSE: NavigationResponse = {
-  groups: [],
+const MENU_REVALIDATE_OPTIONS: NonNullable<ServerFetchInit["next"]> = {
+  revalidate: 300,
+  tags: ["menu"],
 };
 
+function isVideoHref(href: string): boolean {
+  return href.startsWith("/videos/");
+}
+
 export async function getNavigationResponse(): Promise<NavigationResponse> {
-  try {
-    const response = await fetch(`${SERVER_MEDIA_API_BASE_URL}/api/v1/public/menu`, {
-      next: {
-        revalidate: 300,
-        tags: ["menu"],
-      },
-    });
-
-    if (!response.ok) {
-      return EMPTY_NAVIGATION_RESPONSE;
-    }
-
-    return response.json() as Promise<NavigationResponse>;
-  } catch {
-    return EMPTY_NAVIGATION_RESPONSE;
-  }
+  return serverFetchJson<NavigationResponse>("/api/v1/public/menu", {
+    next: MENU_REVALIDATE_OPTIONS,
+  });
 }
 
 export async function getNavMenuGroups(): Promise<NavMenuGroup[]> {
@@ -40,16 +32,16 @@ export async function getNavigationGroupByKey(key: string): Promise<NavMenuGroup
 export async function getVideoNavigationLandingHref(): Promise<string | null> {
   const groups = await getNavMenuGroups();
   const videoGroup = groups.find((group) => {
-    if (group.defaultLandingHref?.startsWith("/videos/")) {
+    if (group.defaultLandingHref && isVideoHref(group.defaultLandingHref)) {
       return true;
     }
 
-    if (group.href.startsWith("/videos/")) {
+    if (isVideoHref(group.href)) {
       return true;
     }
 
-    return group.items.some((item) => item.href.startsWith("/videos/"));
-  })
+    return group.items.some((item) => isVideoHref(item.href));
+  });
 
   if (!videoGroup) {
     return null;
@@ -57,7 +49,7 @@ export async function getVideoNavigationLandingHref(): Promise<string | null> {
 
   return (
     videoGroup.defaultLandingHref ??
-    videoGroup.items.find((item) => item.href.startsWith("/videos/"))?.href ??
-    (videoGroup.href.startsWith("/videos/") ? videoGroup.href : null)
+    videoGroup.items.find((item) => isVideoHref(item.href))?.href ??
+    (isVideoHref(videoGroup.href) ? videoGroup.href : null)
   );
 }
