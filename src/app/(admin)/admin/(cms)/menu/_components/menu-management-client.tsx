@@ -7,6 +7,7 @@ import type {
   MenuStatus,
   MenuTreeNodePayload,
   MenuType,
+  YouTubeContentForm,
 } from "@/lib/admin-menu-api";
 
 type EditorNode = AdminMenuTreeNode;
@@ -201,6 +202,7 @@ function toPayload(nodes: EditorNode[]): MenuTreeNodePayload[] {
     externalUrl: node.externalUrl,
     openInNewTab: node.openInNewTab,
     isAuto: node.isAuto,
+    playlistContentForm: node.playlistContentForm,
     children: toPayload(node.children),
   }));
 }
@@ -223,6 +225,7 @@ function buildNewNode(id: number, type: MenuType): EditorNode {
     thumbnailUrl: null,
     itemCount: null,
     syncStatus: null,
+    playlistContentForm: type === "YOUTUBE_PLAYLIST" ? "LONGFORM" : null,
     parentId: null,
     children: [],
   };
@@ -532,6 +535,7 @@ export default function MenuManagementClient({
               <div className="mt-3 space-y-2 text-[12px] text-[#5d6f86]">
                 <p>소속 그룹: {playlist.parentLabel ?? "미지정"}</p>
                 <p>영상 수: {playlist.itemCount ?? 0}개</p>
+                <p>노출 형식: {(playlist.playlistContentForm ?? "LONGFORM") === "SHORTFORM" ? "쇼츠" : "롱폼"}</p>
               </div>
 
               <div className="mt-4 space-y-2">
@@ -553,6 +557,27 @@ export default function MenuManagementClient({
                         {group.label}
                       </option>
                     ))}
+                  </select>
+                </label>
+
+                <label className="block space-y-1">
+                  <span className="text-[11px] font-semibold text-[#334155]">노출 형식</span>
+                  <select
+                    value={playlist.playlistContentForm ?? "LONGFORM"}
+                    onChange={(event) => {
+                      const nextValue = event.target.value as YouTubeContentForm;
+                      markDirty(
+                        updateNodeById(items, playlist.id, (node) => ({
+                          ...node,
+                          playlistContentForm: nextValue,
+                        })),
+                      );
+                      setSelectedId(playlist.id);
+                    }}
+                    className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[12px]"
+                  >
+                    <option value="LONGFORM">롱폼</option>
+                    <option value="SHORTFORM">쇼츠</option>
                   </select>
                 </label>
 

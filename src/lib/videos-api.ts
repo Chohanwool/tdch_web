@@ -38,6 +38,10 @@ export interface PublicVideoList {
   form: VideoContentForm;
   featured: PublicVideoSummary | null;
   items: PublicVideoSummary[];
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
 }
 
 export interface PublicVideoPlaylistLink {
@@ -115,11 +119,15 @@ export async function getPublicPlaylistDetailByPath(path: string): Promise<Publi
   }
 }
 
-export async function getPublicPlaylistVideoList(slug: string): Promise<PublicVideoList | null> {
+export async function getPublicPlaylistVideoList(
+  slug: string,
+  page = 1,
+  size = 6,
+): Promise<PublicVideoList | null> {
   try {
     const normalizedSlug = normalizeSlug(slug);
     const response = await fetch(
-      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/${encodeURIComponent(normalizedSlug)}/items`,
+      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/${encodeURIComponent(normalizedSlug)}/items?page=${page}&size=${size}`,
       {
         next: {
           revalidate: 300,
@@ -138,10 +146,14 @@ export async function getPublicPlaylistVideoList(slug: string): Promise<PublicVi
   }
 }
 
-export async function getPublicPlaylistVideoListByPath(path: string): Promise<PublicVideoList | null> {
+export async function getPublicPlaylistVideoListByPath(
+  path: string,
+  page = 1,
+  size = 6,
+): Promise<PublicVideoList | null> {
   try {
     const response = await fetch(
-      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/items?path=${encodeURIComponent(path)}`,
+      `${SERVER_MEDIA_API_BASE_URL}/api/v1/public/videos/items?path=${encodeURIComponent(path)}&page=${page}&size=${size}`,
       {
         next: {
           revalidate: 300,

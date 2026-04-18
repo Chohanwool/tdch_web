@@ -4,51 +4,365 @@ import Breadcrumb from "@/components/breadcrumb";
 import PageHeader from "@/components/page-header";
 import type { PublicPlaylistDetail, PublicVideoList, PublicVideoSummary } from "@/lib/videos-api";
 
-function formatDate(value: string | null) {
+function formatLongDate(value: string | null) {
   if (!value) {
     return null;
   }
 
-  return new Intl.DateTimeFormat("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(value));
+  const date = new Date(value);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}.${month}.${day}`;
 }
 
-function PlaylistVideoCard({ video }: { video: PublicVideoSummary }) {
-  const publishedAt = formatDate(video.publishedAt);
+function buildMetaLine(video: PublicVideoSummary) {
+  return [video.scriptureReference, video.preacherName].filter(Boolean).join("  |  ");
+}
+
+function buildPageHref(basePath: string, page: number) {
+  return page > 1 ? `${basePath}?page=${page}` : basePath;
+}
+
+function getVisiblePages(currentPage: number, totalPages: number) {
+  const start = Math.max(1, currentPage - 2);
+  const end = Math.min(totalPages, start + 4);
+  const adjustedStart = Math.max(1, end - 4);
+
+  return Array.from({ length: end - adjustedStart + 1 }, (_, index) => adjustedStart + index);
+}
+
+function PlayIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path d="M8 6.5V17.5L17 12L8 6.5Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ShareIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M14 5H19V10M19 5L11 13M10 7H8.6C7.48 7 6.92 7 6.492 7.218C6.115 7.41 5.81 7.715 5.618 8.092C5.4 8.52 5.4 9.08 5.4 10.2V15.4C5.4 16.52 5.4 17.08 5.618 17.508C5.81 17.885 6.115 18.19 6.492 18.382C6.92 18.6 7.48 18.6 8.6 18.6H13.8C14.92 18.6 15.48 18.6 15.908 18.382C16.285 18.19 16.59 17.885 16.782 17.508C17 17.08 17 16.52 17 15.4V14"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ClockIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <circle cx="12" cy="12" r="8.2" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M12 7.8V12L14.8 13.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function SectionHeading({
+  label,
+  title,
+  align = "left",
+}: {
+  label: string;
+  title: string;
+  align?: "left" | "center";
+}) {
+  return (
+    <div className={`flex flex-col gap-4 ${align === "center" ? "items-center text-center" : "items-start text-left"}`}>
+      <div className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#c9a84c] md:text-[12px]">
+        {label}
+      </div>
+      <h2 className="text-[34px] font-bold leading-[0.9] tracking-[-0.03em] text-[#1a2744] md:text-[44px]">
+        {title}
+      </h2>
+      <div className="h-px w-9 bg-[#c9a84c]" />
+    </div>
+  );
+}
+
+function LongformHero({
+  playlist,
+  featured,
+}: {
+  playlist: PublicPlaylistDetail;
+  featured: PublicVideoSummary | null;
+}) {
+  const metaLine = featured ? buildMetaLine(featured) : "";
+  const featuredDate = featured ? formatLongDate(featured.publishedAt) : null;
+
+  return (
+    <section className="space-y-8">
+      <SectionHeading
+        label="Recent Video"
+        title="최신 영상"
+      />
+
+      <div className="overflow-hidden rounded-[4px] bg-[#242c39] shadow-[0_18px_40px_rgba(16,33,63,0.12)]">
+        <div className="relative aspect-[16/9] overflow-hidden bg-[#242c39]">
+          {featured ? (
+            <iframe
+              title={featured.title}
+              src={`https://www.youtube.com/embed/${featured.videoId}`}
+              className="h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center bg-[#242c39] text-sm text-white/60">
+              대표 영상이 아직 없습니다.
+            </div>
+          )}
+
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/75 via-black/30 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
+
+          <div className="absolute inset-x-0 top-0 flex items-start gap-3 px-5 py-4 text-white md:px-6">
+            <div className="mt-1 h-8 w-8 shrink-0 rounded-full border border-white/30 bg-white/95" />
+            <div className="min-w-0">
+              <p className="truncate text-[14px] font-bold leading-[1.2] md:text-[16px]">
+                {featured?.title ?? playlist.title}
+                {metaLine ? `  |  ${metaLine}` : ""}
+                {"  |  The 제자교회"}
+              </p>
+              <p className="mt-1 text-[11px] font-medium text-white/85 md:text-[12px]">The 제자 교회</p>
+            </div>
+          </div>
+
+          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 px-4 py-4 md:px-5">
+            <div className="flex items-center gap-2 rounded-full bg-black/28 px-3 py-2 backdrop-blur-sm">
+              {featured && (
+                <Link
+                  href={featured.href}
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-white transition hover:bg-white/10"
+                  aria-label="대표 영상 상세로 이동"
+                >
+                  <ShareIcon className="h-[22px] w-[22px]" />
+                </Link>
+              )}
+              <div className="flex h-10 min-w-10 items-center justify-center gap-2 rounded-full px-2 text-white">
+                <ClockIcon className="h-[22px] w-[22px]" />
+                {featuredDate ? (
+                  <span className="hidden text-[12px] font-medium tracking-[0.01em] text-white/85 md:inline">
+                    {featuredDate}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+
+            <a
+              href={
+                featured
+                  ? `https://www.youtube.com/watch?v=${featured.videoId}`
+                  : `https://www.youtube.com/playlist?list=${playlist.playlistId}`
+              }
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-black/28 px-5 py-3 text-[15px] font-medium text-white backdrop-blur-sm transition hover:bg-black/38"
+            >
+              <span>다음에서 보기:</span>
+              <span className="inline-flex items-center gap-2 font-semibold">
+                <PlayIcon className="h-5 w-5 rounded-full bg-white/95 p-[2px] text-[#242c39]" />
+                YouTube
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LongformPlaylistCard({ video }: { video: PublicVideoSummary }) {
+  const publishedAt = formatLongDate(video.publishedAt);
+  const metaLine = buildMetaLine(video);
 
   return (
     <Link
       href={video.href}
-      className="grid gap-4 rounded-3xl border border-[#dbe4f0] bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:grid-cols-[280px_minmax(0,1fr)]"
+      className="group flex items-center gap-4 rounded-[4px] py-1 transition hover:opacity-90"
     >
-      <div className="overflow-hidden rounded-2xl bg-[#0f172a]">
+      <div className="relative h-[84px] w-[132px] shrink-0 overflow-hidden rounded-[4px] bg-[#242c39]">
         {video.thumbnailUrl ? (
-          <div className="relative aspect-video w-full">
-            <Image src={video.thumbnailUrl} alt={video.title} fill className="object-cover" sizes="(min-width: 768px) 280px, 100vw" />
+          <Image
+            src={video.thumbnailUrl}
+            alt={video.title}
+            fill
+            className="object-cover opacity-72 transition duration-300 group-hover:scale-[1.03]"
+            sizes="132px"
+          />
+        ) : null}
+        <div className="absolute inset-0 bg-[#242c39]/82" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 shadow-[0_4px_10px_rgba(0,0,0,0.1)] backdrop-blur-sm">
+            <PlayIcon className="h-4 w-4 text-white" />
           </div>
-        ) : (
-          <div className="aspect-video bg-[#e2e8f0]" />
-        )}
-      </div>
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-[#64748b]">
-          {publishedAt ? <span>{publishedAt}</span> : null}
-          {video.preacherName ? <span>{video.preacherName}</span> : null}
-          {video.scriptureReference ? <span>{video.scriptureReference}</span> : null}
         </div>
-        <h2 className="mt-3 text-xl font-bold text-[#13243a]">{video.title}</h2>
-        <p className="mt-3 line-clamp-3 text-[14px] leading-7 text-[#475569]">
-          {video.summary || "영상 요약이 아직 등록되지 않았습니다."}
-        </p>
+      </div>
+
+      <div className="min-w-0">
+        <h3 className="truncate text-[20px] font-bold tracking-[-0.03em] text-[#10213f] md:text-[18px]">
+          {video.title}
+        </h3>
+        {metaLine ? (
+          <p className="mt-1 truncate text-[12px] font-medium text-[#10213f]/60">
+            {metaLine}
+          </p>
+        ) : null}
+        {publishedAt ? (
+          <p className="mt-2 text-[14px] font-normal text-[#10213f]">{publishedAt}</p>
+        ) : null}
       </div>
     </Link>
   );
 }
 
-export default function PublicVideoPlaylistView({
+function PlaylistPagination({
+  basePath,
+  currentPage,
+  totalPages,
+}: {
+  basePath: string;
+  currentPage: number;
+  totalPages: number;
+}) {
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  const visiblePages = getVisiblePages(currentPage, totalPages);
+
+  return (
+    <nav className="flex items-center justify-center gap-2 pt-2" aria-label="영상 목록 페이지네이션">
+      {currentPage === 1 ? (
+        <span className="rounded-full border border-[#e6e7eb] px-[14px] py-[10px] text-[14px] leading-[1] text-[#9aa4b4]">
+          이전
+        </span>
+      ) : (
+        <Link
+          href={buildPageHref(basePath, currentPage - 1)}
+          prefetch={false}
+          className="rounded-full border border-[#e6e7eb] px-[14px] py-[10px] text-[14px] leading-[1] text-[#10213f] transition hover:bg-[#f7f8fb]"
+        >
+          이전
+        </Link>
+      )}
+
+      {visiblePages.map((page) => {
+        const active = page === currentPage;
+        if (active) {
+          return (
+            <span
+              key={page}
+              aria-current="page"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1a2744] text-[12px] font-medium leading-none text-white"
+            >
+              {page}
+            </span>
+          );
+        }
+
+        return (
+          <Link
+            key={page}
+            href={buildPageHref(basePath, page)}
+            prefetch={false}
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-[#e6e7eb] text-[12px] font-medium leading-none text-[#10213f] transition hover:bg-[#f7f8fb]"
+          >
+            {page}
+          </Link>
+        );
+      })}
+
+      {currentPage === totalPages ? (
+        <span className="rounded-full border border-[#e6e7eb] px-[14px] py-[10px] text-[14px] leading-[1] text-[#9aa4b4]">
+          다음
+        </span>
+      ) : (
+        <Link
+          href={buildPageHref(basePath, currentPage + 1)}
+          prefetch={false}
+          className="rounded-full border border-[#e6e7eb] px-[14px] py-[10px] text-[14px] leading-[1] text-[#10213f] transition hover:bg-[#f7f8fb]"
+        >
+          다음
+        </Link>
+      )}
+    </nav>
+  );
+}
+
+function LongformPlaylistView({
+  playlist,
+  videos,
+}: {
+  playlist: PublicPlaylistDetail;
+  videos: PublicVideoList;
+}) {
+  return (
+    <div className="pb-16">
+      <PageHeader title={playlist.title} subtitle={playlist.groupLabel ?? "Worship Videos"} />
+      <Breadcrumb />
+
+      <section className="bg-white">
+        <div className="mx-auto flex w-full max-w-[1334px] flex-col gap-10 px-6 pb-20 pt-16 md:px-10 xl:px-[107px]">
+          <LongformHero playlist={playlist} featured={videos.featured} />
+
+          <div className="h-px w-full bg-[#dfe3ea]" />
+
+          <section className="space-y-10">
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+              <SectionHeading label="Playlist" title="목록" />
+              <a
+                href={`https://www.youtube.com/playlist?list=${playlist.playlistId}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 self-start text-[18px] font-medium tracking-[-0.03em] text-[#10213f] transition hover:text-[#1a2744]/70"
+              >
+                YouTube
+                <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+                  <path
+                    d="M7 17L17 7M17 7H9M17 7V15"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </a>
+            </div>
+
+            {videos.items.length > 0 ? (
+              <>
+                <div className="grid gap-x-10 gap-y-9 md:grid-cols-2">
+                  {videos.items.map((video) => (
+                    <LongformPlaylistCard key={video.videoId} video={video} />
+                  ))}
+                </div>
+                <PlaylistPagination
+                  basePath={playlist.fullPath}
+                  currentPage={videos.currentPage}
+                  totalPages={videos.totalPages}
+                />
+              </>
+            ) : (
+              <div className="rounded-[4px] border border-dashed border-[#d8dde6] px-6 py-14 text-center text-[15px] text-[#64748b]">
+                공개된 영상이 아직 없습니다.
+              </div>
+            )}
+          </section>
+
+          <div className="h-px w-full bg-[#dfe3ea]" />
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function ShortformPlaylistView({
   playlist,
   videos,
 }: {
@@ -104,9 +418,28 @@ export default function PublicVideoPlaylistView({
               </div>
 
               {allItems.length > 0 ? (
-                <div className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {allItems.map((video) => (
-                    <PlaylistVideoCard key={video.videoId} video={video} />
+                    <Link
+                      key={video.videoId}
+                      href={video.href}
+                      className="rounded-2xl border border-[#dbe4f0] bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                    >
+                      {video.thumbnailUrl ? (
+                        <div className="relative aspect-[9/14] overflow-hidden rounded-xl">
+                          <Image
+                            src={video.thumbnailUrl}
+                            alt={video.title}
+                            fill
+                            className="object-cover"
+                            sizes="(min-width: 1024px) 220px, 50vw"
+                          />
+                        </div>
+                      ) : (
+                        <div className="aspect-[9/14] rounded-xl bg-[#e2e8f0]" />
+                      )}
+                      <p className="mt-3 line-clamp-2 text-[14px] font-semibold text-[#13243a]">{video.title}</p>
+                    </Link>
                   ))}
                 </div>
               ) : (
@@ -123,16 +456,19 @@ export default function PublicVideoPlaylistView({
               <ul className="mt-4 space-y-2">
                 {playlist.siblings.map((sibling) => (
                   <li key={sibling.href}>
-                    <Link
-                      href={sibling.href}
-                      className={`block rounded-xl px-3 py-2 text-[13px] transition ${
-                        sibling.href === playlist.fullPath
-                          ? "bg-[#edf4ff] font-semibold text-[#2d5da8]"
-                          : "text-[#334155] hover:bg-[#f8fafc]"
-                      }`}
-                    >
-                      {sibling.label}
-                    </Link>
+                    {sibling.href === playlist.fullPath ? (
+                      <span className="block rounded-xl bg-[#edf4ff] px-3 py-2 text-[13px] font-semibold text-[#2d5da8]">
+                        {sibling.label}
+                      </span>
+                    ) : (
+                      <Link
+                        href={sibling.href}
+                        prefetch={false}
+                        className="block rounded-xl px-3 py-2 text-[13px] text-[#334155] transition hover:bg-[#f8fafc]"
+                      >
+                        {sibling.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -142,4 +478,18 @@ export default function PublicVideoPlaylistView({
       </section>
     </div>
   );
+}
+
+export default function PublicVideoPlaylistView({
+  playlist,
+  videos,
+}: {
+  playlist: PublicPlaylistDetail;
+  videos: PublicVideoList;
+}) {
+  if (videos.form === "SHORTFORM") {
+    return <ShortformPlaylistView playlist={playlist} videos={videos} />;
+  }
+
+  return <LongformPlaylistView playlist={playlist} videos={videos} />;
 }

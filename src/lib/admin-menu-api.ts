@@ -12,6 +12,7 @@ export type MenuType =
 
 export type MenuStatus = "DRAFT" | "PUBLISHED" | "HIDDEN" | "ARCHIVED";
 export type YouTubeSyncStatus = "ACTIVE" | "REMOVED";
+export type YouTubeContentForm = "LONGFORM" | "SHORTFORM";
 
 export interface AdminMenuTreeNode {
   id: number;
@@ -30,6 +31,7 @@ export interface AdminMenuTreeNode {
   thumbnailUrl: string | null;
   itemCount: number | null;
   syncStatus: YouTubeSyncStatus | null;
+  playlistContentForm: YouTubeContentForm | null;
   parentId: number | null;
   children: AdminMenuTreeNode[];
 }
@@ -50,6 +52,7 @@ export interface AdminYouTubePlaylist {
   parentLabel: string | null;
   thumbnailUrl: string | null;
   itemCount: number;
+  playlistContentForm: YouTubeContentForm;
 }
 
 export interface AdminYouTubePlaylistsResponse {
@@ -67,6 +70,7 @@ export interface MenuTreeNodePayload {
   externalUrl?: string | null;
   openInNewTab?: boolean;
   isAuto?: boolean;
+  playlistContentForm?: YouTubeContentForm | null;
   children: MenuTreeNodePayload[];
 }
 

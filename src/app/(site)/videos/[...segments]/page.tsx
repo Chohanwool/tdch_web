@@ -11,7 +11,10 @@ import {
 
 interface VideoSegmentsPageProps {
   params: Promise<{ segments: string[] }>;
+  searchParams: Promise<{ page?: string | string[] }>;
 }
+
+const PAGE_SIZE = 6;
 
 function toPlaylistPath(segments: string[]): string {
   return `/videos/${segments.join("/")}`;
@@ -30,16 +33,21 @@ function toDetailTarget(segments: string[]) {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: VideoSegmentsPageProps): Promise<Metadata> {
   const { segments } = await params;
+  const { page } = await searchParams;
   const playlistPath = toPlaylistPath(segments);
   const playlist = await getPublicPlaylistDetailByPath(playlistPath);
+  const pageValue = Array.isArray(page) ? page[0] : page;
+  const pageNumber = Number.parseInt(pageValue ?? "1", 10);
+  const normalizedPage = Number.isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber;
 
   if (playlist) {
     return createPageMetadata({
       title: playlist.title,
       description: playlist.description || `${playlist.title} 재생목록입니다.`,
-      path: playlist.fullPath,
+      path: normalizedPage > 1 ? `${playlist.fullPath}?page=${normalizedPage}` : playlist.fullPath,
     });
   }
 
@@ -67,13 +75,18 @@ export async function generateMetadata({
 
 export default async function VideoSegmentsPage({
   params,
+  searchParams,
 }: VideoSegmentsPageProps) {
   const { segments } = await params;
+  const { page } = await searchParams;
   const playlistPath = toPlaylistPath(segments);
   const playlist = await getPublicPlaylistDetailByPath(playlistPath);
+  const pageValue = Array.isArray(page) ? page[0] : page;
+  const pageNumber = Number.parseInt(pageValue ?? "1", 10);
+  const normalizedPage = Number.isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber;
 
   if (playlist) {
-    const videos = await getPublicPlaylistVideoListByPath(playlistPath);
+    const videos = await getPublicPlaylistVideoListByPath(playlistPath, normalizedPage, PAGE_SIZE);
 
     if (!videos) {
       notFound();
@@ -81,6 +94,11 @@ export default async function VideoSegmentsPage({
 
     if (playlist.fullPath !== playlistPath) {
       redirect(playlist.fullPath);
+    }
+
+    if (videos.currentPage !== normalizedPage) {
+      const target = videos.currentPage > 1 ? `${playlist.fullPath}?page=${videos.currentPage}` : playlist.fullPath;
+      redirect(target);
     }
 
     return <PublicVideoPlaylistView playlist={playlist} videos={videos} />;

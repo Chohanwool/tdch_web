@@ -42,13 +42,19 @@ export default function Breadcrumb({
                 </svg>
               </li>
               <li>
-                <Link
-                  href={menuGroup.href}
-                  className={`font-medium transition hover:text-themeBlue ${currentItem ? "text-ink/40" : "text-ink/80"
-                    }`}
-                >
-                  {menuGroup.label}
-                </Link>
+                {menuGroup.href === pathname ? (
+                  <span className={`font-medium ${currentItem ? "text-ink/40" : "text-ink/80"}`}>
+                    {menuGroup.label}
+                  </span>
+                ) : (
+                  <Link
+                    href={menuGroup.href}
+                    prefetch={false}
+                    className={`font-medium transition hover:text-themeBlue ${currentItem ? "text-ink/40" : "text-ink/80"}`}
+                  >
+                    {menuGroup.label}
+                  </Link>
+                )}
               </li>
             </>
           )}
@@ -80,15 +86,21 @@ export default function Breadcrumb({
 
               return (
                 <li key={item.key}>
-                  <Link
-                    href={item.href}
-                    className={`type-body-small block whitespace-nowrap border-b-[2.5px] px-3 py-3.5 font-medium transition-colors md:px-4 ${isActive
-                        ? "border-themeBlue text-themeBlue font-bold"
-                        : "border-transparent text-ink/65 hover:text-themeBlue hover:border-themeBlue/30"
-                      }`}
-                  >
-                    {item.label}
-                  </Link>
+                  {isActive ? (
+                    <span
+                      className="type-body-small block whitespace-nowrap border-b-[2.5px] border-themeBlue px-3 py-3.5 font-bold text-themeBlue md:px-4"
+                    >
+                      {item.label}
+                    </span>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      prefetch={false}
+                      className="type-body-small block whitespace-nowrap border-b-[2.5px] border-transparent px-3 py-3.5 font-medium text-ink/65 transition-colors hover:border-themeBlue/30 hover:text-themeBlue md:px-4"
+                    >
+                      {item.label}
+                    </Link>
+                  )}
                 </li>
               );
             })}
