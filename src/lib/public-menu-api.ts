@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { MenuType } from "@/lib/admin-menu-api";
+import { getOrSetPublicRequestCache } from "@/lib/public-request-cache";
 import { type ServerFetchInit, serverFetchJsonOrNull } from "@/lib/server-fetch";
 
 const MENU_REVALIDATE_OPTIONS: NonNullable<ServerFetchInit["next"]> = {
@@ -20,10 +21,12 @@ export interface PublicResolvedMenuPage {
 }
 
 export async function resolvePublicMenuPath(path: string): Promise<PublicResolvedMenuPage | null> {
-  return serverFetchJsonOrNull<PublicResolvedMenuPage>(
-    `/api/v1/public/menu/resolve?path=${encodeURIComponent(path)}`,
-    {
-      next: MENU_REVALIDATE_OPTIONS,
-    },
+  return getOrSetPublicRequestCache(`public-menu-path:${path}`, () =>
+    serverFetchJsonOrNull<PublicResolvedMenuPage>(
+      `/api/v1/public/menu/resolve?path=${encodeURIComponent(path)}`,
+      {
+        next: MENU_REVALIDATE_OPTIONS,
+      },
+    ),
   );
 }

@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getOrSetPublicRequestCache } from "@/lib/public-request-cache";
 import { type ServerFetchInit, serverFetchJsonOrNull } from "@/lib/server-fetch";
 
 const MENU_REVALIDATE_OPTIONS: NonNullable<ServerFetchInit["next"]> = {
@@ -114,9 +115,11 @@ export async function getPublicPlaylistDetail(slug: string): Promise<PublicPlayl
 }
 
 export async function getPublicPlaylistDetailByPath(path: string): Promise<PublicPlaylistDetail | null> {
-  return fetchVideoResourceOrNull<PublicPlaylistDetail>(
-    `/api/v1/public/videos?path=${encodeURIComponent(path)}`,
-    MENU_REVALIDATE_OPTIONS,
+  return getOrSetPublicRequestCache(`playlist-detail-by-path:${path}`, () =>
+    fetchVideoResourceOrNull<PublicPlaylistDetail>(
+      `/api/v1/public/videos?path=${encodeURIComponent(path)}`,
+      MENU_REVALIDATE_OPTIONS,
+    ),
   );
 }
 
@@ -136,9 +139,11 @@ export async function getPublicPlaylistVideoListByPath(
   page = 1,
   size = 6,
 ): Promise<PublicVideoList | null> {
-  return fetchVideoResourceOrNull<PublicVideoList>(
-    `/api/v1/public/videos/items?path=${encodeURIComponent(path)}&page=${page}&size=${size}`,
-    VIDEO_REVALIDATE_OPTIONS,
+  return getOrSetPublicRequestCache(`playlist-video-list-by-path:${path}:${page}:${size}`, () =>
+    fetchVideoResourceOrNull<PublicVideoList>(
+      `/api/v1/public/videos/items?path=${encodeURIComponent(path)}&page=${page}&size=${size}`,
+      VIDEO_REVALIDATE_OPTIONS,
+    ),
   );
 }
 
@@ -156,9 +161,11 @@ export async function getPublicPlaylistVideoDetailByPath(
   path: string,
   videoId: string,
 ): Promise<PublicVideoDetail | null> {
-  return fetchVideoResourceOrNull<PublicVideoDetail>(
-    `/api/v1/public/videos/detail?path=${encodeURIComponent(path)}&videoId=${encodeURIComponent(videoId)}`,
-    VIDEO_REVALIDATE_OPTIONS,
+  return getOrSetPublicRequestCache(`playlist-video-detail-by-path:${path}:${videoId}`, () =>
+    fetchVideoResourceOrNull<PublicVideoDetail>(
+      `/api/v1/public/videos/detail?path=${encodeURIComponent(path)}&videoId=${encodeURIComponent(videoId)}`,
+      VIDEO_REVALIDATE_OPTIONS,
+    ),
   );
 }
 

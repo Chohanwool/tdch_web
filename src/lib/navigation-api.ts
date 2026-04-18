@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { NavigationResponse, NavMenuGroup } from "@/lib/navigation-types";
+import { getOrSetPublicRequestCache } from "@/lib/public-request-cache";
 import { type ServerFetchInit, serverFetchJson } from "@/lib/server-fetch";
 import { toNavMenuGroups } from "@/lib/navigation-utils";
 
@@ -14,9 +15,11 @@ function isVideoHref(href: string): boolean {
 }
 
 export async function getNavigationResponse(): Promise<NavigationResponse> {
-  return serverFetchJson<NavigationResponse>("/api/v1/public/menu", {
-    next: MENU_REVALIDATE_OPTIONS,
-  });
+  return getOrSetPublicRequestCache("navigation-response", () =>
+    serverFetchJson<NavigationResponse>("/api/v1/public/menu", {
+      next: MENU_REVALIDATE_OPTIONS,
+    }),
+  );
 }
 
 export async function getNavMenuGroups(): Promise<NavMenuGroup[]> {
