@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Breadcrumb from "@/components/breadcrumb";
 import PageHeader from "@/components/page-header";
+import PublicShortformPlaylistGrid from "@/components/public-shortform-playlist-grid";
+import SectionHeading from "@/components/section-heading";
 import type { PublicPlaylistDetail, PublicVideoList, PublicVideoSummary } from "@/lib/videos-api";
 
 function formatLongDate(value: string | null) {
@@ -60,28 +62,6 @@ function ClockIcon({ className = "" }: { className?: string }) {
       <circle cx="12" cy="12" r="8.2" stroke="currentColor" strokeWidth="1.8" />
       <path d="M12 7.8V12L14.8 13.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  );
-}
-
-function SectionHeading({
-  label,
-  title,
-  align = "left",
-}: {
-  label: string;
-  title: string;
-  align?: "left" | "center";
-}) {
-  return (
-    <div className={`flex flex-col gap-4 ${align === "center" ? "items-center text-center" : "items-start text-left"}`}>
-      <div className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#c9a84c] md:text-[12px]">
-        {label}
-      </div>
-      <h2 className="text-[34px] font-bold leading-[0.9] tracking-[-0.03em] text-[#1a2744] md:text-[44px]">
-        {title}
-      </h2>
-      <div className="h-px w-9 bg-[#c9a84c]" />
-    </div>
   );
 }
 
@@ -308,7 +288,7 @@ function LongformPlaylistView({
       <Breadcrumb />
 
       <section className="bg-white">
-        <div className="mx-auto flex w-full max-w-[1334px] flex-col gap-10 px-6 pb-20 pt-16 md:px-10 xl:px-[107px]">
+        <div className="section-shell flex flex-col gap-10 pb-20 pt-16">
           <LongformHero playlist={playlist} featured={videos.featured} />
 
           <div className="h-px w-full bg-[#dfe3ea]" />
@@ -369,111 +349,24 @@ function ShortformPlaylistView({
   playlist: PublicPlaylistDetail;
   videos: PublicVideoList;
 }) {
-  const allItems = [videos.featured, ...videos.items].filter(Boolean) as PublicVideoSummary[];
-
   return (
     <div className="pb-16">
       <PageHeader title={playlist.title} subtitle={playlist.groupLabel ?? "Worship Videos"} />
       <Breadcrumb />
 
-      <section className="section-shell py-10">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
-          <div className="space-y-6">
-            <div className="overflow-hidden rounded-3xl border border-[#dbe4f0] bg-white shadow-sm">
-              <div className="aspect-video">
-                <iframe
-                  title={playlist.title}
-                  src={`https://www.youtube.com/embed/videoseries?list=${playlist.playlistId}`}
-                  className="h-full w-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            </div>
+      <section className="bg-white">
+        <div className="section-shell flex flex-col gap-10 pb-20 pt-16">
+          <section className="w-full space-y-10">
+            <SectionHeading label="SHORTS" title={playlist.title} />
 
-            <div className="rounded-3xl border border-[#dbe4f0] bg-white p-6 shadow-sm">
-              <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-themeBlue/70">
-                {playlist.groupLabel ?? "Playlist"}
-              </p>
-              <h1 className="mt-2 text-2xl font-bold text-ink">{playlist.title}</h1>
-              <p className="mt-3 text-[13px] leading-7 text-ink/70">
-                {playlist.description || "이 재생목록의 설명이 아직 등록되지 않았습니다."}
-              </p>
-              <p className="mt-4 text-[13px] font-medium text-[#2d5da8]">
-                총 {playlist.itemCount}개 영상
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-[18px] font-bold text-[#13243a]">재생목록 영상</h2>
-                <a
-                  href={`https://www.youtube.com/playlist?list=${playlist.playlistId}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[13px] font-semibold text-[#2d5da8]"
-                >
-                  유튜브에서 보기
-                </a>
-              </div>
-
-              {allItems.length > 0 ? (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {allItems.map((video) => (
-                    <Link
-                      key={video.videoId}
-                      href={video.href}
-                      className="rounded-2xl border border-[#dbe4f0] bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                    >
-                      {video.thumbnailUrl ? (
-                        <div className="relative aspect-[9/14] overflow-hidden rounded-xl">
-                          <Image
-                            src={video.thumbnailUrl}
-                            alt={video.title}
-                            fill
-                            className="object-cover"
-                            sizes="(min-width: 1024px) 220px, 50vw"
-                          />
-                        </div>
-                      ) : (
-                        <div className="aspect-[9/14] rounded-xl bg-[#e2e8f0]" />
-                      )}
-                      <p className="mt-3 line-clamp-2 text-[14px] font-semibold text-[#13243a]">{video.title}</p>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-3xl border border-dashed border-[#cbd5e1] bg-white px-6 py-12 text-center text-[14px] text-[#64748b]">
-                  이 재생목록에 공개된 영상이 아직 없습니다.
-                </div>
-              )}
-            </div>
-          </div>
-
-          <aside className="space-y-3">
-            <div className="rounded-3xl border border-[#dbe4f0] bg-white p-5 shadow-sm">
-              <p className="text-[13px] font-semibold text-[#132033]">같은 그룹의 재생목록</p>
-              <ul className="mt-4 space-y-2">
-                {playlist.siblings.map((sibling) => (
-                  <li key={sibling.href}>
-                    {sibling.href === playlist.fullPath ? (
-                      <span className="block rounded-xl bg-[#edf4ff] px-3 py-2 text-[13px] font-semibold text-[#2d5da8]">
-                        {sibling.label}
-                      </span>
-                    ) : (
-                      <Link
-                        href={sibling.href}
-                        prefetch={false}
-                        className="block rounded-xl px-3 py-2 text-[13px] text-[#334155] transition hover:bg-[#f8fafc]"
-                      >
-                        {sibling.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </aside>
+            <PublicShortformPlaylistGrid
+              path={playlist.fullPath}
+              initialItems={videos.items}
+              initialPage={videos.currentPage}
+              initialPageSize={videos.pageSize}
+              initialTotalPages={videos.totalPages}
+            />
+          </section>
         </div>
       </section>
     </div>

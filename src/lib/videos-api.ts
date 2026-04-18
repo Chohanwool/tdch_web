@@ -16,6 +16,7 @@ export interface PublicPlaylistDetail {
   description: string | null;
   thumbnailUrl: string | null;
   itemCount: number;
+  contentForm: VideoContentForm;
   groupLabel: string | null;
   siblings: PublicVideoSibling[];
 }

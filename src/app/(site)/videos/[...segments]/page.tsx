@@ -14,7 +14,8 @@ interface VideoSegmentsPageProps {
   searchParams: Promise<{ page?: string | string[] }>;
 }
 
-const PAGE_SIZE = 6;
+const LONGFORM_PAGE_SIZE = 6;
+const SHORTFORM_PAGE_SIZE = 8;
 
 function toPlaylistPath(segments: string[]): string {
   return `/videos/${segments.join("/")}`;
@@ -47,7 +48,10 @@ export async function generateMetadata({
     return createPageMetadata({
       title: playlist.title,
       description: playlist.description || `${playlist.title} 재생목록입니다.`,
-      path: normalizedPage > 1 ? `${playlist.fullPath}?page=${normalizedPage}` : playlist.fullPath,
+      path:
+        playlist.contentForm === "SHORTFORM" || normalizedPage <= 1
+          ? playlist.fullPath
+          : `${playlist.fullPath}?page=${normalizedPage}`,
     });
   }
 
@@ -86,7 +90,17 @@ export default async function VideoSegmentsPage({
   const normalizedPage = Number.isNaN(pageNumber) || pageNumber < 1 ? 1 : pageNumber;
 
   if (playlist) {
-    const videos = await getPublicPlaylistVideoListByPath(playlistPath, normalizedPage, PAGE_SIZE);
+    const requestedPageSize = playlist.contentForm === "SHORTFORM" ? SHORTFORM_PAGE_SIZE : LONGFORM_PAGE_SIZE;
+    const initialVideos = await getPublicPlaylistVideoListByPath(playlistPath, normalizedPage, requestedPageSize);
+
+    if (!initialVideos) {
+      notFound();
+    }
+
+    const videos =
+      initialVideos.form === "SHORTFORM" && requestedPageSize !== SHORTFORM_PAGE_SIZE
+        ? await getPublicPlaylistVideoListByPath(playlistPath, normalizedPage, SHORTFORM_PAGE_SIZE)
+        : initialVideos;
 
     if (!videos) {
       notFound();
@@ -94,6 +108,14 @@ export default async function VideoSegmentsPage({
 
     if (playlist.fullPath !== playlistPath) {
       redirect(playlist.fullPath);
+    }
+
+    if (videos.form === "SHORTFORM") {
+      if (normalizedPage !== 1) {
+        redirect(playlist.fullPath);
+      }
+
+      return <PublicVideoPlaylistView playlist={playlist} videos={videos} />;
     }
 
     if (videos.currentPage !== normalizedPage) {
