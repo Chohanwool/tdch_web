@@ -122,7 +122,7 @@ export default function PublicShortformPlaylistGrid({
 
   return (
     <div className="space-y-10">
-      <div className="grid gap-x-[22px] gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-[14px] gap-y-8 sm:gap-x-[22px] sm:gap-y-10 lg:grid-cols-3 xl:grid-cols-4">
         {items.map((video) => (
           <ShortformCard key={video.videoId} video={video} />
         ))}
@@ -136,7 +136,7 @@ export default function PublicShortformPlaylistGrid({
             disabled={isPending}
             className="inline-flex min-w-[132px] items-center justify-center rounded-full bg-[#1a2744] px-6 py-3 text-[14px] font-medium text-white transition hover:bg-[#13203a] disabled:cursor-not-allowed disabled:bg-[#94a3b8]"
           >
-            {isPending ? "불러오는 중..." : "더보기"}
+            {isPending ? `불러오는 중... (${currentPage}/${totalPages})` : `더보기 (${currentPage}/${totalPages})`}
           </button>
         </div>
       ) : null}

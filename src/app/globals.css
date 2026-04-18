@@ -42,6 +42,17 @@ body {
   color: var(--color-ink);
 }
 
+@media (max-width: 767px) {
+  body:has([data-shortform-detail-page]) [data-site-header],
+  body:has([data-shortform-detail-page]) [data-root-layout-accessories] {
+    display: none !important;
+  }
+
+  body:has([data-shortform-detail-page]) main {
+    padding-top: 0 !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

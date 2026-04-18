@@ -173,6 +173,36 @@ export async function getPublicPlaylistVideoListByPath(
   }
 }
 
+export async function getAllPublicPlaylistVideosByPath(
+  path: string,
+  pageSize = 24,
+): Promise<PublicVideoSummary[] | null> {
+  const firstPage = await getPublicPlaylistVideoListByPath(path, 1, pageSize);
+
+  if (!firstPage) {
+    return null;
+  }
+
+  if (firstPage.totalPages <= 1) {
+    return firstPage.items;
+  }
+
+  const restPages = await Promise.all(
+    Array.from({ length: firstPage.totalPages - 1 }, (_, index) =>
+      getPublicPlaylistVideoListByPath(path, index + 2, pageSize),
+    ),
+  );
+
+  if (restPages.some((page) => !page)) {
+    return null;
+  }
+
+  return [
+    ...firstPage.items,
+    ...restPages.flatMap((page) => page?.items ?? []),
+  ];
+}
+
 export async function getPublicPlaylistVideoDetail(
   slug: string,
   videoId: string,

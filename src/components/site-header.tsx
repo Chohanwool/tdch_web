@@ -149,6 +149,7 @@ export default function SiteHeader() {
   return (
     <header
       ref={headerRef}
+      data-site-header
       className={`fixed inset-x-0 top-0 z-50 transition-[transform,box-shadow,background-color] duration-300 lg:sticky
         border-b border-cedar/10 bg-[#ffffff] backdrop-blur-lg
         ${isHiddenOnMobile ? "-translate-y-full pointer-events-none lg:translate-y-0 lg:pointer-events-auto" : "translate-y-0"}

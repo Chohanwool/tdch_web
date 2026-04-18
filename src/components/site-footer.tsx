@@ -7,7 +7,7 @@ import {
 
 export default function SiteFooter() {
   return (
-    <footer className="bg-[#0f1c2e] py-10 text-ivory/80 md:py-16">
+    <footer data-site-footer className="bg-[#0f1c2e] py-10 text-ivory/80 md:py-16">
       <div className="section-shell flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
 
         {/* 좌측: 로고 및 정보 */}
