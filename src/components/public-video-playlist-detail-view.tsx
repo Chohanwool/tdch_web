@@ -96,7 +96,7 @@ function LongformRelatedCard({ video }: { video: PublicVideoSummary }) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[14px] font-medium leading-[1.55] text-[#10213f]">
+        <p className="line-clamp-2 text-[14px] font-medium leading-[1.55] text-[#10213f] md:line-clamp-1">
           {video.title}
         </p>
         {metaLine ? (
@@ -156,13 +156,13 @@ function LongformDetailView({
 
       <section className="section-shell py-10">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,935px)_367px] xl:items-start">
-          <div className="space-y-4">
-            <div className="overflow-hidden rounded-[16px] bg-[#242c39] shadow-[0_18px_40px_rgba(16,33,63,0.12)]">
-              <div className="relative aspect-[16/9] overflow-hidden bg-[#242c39]">
+          <div className="min-w-0 space-y-4">
+            <div className="w-full overflow-hidden rounded-[16px] bg-[#242c39] shadow-[0_18px_40px_rgba(16,33,63,0.12)]">
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#242c39]">
                 <iframe
                   title={video.title}
                   src={`https://www.youtube.com/embed/${video.videoId}`}
-                  className="h-full w-full"
+                  className="absolute inset-0 block h-full w-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 />
@@ -174,7 +174,7 @@ function LongformDetailView({
                   <div className="flex min-w-0 items-center gap-3">
                     <div className="h-9 w-9 shrink-0 rounded-full border border-white/30 bg-white/95" />
                     <div className="min-w-0">
-                      <p className="truncate text-[14px] font-bold leading-[1.2] md:text-[16px]">
+                      <p className="line-clamp-2 text-[14px] font-bold leading-[1.2] md:line-clamp-1 md:text-[16px]">
                         {video.title}
                         {metaLine ? `  |  ${metaLine}` : ""}
                         {"  |  The 제자교회"}
@@ -230,7 +230,7 @@ function LongformDetailView({
 
             <div className="space-y-6 px-1">
               <div className="space-y-4 text-[#10213f]">
-                <h1 className="text-[30px] font-bold leading-[1.15] tracking-[-0.04em] md:text-[24px]">
+                <h1 className="line-clamp-2 text-[30px] font-bold leading-[1.15] tracking-[-0.04em] lg:line-clamp-1 md:text-[24px]">
                   {video.title}
                   {metaLine ? ` | ${metaLine}` : ""}
                   {" | The 제자교회"}

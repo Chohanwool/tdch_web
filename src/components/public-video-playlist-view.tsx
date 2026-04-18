@@ -103,12 +103,12 @@ function LongformHero({
       />
 
       <div className="overflow-hidden rounded-[4px] bg-[#242c39] shadow-[0_18px_40px_rgba(16,33,63,0.12)]">
-        <div className="relative aspect-[16/9] overflow-hidden bg-[#242c39]">
+        <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#242c39]">
           {featured ? (
             <iframe
               title={featured.title}
               src={`https://www.youtube.com/embed/${featured.videoId}`}
-              className="h-full w-full"
+              className="absolute inset-0 block h-full w-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
@@ -124,7 +124,7 @@ function LongformHero({
           <div className="absolute inset-x-0 top-0 flex items-start gap-3 px-5 py-4 text-white md:px-6">
             <div className="mt-1 h-8 w-8 shrink-0 rounded-full border border-white/30 bg-white/95" />
             <div className="min-w-0">
-              <p className="truncate text-[14px] font-bold leading-[1.2] md:text-[16px]">
+              <p className="line-clamp-2 text-[14px] font-bold leading-[1.2] md:line-clamp-1 md:text-[16px]">
                 {featured?.title ?? playlist.title}
                 {metaLine ? `  |  ${metaLine}` : ""}
                 {"  |  The 제자교회"}
@@ -204,8 +204,8 @@ function LongformPlaylistCard({ video }: { video: PublicVideoSummary }) {
         </div>
       </div>
 
-      <div className="min-w-0">
-        <h3 className="truncate text-[20px] font-bold tracking-[-0.03em] text-[#10213f] md:text-[18px]">
+      <div className="min-w-0 flex-1">
+        <h3 className="line-clamp-2 text-[20px] font-bold tracking-[-0.03em] text-[#10213f] md:line-clamp-1 md:text-[18px]">
           {video.title}
         </h3>
         {metaLine ? (
