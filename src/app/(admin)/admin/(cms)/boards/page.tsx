@@ -4,6 +4,7 @@ import { getAdminSession, isAdminSession } from "@/auth";
 import { getAdminBoards } from "@/lib/admin-board-api";
 import { getAdminMenuItems } from "@/lib/admin-menu-api";
 import BoardManagementClient from "./_components/board-management-client";
+import AdminBreadcrumb from "../components/admin-breadcrumb";
 
 export default async function AdminBoardsPage() {
   const session = await getAdminSession();
@@ -20,13 +21,7 @@ export default async function AdminBoardsPage() {
 
   return (
     <div className="space-y-6">
-      <nav className="flex items-center gap-1.5 text-[12px] text-[#8fa3bb]">
-        <span className="text-[#4a6484]">운영</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-          <path d="M4.5 2.5l3 3-3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span className="font-medium text-[#132033]">게시판 관리</span>
-      </nav>
+      <AdminBreadcrumb items={[{ label: "운영" }, { label: "게시판 관리" }]} />
 
       <div className="space-y-1">
         <h1 className="text-xl font-bold text-[#0f1c2e]">게시판 관리</h1>

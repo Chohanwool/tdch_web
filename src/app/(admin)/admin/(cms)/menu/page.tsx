@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getAdminSession, isAdminSession } from "@/auth";
 import { getAdminMenuTree } from "@/lib/admin-menu-api";
 import MenuManagementClient from "./_components/menu-management-client";
+import AdminBreadcrumb from "../components/admin-breadcrumb";
 
 export default async function AdminMenuPage() {
   const session = await getAdminSession();
@@ -15,13 +16,7 @@ export default async function AdminMenuPage() {
 
   return (
     <div className="space-y-6">
-      <nav className="flex items-center gap-1.5 text-[12px] text-[#8fa3bb]">
-        <span className="text-[#4a6484]">운영</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-          <path d="M4.5 2.5l3 3-3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span className="font-medium text-[#132033]">메뉴 관리</span>
-      </nav>
+      <AdminBreadcrumb items={[{ label: "운영" }, { label: "메뉴 관리" }]} />
 
       <div className="space-y-1">
         <h1 className="text-xl font-bold text-[#0f1c2e]">메뉴 관리</h1>

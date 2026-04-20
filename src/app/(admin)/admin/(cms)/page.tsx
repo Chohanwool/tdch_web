@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 
 export default function AdminDashboardPage() {
-  redirect("/admin/menu");
+  redirect("/admin/menu", RedirectType.replace);
 }

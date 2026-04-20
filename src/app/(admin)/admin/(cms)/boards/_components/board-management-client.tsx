@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   collectAssetIdsFromTiptapDocument,
@@ -187,6 +187,29 @@ export default function BoardManagementClient({
   const [notice, setNotice] = useState<string | null>(null);
   const [boardMenuFilter, setBoardMenuFilter] = useState("ALL");
   const [titleQuery, setTitleQuery] = useState("");
+  const [appliedBoardMenu, setAppliedBoardMenu] = useState("ALL");
+  const [appliedTitle, setAppliedTitle] = useState("");
+
+  // 브라우저 뒤로가기로 editor → list 복귀를 위한 히스토리 추적
+  const editorPushedRef = useRef(false);
+  const pendingNoticeRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (!editorPushedRef.current) return;
+      editorPushedRef.current = false;
+      const msg = pendingNoticeRef.current;
+      pendingNoticeRef.current = null;
+      setScreenMode("list");
+      setSelectedPostId(null);
+      setDraft(createEmptyDraft());
+      setAttachmentAssetIds([]);
+      setError(null);
+      setNotice(msg);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const selectedBoardMenu = useMemo(
     () => boardMenus.find((boardMenu) => boardMenu.id === selectedMenuId) ?? boardMenus[0] ?? null,
@@ -199,13 +222,18 @@ export default function BoardManagementClient({
   );
 
   const filteredPosts = useMemo(() => {
-    const normalizedQuery = titleQuery.trim().toLocaleLowerCase("ko-KR");
+    const normalizedQuery = appliedTitle.trim().toLocaleLowerCase("ko-KR");
     return posts.filter((post) => {
-      const matchesMenu = boardMenuFilter === "ALL" || String(post.boardMenuId) === boardMenuFilter;
+      const matchesMenu = appliedBoardMenu === "ALL" || String(post.boardMenuId) === appliedBoardMenu;
       const matchesTitle = normalizedQuery.length === 0 || post.title.toLocaleLowerCase("ko-KR").includes(normalizedQuery);
       return matchesMenu && matchesTitle;
     });
-  }, [boardMenuFilter, posts, titleQuery]);
+  }, [appliedBoardMenu, posts, appliedTitle]);
+
+  const handleBoardSearch = () => {
+    setAppliedBoardMenu(boardMenuFilter);
+    setAppliedTitle(titleQuery);
+  };
 
   const savePayload = useMemo<BoardPostSavePayload>(() => {
     const contentJson = normalizeTiptapDocumentImageMetadata(draft.contentJson);
@@ -381,6 +409,8 @@ export default function BoardManagementClient({
     setScreenMode("editor");
     setError(null);
     setNotice("새 게시글 작성 모드입니다.");
+    window.history.pushState({ boardEditor: true }, "");
+    editorPushedRef.current = true;
   };
 
   const openPost = (post: BoardPostListItem) => {
@@ -389,6 +419,8 @@ export default function BoardManagementClient({
     setScreenMode("editor");
     setError(null);
     setNotice(null);
+    window.history.pushState({ boardEditor: true }, "");
+    editorPushedRef.current = true;
   };
 
   const handleSave = async () => {
@@ -435,11 +467,16 @@ export default function BoardManagementClient({
             : [nextPost, ...current],
         );
       });
-      setSelectedPostId(null);
-      setDraft(createEmptyDraft());
-      setAttachmentAssetIds([]);
-      setScreenMode("list");
-      setNotice("게시글을 저장했습니다.");
+      if (editorPushedRef.current) {
+        pendingNoticeRef.current = "게시글을 저장했습니다.";
+        window.history.back(); // popstate가 목록 복귀 처리
+      } else {
+        setSelectedPostId(null);
+        setDraft(createEmptyDraft());
+        setAttachmentAssetIds([]);
+        setScreenMode("list");
+        setNotice("게시글을 저장했습니다.");
+      }
     } catch (saveError) {
       setError(getErrorMessage(saveError, "게시글을 저장하지 못했습니다."));
     } finally {
@@ -449,109 +486,161 @@ export default function BoardManagementClient({
 
   if (screenMode === "list") {
     return (
-      <div className="space-y-5">
+      <div className="space-y-4">
+        {/* ── 필터 ── */}
+        <section className="rounded-2xl border border-[#dbe4f0] bg-white px-5 py-4 shadow-sm">
+          <div className="flex flex-wrap items-end gap-3">
+            <label className="flex flex-col gap-1.5" style={{ minWidth: "160px" }}>
+              <span className="text-[11px] font-semibold text-[#55697f]">게시판</span>
+              <select
+                value={boardMenuFilter}
+                onChange={(event) => setBoardMenuFilter(event.target.value)}
+                className="h-9 rounded-lg border border-[#d5deea] bg-white px-3 text-[13px] focus:border-[#3f74c7] focus:outline-none"
+              >
+                <option value="ALL">전체</option>
+                {boardMenus.map((boardMenu) => (
+                  <option key={boardMenu.id} value={boardMenu.id}>
+                    {boardMenu.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex min-w-0 flex-1 flex-col gap-1.5" style={{ minWidth: "180px" }}>
+              <span className="text-[11px] font-semibold text-[#55697f]">제목 검색</span>
+              <input
+                value={titleQuery}
+                onChange={(event) => setTitleQuery(event.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleBoardSearch()}
+                placeholder="게시글 제목을 입력하세요"
+                className="h-9 rounded-lg border border-[#d5deea] px-3 text-[13px] focus:border-[#3f74c7] focus:outline-none"
+              />
+            </label>
+            <button
+              type="button"
+              onClick={handleBoardSearch}
+              className="h-9 rounded-lg bg-[#3f74c7] px-5 text-[13px] font-semibold text-white transition hover:bg-[#4a82d7]"
+            >
+              검색
+            </button>
+          </div>
+          {disconnectedBoardMenus.length > 0 && (
+            <p className="mt-3 rounded-lg bg-[#fff7ed] px-3 py-2 text-[12px] text-[#9a3412]">
+              연결 게시판이 사라진 메뉴 {disconnectedBoardMenus.length}개는 목록에서 제외했습니다.
+              메뉴 관리에서 저장하면 메뉴 전용 게시판이 다시 생성됩니다.
+            </p>
+          )}
+        </section>
+
+        {/* ── 테이블 ── */}
         <section className="rounded-2xl border border-[#e2e8f0] bg-white shadow-sm">
-          <div className="border-b border-[#edf2f7] px-5 py-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h2 className="text-[15px] font-bold text-[#132033]">게시글 목록</h2>
-                <p className="mt-1 text-[12px] text-[#6d7f95]">전체 {posts.length}건 중 {filteredPosts.length}건 표시</p>
-              </div>
+          <div className="flex items-center justify-between border-b border-[#edf2f7] px-5 py-4">
+            <div className="flex items-center gap-3">
+              <span className="text-[13px] text-[#5d6f86]">
+                전체 <span className="font-semibold text-[#132033]">{posts.length}</span>건 중{" "}
+                <span className="font-semibold text-[#132033]">{filteredPosts.length}</span>건 표시
+              </span>
+              {notice && <span className="text-[12px] text-[#2d5da8]">{notice}</span>}
+              {error && <span className="text-[12px] text-[#be123c]">오류: {error}</span>}
+            </div>
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => {
                   setReloadToken((current) => current + 1);
                   setNotice("게시글 목록을 다시 불러옵니다.");
                 }}
-                className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]"
+                className="h-9 rounded-lg border border-[#d7e3f4] bg-white px-3 text-[12px] font-semibold text-[#334155] transition hover:bg-[#f0f6ff]"
               >
-                목록 새로고침
+                새로고침
+              </button>
+              <button
+                type="button"
+                onClick={openNewPost}
+                disabled={boardMenus.length === 0}
+                className="h-9 rounded-lg bg-[#3f74c7] px-4 text-[13px] font-semibold text-white transition hover:bg-[#4a82d7] disabled:opacity-60"
+              >
+                새 게시글 등록
               </button>
             </div>
-
-            <div className="mt-4 grid gap-3 md:grid-cols-[220px_minmax(0,1fr)]">
-              <label className="space-y-1.5">
-                <span className="text-[12px] font-semibold text-[#334155]">게시판</span>
-                <select
-                  value={boardMenuFilter}
-                  onChange={(event) => setBoardMenuFilter(event.target.value)}
-                  className="w-full rounded-lg border border-[#d5deea] bg-white px-3 py-2 text-[13px]"
-                >
-                  <option value="ALL">전체</option>
-                  {boardMenus.map((boardMenu) => (
-                    <option key={boardMenu.id} value={boardMenu.id}>
-                      {boardMenu.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="space-y-1.5">
-                <span className="text-[12px] font-semibold text-[#334155]">제목 검색</span>
-                <input
-                  value={titleQuery}
-                  onChange={(event) => setTitleQuery(event.target.value)}
-                  placeholder="게시글 제목을 입력하세요"
-                  className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px]"
-                />
-              </label>
-            </div>
-
-            {notice && <p className="mt-3 text-[12px] text-[#2d5da8]">{notice}</p>}
-            {disconnectedBoardMenus.length > 0 && (
-              <p className="mt-3 rounded-lg bg-[#fff7ed] px-3 py-2 text-[12px] text-[#9a3412]">
-                연결 게시판이 사라진 메뉴 {disconnectedBoardMenus.length}개는 목록에서 제외했습니다.
-                메뉴 관리에서 저장하면 메뉴 전용 게시판이 다시 생성됩니다.
-              </p>
-            )}
-            {error && <p className="mt-3 text-[12px] text-[#be123c]">오류: {error}</p>}
           </div>
 
-          <div className="px-5 py-4">
-            {loading && <p className="py-3 text-[12px] text-[#6d7f95]">로딩 중...</p>}
-            {filteredPosts.length === 0 ? (
-              <p className="py-16 text-center text-[13px] text-[#6d7f95]">조건에 맞는 게시글이 없습니다.</p>
-            ) : (
-              <ul className="divide-y divide-[#edf2f7]">
-                {filteredPosts.map((post) => (
-                  <li key={`${post.boardMenuId}-${post.id}`}>
-                    <button
-                      type="button"
-                      onClick={() => openPost(post)}
-                      className="grid w-full gap-2 px-1 py-4 text-left transition hover:bg-[#fafcff] md:grid-cols-[minmax(0,1fr)_110px_120px]"
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-[#edf2f7] bg-[#f8fafc]">
+                  {["번호", "게시판", "제목", "공개", "고정", "수정일", ""].map((h) => (
+                    <th
+                      key={h}
+                      className="whitespace-nowrap px-5 py-3 text-[11px] font-semibold tracking-wide text-[#55697f]"
                     >
-                      <div className="min-w-0">
-                        <p className="truncate text-[14px] font-semibold text-[#132033]">{post.title}</p>
-                        <p className="mt-1 text-[12px] text-[#6d7f95]">{post.boardMenuLabel}</p>
-                      </div>
-                      <span className="flex flex-wrap gap-1">
-                        <span className={`w-fit rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                          post.isPublic ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f8fafc] text-[#64748b]"
-                        }`}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={7} className="px-5 py-12 text-center text-[13px] text-[#6d7f95]">
+                      로딩 중...
+                    </td>
+                  </tr>
+                ) : filteredPosts.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="px-5 py-12 text-center text-[13px] text-[#6d7f95]">
+                      조건에 맞는 게시글이 없습니다.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredPosts.map((post, idx) => (
+                    <tr
+                      key={`${post.boardMenuId}-${post.id}`}
+                      className="border-b border-[#f0f4f8] last:border-0 transition hover:bg-[#fafcff]"
+                    >
+                      <td className="px-5 py-4 text-[13px] text-[#5d6f86]">{idx + 1}</td>
+                      <td className="px-5 py-4 text-[12px] text-[#5d6f86]">{post.boardMenuLabel}</td>
+                      <td className="px-5 py-4">
+                        <p className="max-w-[300px] truncate text-[13px] font-semibold text-[#132033]">
+                          {post.title}
+                        </p>
+                      </td>
+                      <td className="px-5 py-4">
+                        <span
+                          className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
+                            post.isPublic
+                              ? "bg-[#ecfdf5] text-[#047857]"
+                              : "bg-[#f8fafc] text-[#64748b]"
+                          }`}
+                        >
                           {post.isPublic ? "공개" : "비공개"}
                         </span>
-                        {post.isPinned && (
-                          <span className="w-fit rounded-full bg-[#fff7ed] px-2 py-0.5 text-[10px] font-semibold text-[#c2410c]">
-                            상단 고정
+                      </td>
+                      <td className="px-5 py-4">
+                        {post.isPinned ? (
+                          <span className="rounded-full bg-[#fff7ed] px-2.5 py-0.5 text-[10px] font-semibold text-[#c2410c]">
+                            고정
                           </span>
+                        ) : (
+                          <span className="text-[12px] text-[#c0cbd8]">—</span>
                         )}
-                      </span>
-                      <span className="text-[12px] text-[#6d7f95]">{formatDate(post.updatedAt)}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          <div className="flex justify-end border-t border-[#edf2f7] px-5 py-4">
-            <button
-              type="button"
-              onClick={openNewPost}
-              className="rounded-lg bg-[#3f74c7] px-4 py-2 text-[13px] font-semibold text-white disabled:opacity-60"
-              disabled={boardMenus.length === 0}
-            >
-              새 게시글 등록
-            </button>
+                      </td>
+                      <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
+                        {formatDate(post.updatedAt)}
+                      </td>
+                      <td className="px-5 py-4">
+                        <button
+                          type="button"
+                          onClick={() => openPost(post)}
+                          className="inline-flex h-8 items-center rounded-lg border border-[#bfd0ea] bg-[#edf4ff] px-3 text-[12px] font-medium text-[#2d5da8] transition hover:bg-[#e4efff]"
+                        >
+                          편집
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </section>
       </div>
@@ -569,12 +658,16 @@ export default function BoardManagementClient({
           <button
             type="button"
             onClick={() => {
-              setScreenMode("list");
-              setSelectedPostId(null);
-              setDraft(createEmptyDraft());
-              setAttachmentAssetIds([]);
-              setError(null);
-              setNotice(null);
+              if (editorPushedRef.current) {
+                window.history.back(); // popstate가 목록 복귀 처리
+              } else {
+                setScreenMode("list");
+                setSelectedPostId(null);
+                setDraft(createEmptyDraft());
+                setAttachmentAssetIds([]);
+                setError(null);
+                setNotice(null);
+              }
             }}
             className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]"
           >
@@ -687,10 +780,14 @@ export default function BoardManagementClient({
             <button
               type="button"
               onClick={() => {
-                setScreenMode("list");
-                setSelectedPostId(null);
-                setDraft(createEmptyDraft());
-                setAttachmentAssetIds([]);
+                if (editorPushedRef.current) {
+                  window.history.back(); // popstate가 목록 복귀 처리
+                } else {
+                  setScreenMode("list");
+                  setSelectedPostId(null);
+                  setDraft(createEmptyDraft());
+                  setAttachmentAssetIds([]);
+                }
               }}
               className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]"
             >

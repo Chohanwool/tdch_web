@@ -9,17 +9,10 @@ import {
   updateAdminAccountAction,
   deleteAdminAccountAction,
 } from "../actions";
+import AdminBreadcrumb from "../../components/admin-breadcrumb";
 
 interface AdminAccountDetailPageProps {
   params: Promise<{ id: string }>;
-}
-
-function Chevron() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-      <path d="M4.5 2.5l3 3-3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
 }
 
 const ROLE_LABEL: Record<string, string> = {
@@ -62,23 +55,11 @@ export default async function AdminAccountDetailPage({ params }: AdminAccountDet
   return (
     <div className="space-y-5">
       {/* ── 경로(breadcrumb) ── */}
-      <nav className="flex items-center gap-1.5 text-[12px] text-[#8fa3bb]">
-        <Link href="/admin" className="flex items-center transition hover:text-[#3f74c7]">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="mr-1">
-            <path d="M1.5 7.5L7 2l5.5 5.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M3 6.5V12h3V9h2v3h3V6.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          홈
-        </Link>
-        <Chevron />
-        <span className="text-[#4a6484]">운영</span>
-        <Chevron />
-        <Link href="/admin/accounts" className="text-[#4a6484] transition hover:text-[#3f74c7]">
-          관리자 계정
-        </Link>
-        <Chevron />
-        <span className="font-medium text-[#132033]">{account.displayName}</span>
-      </nav>
+      <AdminBreadcrumb items={[
+        { label: "운영" },
+        { label: "관리자 계정", href: "/admin/accounts" },
+        { label: account.displayName },
+      ]} />
 
       {/* ── 페이지 헤더 ── */}
       <div className="flex items-start justify-between gap-4">

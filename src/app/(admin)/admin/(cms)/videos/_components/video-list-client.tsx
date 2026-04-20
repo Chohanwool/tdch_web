@@ -329,49 +329,81 @@ export default function VideoListClient({
           <p className="px-5 py-4 text-[12px] text-[#e53e3e]">{fetchError}</p>
         )}
 
-        {/* 빈 상태 */}
-        {!listLoading && !fetchError && filteredItems.length === 0 && (
-          <p className="px-5 py-12 text-center text-[13px] text-[#6d7f95]">
-            {applied.search ? "검색 결과가 없습니다." : "등록된 영상이 없습니다."}
-          </p>
-        )}
-
-        {/* 목록 */}
-        {pagedItems.length > 0 && (
-          <ul className="divide-y divide-[#f0f4f8]">
-            {pagedItems.map((item) => (
-              <li key={item.videoId}>
-                <Link
-                  href={`/admin/videos/${encodeURIComponent(item.videoId)}`}
-                  className="flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-[#fafcff]"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-semibold text-[#132033]">{item.title}</p>
-                    <p className="mt-0.5 truncate text-[11px] text-[#8fa3bb]">원제목: {item.sourceTitle}</p>
-                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-[#5d6f86]">
-                      <span>발행자: {item.preacherName || "미입력"}</span>
-                      <span>본문: {item.scriptureReference || "미입력"}</span>
-                      <span>노출일: {formatDateTime(item.publishedAt)}</span>
-                    </div>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    {item.hidden && (
-                      <span className="rounded-full bg-[#fff1f2] px-2 py-0.5 text-[10px] font-semibold text-[#be123c]">
-                        숨김
+        {/* 테이블 */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full border-collapse text-left">
+            <thead>
+              <tr className="border-b border-[#edf2f7] bg-[#f8fafc]">
+                {["번호", "제목", "발행자", "노출일", "유형", "상태"].map((h) => (
+                  <th
+                    key={h}
+                    className="whitespace-nowrap px-5 py-3 text-[11px] font-semibold tracking-wide text-[#55697f]"
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {listLoading ? (
+                <tr>
+                  <td colSpan={6} className="px-5 py-12 text-center text-[13px] text-[#6d7f95]">
+                    불러오는 중...
+                  </td>
+                </tr>
+              ) : pagedItems.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-5 py-12 text-center text-[13px] text-[#6d7f95]">
+                    {applied.search ? "검색 결과가 없습니다." : "등록된 영상이 없습니다."}
+                  </td>
+                </tr>
+              ) : (
+                pagedItems.map((item, idx) => (
+                  <tr
+                    key={item.videoId}
+                    className="border-b border-[#f0f4f8] last:border-0 transition hover:bg-[#fafcff]"
+                  >
+                    <td className="px-5 py-4 text-[13px] text-[#5d6f86]">
+                      {(safePage - 1) * pageSize + idx + 1}
+                    </td>
+                    <td className="px-5 py-4">
+                      <Link href={`/admin/videos/${encodeURIComponent(item.videoId)}`} className="block">
+                        <p className="max-w-[300px] truncate text-[13px] font-semibold text-[#132033] hover:text-[#3f74c7]">
+                          {item.title}
+                        </p>
+                        <p className="mt-0.5 max-w-[300px] truncate text-[11px] text-[#8fa3bb]">
+                          {item.sourceTitle}
+                        </p>
+                      </Link>
+                    </td>
+                    <td className="px-5 py-4 text-[12px] text-[#5d6f86]">
+                      {item.preacherName || "—"}
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
+                      {formatDateTime(item.publishedAt)}
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className="rounded-full bg-[#f1f5f9] px-2.5 py-0.5 text-[10px] font-semibold text-[#475569]">
+                        {item.contentForm === "SHORTFORM" ? "SHORT" : "LONG"}
                       </span>
-                    )}
-                    <span className="rounded-full bg-[#f1f5f9] px-2 py-0.5 text-[10px] font-semibold text-[#475569]">
-                      {item.contentForm === "SHORTFORM" ? "SHORT" : "LONG"}
-                    </span>
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="text-[#b0bec5]">
-                      <path d="M5 2.5l4.5 4.5L5 11.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+                    </td>
+                    <td className="px-5 py-4">
+                      {item.hidden ? (
+                        <span className="rounded-full bg-[#fff1f2] px-2.5 py-0.5 text-[10px] font-semibold text-[#be123c]">
+                          숨김
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-[#ecfdf5] px-2.5 py-0.5 text-[10px] font-semibold text-[#047857]">
+                          노출
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
         {/* 페이지네이션 */}
         {!listLoading && filteredItems.length > pageSize && (
