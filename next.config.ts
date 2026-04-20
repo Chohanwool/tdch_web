@@ -1,5 +1,11 @@
 import type { NextConfig } from "next";
 
+const mediaApiBaseUrl = (
+  process.env.MEDIA_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_MEDIA_API_BASE_URL ||
+  "http://localhost:8080"
+).replace(/\/+$/, "");
+
 const nextConfig: NextConfig = {
   output: "standalone",
   images: {
@@ -66,6 +72,14 @@ const nextConfig: NextConfig = {
         source: "/admin/sermons",
         destination: "/admin/videos",
         permanent: false,
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/media/:path*",
+        destination: `${mediaApiBaseUrl}/media/:path*`,
       },
     ];
   },
