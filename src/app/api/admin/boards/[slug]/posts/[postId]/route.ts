@@ -20,7 +20,11 @@ function unauthorizedResponse() {
   );
 }
 
-export async function GET(_request: Request, context: RouteContext) {
+function readMenuId(request: Request) {
+  return new URL(request.url).searchParams.get("menuId");
+}
+
+export async function GET(request: Request, context: RouteContext) {
   const session = await getAdminSession();
 
   if (!isAdminSession(session) || !session.user.id) {
@@ -28,9 +32,10 @@ export async function GET(_request: Request, context: RouteContext) {
   }
 
   const { slug, postId } = await context.params;
+  const menuId = readMenuId(request);
 
   try {
-    const post = await getAdminBoardPost(session.user.id, slug, postId);
+    const post = await getAdminBoardPost(session.user.id, slug, postId, menuId);
     return NextResponse.json(post);
   } catch (error) {
     const status = error instanceof AdminApiError ? error.status : 400;
@@ -53,10 +58,11 @@ export async function PUT(request: Request, context: RouteContext) {
   }
 
   const { slug, postId } = await context.params;
+  const menuId = readMenuId(request);
 
   try {
     const payload = await request.json();
-    const post = await updateAdminBoardPost(session.user.id, slug, postId, payload);
+    const post = await updateAdminBoardPost(session.user.id, slug, postId, menuId ? { ...payload, menuId } : payload);
     return NextResponse.json(post);
   } catch (error) {
     const status = error instanceof AdminApiError ? error.status : 400;
@@ -71,7 +77,7 @@ export async function PUT(request: Request, context: RouteContext) {
   }
 }
 
-export async function DELETE(_request: Request, context: RouteContext) {
+export async function DELETE(request: Request, context: RouteContext) {
   const session = await getAdminSession();
 
   if (!isAdminSession(session) || !session.user.id) {
@@ -79,9 +85,10 @@ export async function DELETE(_request: Request, context: RouteContext) {
   }
 
   const { slug, postId } = await context.params;
+  const menuId = readMenuId(request);
 
   try {
-    await deleteAdminBoardPost(session.user.id, slug, postId);
+    await deleteAdminBoardPost(session.user.id, slug, postId, menuId);
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     const status = error instanceof AdminApiError ? error.status : 400;

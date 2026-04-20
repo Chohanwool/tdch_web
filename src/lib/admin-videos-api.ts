@@ -51,9 +51,12 @@ export interface UpdateAdminVideoMetaRequest {
   thumbnailOverrideUrl: string | null;
 }
 
-export async function getAdminVideos(form?: VideoContentForm): Promise<AdminVideoListResponse> {
-  const query = form ? `?form=${encodeURIComponent(form)}` : "";
-  const response = await adminApiFetch(`/api/v1/admin/videos${query}`);
+export async function getAdminVideos(params?: { form?: VideoContentForm; menuId?: number }): Promise<AdminVideoListResponse> {
+  const query = new URLSearchParams();
+  if (params?.menuId != null) query.set("menuId", String(params.menuId));
+  else if (params?.form) query.set("form", params.form);
+  const qs = query.size > 0 ? `?${query.toString()}` : "";
+  const response = await adminApiFetch(`/api/v1/admin/videos${qs}`);
   return response.json() as Promise<AdminVideoListResponse>;
 }
 

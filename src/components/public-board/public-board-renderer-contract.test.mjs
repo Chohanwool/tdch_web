@@ -42,3 +42,47 @@ test("public board renderer composes safe media URLs and never trusts raw iframe
   );
 });
 
+test("public board renderer applies supported Tiptap text marks", async () => {
+  const contents = await readRenderer();
+
+  assert.match(contents, /case\s+["']bold["']/, "Expected public board text rendering to support bold marks.");
+  assert.match(contents, /case\s+["']italic["']/, "Expected public board text rendering to support italic marks.");
+  assert.match(contents, /case\s+["']strike["']/, "Expected public board text rendering to support strike marks.");
+  assert.match(contents, /case\s+["']underline["']/, "Expected public board text rendering to support underline marks.");
+  assert.match(contents, /case\s+["']code["']/, "Expected public board text rendering to support inline code marks.");
+  assert.match(contents, /case\s+["']highlight["']/, "Expected public board text rendering to support highlight marks.");
+  assert.match(contents, /case\s+["']link["']/, "Expected public board text rendering to support link marks.");
+  assert.match(contents, /case\s+["']subscript["']/, "Expected public board text rendering to support subscript marks.");
+  assert.match(contents, /case\s+["']superscript["']/, "Expected public board text rendering to support superscript marks.");
+  assert.match(contents, /case\s+["']fontSize["']/, "Expected public board text rendering to support font-size marks.");
+  assert.match(contents, /fontSize\s*:\s*size/, "Expected font-size marks to render as inline font-size styles.");
+  assert.match(contents, /getSafeLinkHref/, "Expected link marks to sanitize href values before rendering anchors.");
+});
+
+test("public board renderer supports official SimpleEditor uploaded image sources", async () => {
+  const contents = await readRenderer();
+
+  assert.match(
+    contents,
+    /storedPathFromEditorImageSource/,
+    "Expected public rendering to recover storedPath from SimpleEditor image src metadata.",
+  );
+  assert.match(
+    contents,
+    /candidate\.attrs\?\.src/,
+    "Expected public rendering to inspect official image src attrs when storedPath is absent.",
+  );
+});
+
+test("public board renderer supports official SimpleEditor block nodes and text alignment", async () => {
+  const contents = await readRenderer();
+
+  assert.match(contents, /case\s+["']taskList["']/, "Expected public rendering to support task lists.");
+  assert.match(contents, /case\s+["']taskItem["']/, "Expected public rendering to support task list items.");
+  assert.match(contents, /type="checkbox"/, "Expected task list items to render checkbox controls.");
+  assert.match(contents, /candidate\.attrs\?\.checked\s*===\s*true/, "Expected task item checked attrs to drive checkbox state.");
+  assert.match(contents, /case\s+["']codeBlock["']/, "Expected public rendering to support code blocks.");
+  assert.match(contents, /<pre\b/, "Expected code blocks to render in preformatted containers.");
+  assert.match(contents, /case\s+["']horizontalRule["']/, "Expected public rendering to support horizontal rules.");
+  assert.match(contents, /getTextAlignStyle/, "Expected paragraph and heading nodes to render textAlign attrs.");
+});

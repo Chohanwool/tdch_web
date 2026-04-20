@@ -24,6 +24,7 @@ const _assertBoardSummary: AdminBoardSummary = {
 const _assertPostSummary: AdminBoardPostSummary = {
   id: "post-123",
   boardId: _assertBoardSummary.id,
+  menuId: "menu-456",
   title: "주일 예배 안내",
   isPublic: true,
   authorId: "admin-42",
@@ -46,6 +47,7 @@ const _assertPostAsset: AdminBoardPostAsset = {
 const _assertPostDetail: AdminBoardPostDetail = {
   id: _assertPostSummary.id,
   boardId: _assertPostSummary.boardId,
+  menuId: _assertPostSummary.menuId,
   title: _assertPostSummary.title,
   contentJson: {
     type: "doc",
@@ -65,6 +67,7 @@ const _assertPostDetail: AdminBoardPostDetail = {
 };
 
 const _assertSavePayload: BoardPostSavePayload = {
+  menuId: _assertPostSummary.menuId,
   title: "주일 예배 안내",
   contentJson: _assertPostDetail.contentJson,
   contentHtml: _assertPostDetail.contentHtml,
@@ -76,10 +79,11 @@ async function assertAdminBoardApiContract() {
   const actorId = "admin-42";
   const slug = _assertBoardSummary.slug;
   const postId = _assertPostSummary.id;
+  const menuId = _assertPostSummary.menuId;
 
   const boards = await getAdminBoards(actorId);
-  const posts = await getAdminBoardPosts(actorId, slug);
-  const post = await getAdminBoardPost(actorId, slug, postId);
+  const posts = await getAdminBoardPosts(actorId, slug, menuId);
+  const post = await getAdminBoardPost(actorId, slug, postId, menuId);
   const created = await createAdminBoardPost(actorId, slug, _assertSavePayload);
   const updated = await updateAdminBoardPost(actorId, slug, postId, _assertSavePayload);
   await deleteAdminBoardPost(actorId, slug, postId);

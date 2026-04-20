@@ -48,6 +48,21 @@ test("public site catch-all route keeps static behavior and adds board rendering
   );
 });
 
+test("public site catch-all route passes resolved menu id to board list and detail APIs", async () => {
+  const contents = await readRoute();
+
+  assert.match(
+    contents,
+    /listPublicBoardPosts\s*\(\s*(?:resolved|boardState\.resolved)\.boardKey\s*,\s*(?:resolved|boardState\.resolved)\.(?:id|menuId)\s*,/s,
+    "Expected public board list loading to pass the resolved BOARD menu id.",
+  );
+  assert.match(
+    contents,
+    /getPublicBoardPost\s*\(\s*parentResolved\.boardKey\s*,\s*parentResolved\.(?:id|menuId)\s*,\s*postId\s*\)/s,
+    "Expected public board detail loading to pass the resolved BOARD menu id.",
+  );
+});
+
 test("public site catch-all route does not pass raw user URLs to iframe src", async () => {
   const contents = await readRoute();
 

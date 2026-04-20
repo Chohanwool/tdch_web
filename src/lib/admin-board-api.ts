@@ -10,12 +10,22 @@ export interface AdminBoardSummary {
   slug: string;
   title: string;
   type: AdminBoardType;
+  boardTypeId?: string | null;
   description: string | null;
+}
+
+export interface AdminBoardTypeSummary {
+  id: string;
+  key: string;
+  label: string;
+  description: string | null;
+  sortOrder: number;
 }
 
 export interface AdminBoardPostSummary {
   id: string;
   boardId: string;
+  menuId: string;
   title: string;
   isPublic: boolean;
   authorId: string;
@@ -42,6 +52,7 @@ export interface AdminBoardPostDetail extends AdminBoardPostSummary {
 }
 
 export interface BoardPostSavePayload {
+  menuId?: string | number | null;
   title: string;
   contentJson: TiptapDocument | Record<string, unknown>;
   contentHtml: string;
@@ -54,12 +65,22 @@ interface BackendBoardSummary {
   slug: string;
   title: string;
   type: AdminBoardType;
+  boardTypeId?: string | number | null;
   description?: string | null;
+}
+
+interface BackendBoardTypeSummary {
+  id: string | number;
+  key: string;
+  label: string;
+  description?: string | null;
+  sortOrder?: number | null;
 }
 
 interface BackendPostSummary {
   id: string | number;
   boardId: string | number;
+  menuId?: string | number | null;
   title: string;
   isPublic: boolean;
   authorId: string | number;
@@ -83,6 +104,10 @@ interface BackendPostDetail extends BackendPostSummary {
   contentJson: string | TiptapDocument | Record<string, unknown>;
   contentHtml?: string | null;
   assets?: BackendPostAsset[];
+}
+
+interface BackendPostSaveResponse {
+  id?: string | number | null;
 }
 
 function toFrontendId(value: string | number) {
@@ -117,7 +142,18 @@ function normalizeBoard(board: BackendBoardSummary): AdminBoardSummary {
     slug: board.slug,
     title: board.title,
     type: board.type,
+    boardTypeId: board.boardTypeId == null ? null : toFrontendId(board.boardTypeId),
     description: board.description ?? null,
+  };
+}
+
+function normalizeBoardType(boardType: BackendBoardTypeSummary): AdminBoardTypeSummary {
+  return {
+    id: toFrontendId(boardType.id),
+    key: boardType.key,
+    label: boardType.label,
+    description: boardType.description ?? null,
+    sortOrder: boardType.sortOrder ?? 0,
   };
 }
 
@@ -125,6 +161,7 @@ function normalizePostSummary(post: BackendPostSummary): AdminBoardPostSummary {
   return {
     id: toFrontendId(post.id),
     boardId: toFrontendId(post.boardId),
+    menuId: toFrontendId(post.menuId ?? post.boardId),
     title: post.title,
     isPublic: post.isPublic,
     authorId: toFrontendId(post.authorId),
@@ -156,9 +193,18 @@ function normalizePostDetail(post: BackendPostDetail): AdminBoardPostDetail {
   };
 }
 
+function normalizeSavedPostId(payload: BackendPostSaveResponse) {
+  if (payload.id === undefined || payload.id === null || String(payload.id).trim() === "") {
+    throw new AdminApiError(502, "INVALID_BOARD_SAVE_RESPONSE", "게시글 저장 응답이 올바르지 않습니다.");
+  }
+
+  return toFrontendId(payload.id);
+}
+
 function buildSavePayload(payload: BoardPostSavePayload) {
   return {
     title: payload.title,
+    ...(payload.menuId == null ? {} : { menuId: toBackendNumber(payload.menuId, "메뉴 ID") }),
     contentJson: JSON.stringify(payload.contentJson),
     contentHtml: payload.contentHtml,
     isPublic: payload.isPublic,
@@ -181,8 +227,21 @@ export async function getAdminBoards(actorId: string): Promise<AdminBoardSummary
   return (payload.boards ?? []).map(normalizeBoard);
 }
 
-export async function getAdminBoardPosts(actorId: string, slug: string): Promise<AdminBoardPostSummary[]> {
-  const response = await adminApiFetch(`/api/v1/admin/boards/${encodeURIComponent(slug)}/posts`, {
+export async function getAdminBoardTypes(actorId: string): Promise<AdminBoardTypeSummary[]> {
+  const response = await adminApiFetch("/api/v1/admin/boards/types", {
+    headers: actorHeaders(actorId),
+  });
+  const payload = (await response.json()) as { types?: BackendBoardTypeSummary[] };
+  return (payload.types ?? []).map(normalizeBoardType);
+}
+
+export async function getAdminBoardPosts(
+  actorId: string,
+  slug: string,
+  menuId?: string | number | null,
+): Promise<AdminBoardPostSummary[]> {
+  const menuQuery = menuId == null ? "" : `?menuId=${toBackendNumber(menuId, "메뉴 ID")}`;
+  const response = await adminApiFetch(`/api/v1/admin/boards/${encodeURIComponent(slug)}/posts${menuQuery}`, {
     headers: actorHeaders(actorId),
   });
   const payload = (await response.json()) as { posts?: BackendPostSummary[] };
@@ -193,9 +252,11 @@ export async function getAdminBoardPost(
   actorId: string,
   slug: string,
   postId: string,
+  menuId?: string | number | null,
 ): Promise<AdminBoardPostDetail> {
+  const menuQuery = menuId == null ? "" : `?menuId=${toBackendNumber(menuId, "메뉴 ID")}`;
   const response = await adminApiFetch(
-    `/api/v1/admin/boards/${encodeURIComponent(slug)}/posts/${toBackendNumber(postId, "게시글 ID")}`,
+    `/api/v1/admin/boards/${encodeURIComponent(slug)}/posts/${toBackendNumber(postId, "게시글 ID")}${menuQuery}`,
     {
       headers: actorHeaders(actorId),
     },
@@ -213,7 +274,8 @@ export async function createAdminBoardPost(
     headers: actorHeaders(actorId, true),
     body: JSON.stringify(buildSavePayload(payload)),
   });
-  return normalizePostDetail((await response.json()) as BackendPostDetail);
+  const saved = (await response.json()) as BackendPostSaveResponse;
+  return getAdminBoardPost(actorId, slug, normalizeSavedPostId(saved), payload.menuId);
 }
 
 export async function updateAdminBoardPost(
@@ -230,12 +292,19 @@ export async function updateAdminBoardPost(
       body: JSON.stringify(buildSavePayload(payload)),
     },
   );
-  return normalizePostDetail((await response.json()) as BackendPostDetail);
+  const saved = (await response.json()) as BackendPostSaveResponse;
+  return getAdminBoardPost(actorId, slug, normalizeSavedPostId(saved), payload.menuId);
 }
 
-export async function deleteAdminBoardPost(actorId: string, slug: string, postId: string): Promise<void> {
+export async function deleteAdminBoardPost(
+  actorId: string,
+  slug: string,
+  postId: string,
+  menuId?: string | number | null,
+): Promise<void> {
+  const menuQuery = menuId == null ? "" : `?menuId=${toBackendNumber(menuId, "메뉴 ID")}`;
   await adminApiFetch(
-    `/api/v1/admin/boards/${encodeURIComponent(slug)}/posts/${toBackendNumber(postId, "게시글 ID")}`,
+    `/api/v1/admin/boards/${encodeURIComponent(slug)}/posts/${toBackendNumber(postId, "게시글 ID")}${menuQuery}`,
     {
       method: "DELETE",
       headers: actorHeaders(actorId),

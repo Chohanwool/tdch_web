@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { AdminBoardTypeSummary } from "@/lib/admin-board-api";
 import type {
   AdminMenuTreeNode,
   MenuStatus,
@@ -200,6 +201,7 @@ function toPayload(nodes: EditorNode[]): MenuTreeNodePayload[] {
     slugCustomized: node.slugCustomized,
     staticPageKey: node.staticPageKey,
     boardKey: node.boardKey,
+    boardTypeId: node.boardTypeId,
     externalUrl: node.externalUrl,
     openInNewTab: node.openInNewTab,
     isAuto: node.isAuto,
@@ -208,7 +210,7 @@ function toPayload(nodes: EditorNode[]): MenuTreeNodePayload[] {
   }));
 }
 
-function buildNewNode(id: number, type: MenuType): EditorNode {
+function buildNewNode(id: number, type: MenuType, defaultBoardTypeId: number | null): EditorNode {
   return {
     id,
     type,
@@ -219,7 +221,10 @@ function buildNewNode(id: number, type: MenuType): EditorNode {
     labelCustomized: false,
     slugCustomized: false,
     staticPageKey: type === "STATIC" ? "about.greeting" : null,
-    boardKey: type === "BOARD" ? "notice" : null,
+    boardKey: null,
+    boardTypeId: type === "BOARD" ? defaultBoardTypeId : null,
+    boardTypeKey: null,
+    boardTypeLabel: null,
     externalUrl: type === "EXTERNAL_LINK" ? "https://example.com" : null,
     openInNewTab: type === "EXTERNAL_LINK",
     playlistTitle: null,
@@ -272,7 +277,12 @@ function getPublicRouteSummary(node: EditorNode, menuById: Map<number, EditorNod
         ? `/${menuById.get(node.parentId)?.slug ?? "root"}/${node.slug}`
         : `/${menuById.get(node.parentId)?.slug ?? "root"}/(저장 시 자동 생성)`;
     case "BOARD":
-      return node.boardKey ? `/news#${node.boardKey}` : "/news";
+      if (!node.parentId) {
+        return "상위 메뉴를 먼저 선택해 주세요";
+      }
+      return node.slug
+        ? `/${menuById.get(node.parentId)?.slug ?? "root"}/${node.slug}`
+        : `/${menuById.get(node.parentId)?.slug ?? "root"}/(저장 시 자동 생성)`;
     case "YOUTUBE_PLAYLIST":
       return buildVideoNodePath(node, menuById);
     case "EXTERNAL_LINK":
@@ -284,8 +294,10 @@ function getPublicRouteSummary(node: EditorNode, menuById: Map<number, EditorNod
 }
 
 export default function MenuManagementClient({
+  boardTypes,
   initialItems,
 }: {
+  boardTypes: AdminBoardTypeSummary[];
   initialItems: AdminMenuTreeNode[];
 }) {
   const router = useRouter();
@@ -380,7 +392,7 @@ export default function MenuManagementClient({
   const handleAddRoot = (type: MenuType) => {
     const nextId = tempId;
     setTempId((prev) => prev - 1);
-    const nextNode = buildNewNode(nextId, type);
+    const nextNode = buildNewNode(nextId, type, Number(boardTypes[0]?.id ?? 0) || null);
     markDirty([...items, nextNode]);
     setSelectedId(nextId);
   };
@@ -391,7 +403,7 @@ export default function MenuManagementClient({
     }
     const nextId = tempId;
     setTempId((prev) => prev - 1);
-    const nextNode = buildNewNode(nextId, type);
+    const nextNode = buildNewNode(nextId, type, Number(boardTypes[0]?.id ?? 0) || null);
     markDirty(
       mapTree(items, selectedNode.id, (node) => ({
         ...node,
@@ -765,7 +777,7 @@ export default function MenuManagementClient({
 
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between gap-3">
-                      <span className="text-[12px] font-semibold text-[#334155]">Slug</span>
+                      <span className="text-[12px] font-semibold text-[#334155]">URL 경로</span>
                       {selectedNode.isAuto && selectedNode.slugCustomized && (
                         <button
                           type="button"
@@ -806,8 +818,8 @@ export default function MenuManagementClient({
                     <p className="text-[11px] leading-5 text-[#6d7f95]">
                       {selectedNode.isAuto
                         ? selectedNode.slugCustomized
-                          ? "커스텀 slug를 사용 중입니다. 비우거나 자동 생성으로 되돌리면 유튜브 동기화 기준 slug로 복원됩니다."
-                          : "현재는 유튜브 동기화 기준 slug를 사용 중입니다. 값을 입력하면 커스텀 slug로 고정됩니다."
+                          ? "사용자 지정 URL 경로를 사용 중입니다. 비우거나 자동 생성으로 되돌리면 유튜브 동기화 기준 경로로 복원됩니다."
+                          : "현재는 유튜브 동기화 기준 URL 경로를 사용 중입니다. 값을 입력하면 사용자 지정 경로로 고정됩니다."
                         : "공개 URL에 들어가는 주소 조각입니다. 영문 소문자, 숫자, 하이픈 기준으로 저장되며, 비워두면 서버가 메뉴명에서 자동 생성합니다."}
                     </p>
                   </div>
@@ -915,14 +927,23 @@ export default function MenuManagementClient({
 
                   {selectedNode.type === "BOARD" && (
                     <label className="space-y-1.5">
-                      <span className="text-[12px] font-semibold text-[#334155]">게시판 키</span>
-                      <input
-                        value={selectedNode.boardKey ?? ""}
+                      <span className="text-[12px] font-semibold text-[#334155]">게시판 타입</span>
+                      <select
+                        value={selectedNode.boardTypeId ?? boardTypes[0]?.id ?? ""}
                         onChange={(event) =>
-                          updateSelectedNode((node) => ({ ...node, boardKey: event.target.value }))
+                          updateSelectedNode((node) => ({ ...node, boardTypeId: Number(event.target.value) }))
                         }
                         className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px]"
-                      />
+                      >
+                        {boardTypes.map((boardType) => (
+                          <option key={boardType.id} value={boardType.id}>
+                            {boardType.label}
+                          </option>
+                        ))}
+                      </select>
+                      <p className="text-[11px] leading-5 text-[#6d7f95]">
+                        저장 시 이 메뉴 전용 게시판이 생성되고 이 타입으로 관리됩니다.
+                      </p>
                     </label>
                   )}
 

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { getAdminSession, isAdminSession } from "@/auth";
 import { getAdminBoards } from "@/lib/admin-board-api";
+import { getAdminMenuItems } from "@/lib/admin-menu-api";
 import BoardManagementClient from "./_components/board-management-client";
 
 export default async function AdminBoardsPage() {
@@ -11,7 +12,11 @@ export default async function AdminBoardsPage() {
     redirect("/admin/login");
   }
 
-  const boards = await getAdminBoards(session.user.id);
+  const [boards, menuItems] = await Promise.all([
+    getAdminBoards(session.user.id),
+    getAdminMenuItems(session.user.id),
+  ]);
+  const boardMenus = menuItems.filter((item) => item.type === "BOARD" && item.boardKey && !item.isAuto);
 
   return (
     <div className="space-y-6">
@@ -30,7 +35,7 @@ export default async function AdminBoardsPage() {
         </p>
       </div>
 
-      <BoardManagementClient initialBoards={boards} />
+      <BoardManagementClient initialBoards={boards} initialBoardMenus={boardMenus} />
     </div>
   );
 }

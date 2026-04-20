@@ -20,6 +20,7 @@ export interface PublicBoardPostAsset {
 export interface PublicBoardPostSummary {
   id: string;
   boardId: string;
+  menuId: string;
   title: string;
   isPublic: boolean;
   authorId: string;
@@ -58,6 +59,7 @@ interface BackendBoardPostAsset {
 interface BackendBoardPostSummary {
   id: string | number;
   boardId: string | number;
+  menuId?: string | number | null;
   title: string;
   isPublic?: boolean;
   authorId?: string | number | null;
@@ -119,6 +121,7 @@ function normalizeSummary(post: BackendBoardPostSummary): PublicBoardPostSummary
   return {
     id: toFrontendId(post.id),
     boardId: toFrontendId(post.boardId),
+    menuId: toFrontendId(post.menuId ?? post.boardId),
     title: post.title,
     isPublic: post.isPublic ?? true,
     authorId: post.authorId == null ? "" : toFrontendId(post.authorId),
@@ -162,11 +165,12 @@ function normalizeListResponse(
 
 async function fetchPublicBoardPosts(
   slug: string,
+  menuId: number,
   page: number,
   size: number,
 ): Promise<PublicBoardPostListResponse | null> {
   const payload = await serverFetchJsonOrNull<BackendBoardPostListResponse>(
-    `/api/v1/public/boards/${encodeURIComponent(slug)}/posts?page=${page}&size=${size}`,
+    `/api/v1/public/boards/${encodeURIComponent(slug)}/posts?menuId=${menuId}&page=${page}&size=${size}`,
     {
       next: PUBLIC_BOARD_REVALIDATE_OPTIONS,
     },
@@ -175,9 +179,13 @@ async function fetchPublicBoardPosts(
   return mapPayloadOrNull(payload, (value) => normalizeListResponse(value, page, size));
 }
 
-async function fetchPublicBoardPost(slug: string, postId: string): Promise<PublicBoardPostDetail | null> {
+async function fetchPublicBoardPost(
+  slug: string,
+  menuId: number,
+  postId: string,
+): Promise<PublicBoardPostDetail | null> {
   const payload = await serverFetchJsonOrNull<BackendBoardPostDetail>(
-    `/api/v1/public/boards/${encodeURIComponent(slug)}/posts/${encodeURIComponent(postId)}`,
+    `/api/v1/public/boards/${encodeURIComponent(slug)}/posts/${encodeURIComponent(postId)}?menuId=${menuId}`,
     {
       next: PUBLIC_BOARD_REVALIDATE_OPTIONS,
     },
@@ -188,16 +196,21 @@ async function fetchPublicBoardPost(slug: string, postId: string): Promise<Publi
 
 export async function listPublicBoardPosts(
   slug: string,
+  menuId: number,
   options: { page: number; size: number },
 ): Promise<PublicBoardPostListResponse | null> {
   return getOrSetPublicRequestCache(
-    `public-board-posts:${slug}:${options.page}:${options.size}`,
-    () => fetchPublicBoardPosts(slug, options.page, options.size),
+    `public-board-posts:${slug}:${menuId}:${options.page}:${options.size}`,
+    () => fetchPublicBoardPosts(slug, menuId, options.page, options.size),
   );
 }
 
-export async function getPublicBoardPost(slug: string, postId: string): Promise<PublicBoardPostDetail | null> {
-  return getOrSetPublicRequestCache(`public-board-post:${slug}:${postId}`, () =>
-    fetchPublicBoardPost(slug, postId),
+export async function getPublicBoardPost(
+  slug: string,
+  menuId: number,
+  postId: string,
+): Promise<PublicBoardPostDetail | null> {
+  return getOrSetPublicRequestCache(`public-board-post:${slug}:${menuId}:${postId}`, () =>
+    fetchPublicBoardPost(slug, menuId, postId),
   );
 }

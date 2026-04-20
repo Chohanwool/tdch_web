@@ -16,7 +16,7 @@ export interface AdminUploadTokenResponse {
 }
 
 const DEFAULT_MAX_BYTE_SIZE = 10_000_000;
-const INLINE_IMAGE_MIME_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
+const INLINE_IMAGE_MIME_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const FILE_ATTACHMENT_MIME_TYPES = [...INLINE_IMAGE_MIME_TYPES, "application/pdf"];
 
 function defaultAllowedMimeTypes(kind: AdminUploadAssetKind) {

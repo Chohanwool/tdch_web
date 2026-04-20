@@ -10,6 +10,7 @@ const MENU_REVALIDATE_OPTIONS: NonNullable<ServerFetchInit["next"]> = {
 };
 
 export interface PublicResolvedMenuPage {
+  menuId: number;
   type: MenuType;
   label: string;
   slug: string;

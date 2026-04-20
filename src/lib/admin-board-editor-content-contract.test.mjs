@@ -53,11 +53,30 @@ test("image node creation stores asset identity and stored path without public U
   );
 });
 
-test("youtube embed nodes persist videoId rather than provider URLs", async () => {
+test("asset collection includes official simple editor uploaded image sources", async () => {
+  const contents = await readHelper();
+  const collectAssetIdsFromTiptapDocument = extractFunction(contents, "collectAssetIdsFromTiptapDocument");
+
+  assert.match(
+    collectAssetIdsFromTiptapDocument,
+    /tdchAssetId/,
+    "Expected asset collection to read asset ids from SimpleEditor image src metadata.",
+  );
+  assert.match(
+    collectAssetIdsFromTiptapDocument,
+    /URLSearchParams/,
+    "Expected asset collection to parse SimpleEditor image src metadata safely.",
+  );
+});
+
+test("youtube embed nodes use the official Tiptap youtube node shape", async () => {
   const contents = await readHelper();
   const createYoutubeEmbedNode = extractFunction(contents, "createYoutubeEmbedNode");
 
-  assert.match(createYoutubeEmbedNode, /\bvideoId\b/, "Expected YouTube embed nodes to persist videoId.");
+  assert.match(createYoutubeEmbedNode, /type\s*:\s*["']youtube["']/, "Expected YouTube embeds to use Tiptap's official youtube node type.");
+  assert.match(createYoutubeEmbedNode, /\bsrc\b/, "Expected official YouTube nodes to persist a src attr.");
+  assert.match(createYoutubeEmbedNode, /\bwidth\b/, "Expected official YouTube nodes to include width.");
+  assert.match(createYoutubeEmbedNode, /\bheight\b/, "Expected official YouTube nodes to include height.");
   assert.equal(
     /\bpublicUrl\b/.test(createYoutubeEmbedNode),
     false,

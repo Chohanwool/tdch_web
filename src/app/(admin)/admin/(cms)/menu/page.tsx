@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getAdminSession, isAdminSession } from "@/auth";
+import { getAdminBoardTypes } from "@/lib/admin-board-api";
 import { getAdminMenuTree } from "@/lib/admin-menu-api";
 import MenuManagementClient from "./_components/menu-management-client";
 
@@ -11,7 +12,10 @@ export default async function AdminMenuPage() {
   }
 
   const actorId = session.user.id ?? "";
-  const menuTree = await getAdminMenuTree(actorId);
+  const [boardTypes, menuTree] = await Promise.all([
+    getAdminBoardTypes(actorId),
+    getAdminMenuTree(actorId),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -31,6 +35,7 @@ export default async function AdminMenuPage() {
       </div>
 
       <MenuManagementClient
+        boardTypes={boardTypes}
         initialItems={menuTree.items}
       />
     </div>

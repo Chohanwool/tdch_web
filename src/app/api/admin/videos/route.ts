@@ -21,6 +21,7 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const formParam = searchParams.get("form");
+  const menuIdParam = searchParams.get("menuId");
 
   if (formParam && !VALID_FORMS.has(formParam as VideoContentForm)) {
     return NextResponse.json(
@@ -29,8 +30,20 @@ export async function GET(request: Request) {
     );
   }
 
+  const menuId = menuIdParam ? Number(menuIdParam) : undefined;
+  if (menuIdParam && (Number.isNaN(menuId) || !Number.isInteger(menuId) || menuId! <= 0)) {
+    return NextResponse.json(
+      { code: "INVALID_MENU_ID", message: "올바르지 않은 menuId입니다." },
+      { status: 400 },
+    );
+  }
+
   try {
-    const videos = await getAdminVideos((formParam as VideoContentForm | null) ?? undefined);
+    const videos = await getAdminVideos(
+      menuId != null
+        ? { menuId }
+        : { form: (formParam as VideoContentForm | null) ?? undefined },
+    );
     return NextResponse.json(videos);
   } catch (error) {
     const status = error instanceof AdminApiError ? error.status : 400;

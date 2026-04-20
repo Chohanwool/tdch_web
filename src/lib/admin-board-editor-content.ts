@@ -46,9 +46,11 @@ export function createImageNode({ assetId, storedPath, alt = "" }: CreateImageNo
 
 export function createYoutubeEmbedNode(videoId: string): TiptapNode {
   return {
-    type: "youtubeEmbed",
+    type: "youtube",
     attrs: {
-      videoId,
+      src: `https://www.youtube.com/watch?v=${videoId}`,
+      width: 640,
+      height: 360,
     },
   };
 }
@@ -86,6 +88,24 @@ export function extractYouTubeVideoId(value: string): string | null {
 export function collectAssetIdsFromTiptapDocument(document: unknown): Array<string | number> {
   const assetIds: Array<string | number> = [];
 
+  const collectFromImageSource = (value: unknown) => {
+    if (typeof value !== "string") {
+      return;
+    }
+
+    const hashIndex = value.indexOf("#");
+    if (hashIndex === -1) {
+      return;
+    }
+
+    const params = new URLSearchParams(value.slice(hashIndex + 1));
+    const assetId = params.get("tdchAssetId");
+
+    if (assetId) {
+      assetIds.push(assetId);
+    }
+  };
+
   const visit = (node: unknown) => {
     if (!node || typeof node !== "object") {
       return;
@@ -97,6 +117,8 @@ export function collectAssetIdsFromTiptapDocument(document: unknown): Array<stri
     if (typeof assetId === "string" || typeof assetId === "number") {
       assetIds.push(assetId);
     }
+
+    collectFromImageSource(candidate.attrs?.src);
 
     if (Array.isArray(candidate.content)) {
       candidate.content.forEach(visit);

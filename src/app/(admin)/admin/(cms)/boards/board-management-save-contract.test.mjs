@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const clientPath = path.join(here, "_components", "board-management-client.tsx");
 const editorPath = path.join(here, "_components", "board-post-editor.tsx");
+const simpleEditorPath = path.join(here, "..", "..", "..", "..", "..", "components", "tiptap-templates", "simple", "simple-editor.tsx");
 
 async function readSource(sourcePath) {
   return readFile(sourcePath, "utf8");
@@ -17,13 +18,28 @@ test("board management client fetches internal board post routes for list and de
 
   assert.match(
     contents,
-    /fetch\s*\(\s*`\/api\/admin\/boards\/\$\{[^}]*\}\/posts`/s,
-    "Expected board-management-client to fetch /api/admin/boards/${slug}/posts for the selected board list.",
+    /fetch\s*\(\s*`\/api\/admin\/boards\/\$\{[^}]*\}\/posts\?menuId=\$\{[^}]*\}`/s,
+    "Expected board-management-client to fetch menu-scoped /api/admin/boards/${slug}/posts?menuId=${menuId} for the list.",
   );
   assert.match(
     contents,
-    /fetch\s*\(\s*`\/api\/admin\/boards\/\$\{[^}]*\}\/posts\/\$\{[^}]*\}`/s,
-    "Expected board-management-client to fetch /api/admin/boards/${slug}/posts/${postId} for post detail.",
+    /fetch\s*\(\s*`\/api\/admin\/boards\/\$\{[^}]*\}\/posts\/\$\{[^}]*\}\?menuId=\$\{[^}]*\}`/s,
+    "Expected board-management-client to fetch menu-scoped /api/admin/boards/${slug}/posts/${postId}?menuId=${menuId} for detail.",
+  );
+});
+
+test("board management client includes selected menuId in list and detail requests", async () => {
+  const contents = await readSource(clientPath);
+
+  assert.match(
+    contents,
+    /\/api\/admin\/boards\/\$\{[^}]*\}\/posts\?menuId=\$\{[^}]*\}/s,
+    "Expected board-management-client to include menuId in selected board list requests.",
+  );
+  assert.match(
+    contents,
+    /\/api\/admin\/boards\/\$\{[^}]*\}\/posts\/\$\{[^}]*\}\?menuId=\$\{[^}]*\}/s,
+    "Expected board-management-client to include menuId in selected board post detail requests.",
   );
 });
 
@@ -44,6 +60,21 @@ test("board management client creates and updates posts through internal route h
     contents,
     /headers\s*:\s*\{[\s\S]*["']Content-Type["']\s*:\s*["']application\/json["'][\s\S]*\}/s,
     "Expected save requests to send JSON content headers.",
+  );
+});
+
+test("board management client sends selected menuId in create and update save payloads", async () => {
+  const contents = await readSource(clientPath);
+
+  assert.match(
+    contents,
+    /savePayload\s*=\s*useMemo[\s\S]*menuId\s*:\s*(?:selectedMenuId|selectedBoardMenuId|selectedBoardMenu\.(?:id|menuId))/s,
+    "Expected savePayload to include the selected BOARD menu id.",
+  );
+  assert.match(
+    contents,
+    /body\s*:\s*JSON\.stringify\s*\(\s*savePayload\s*\)/s,
+    "Expected create/update requests to send the savePayload containing menuId.",
   );
 });
 
@@ -86,6 +117,7 @@ test("board management client uploads FILE_ATTACHMENT assets and includes them i
 test("board post editor keeps inline image persistence asset based", async () => {
   const clientContents = await readSource(clientPath);
   const editorContents = await readSource(editorPath);
+  const simpleEditorContents = await readSource(simpleEditorPath);
 
   assert.match(
     clientContents,
@@ -93,9 +125,10 @@ test("board post editor keeps inline image persistence asset based", async () =>
     "Expected image upload-token requests to keep using kind INLINE_IMAGE.",
   );
   assert.match(editorContents, /onImageUpload/, "Expected board-post-editor to keep delegating image uploads.");
-  assert.match(editorContents, /createImageNode\s*\(/, "Expected board-post-editor to insert uploaded image nodes.");
+  assert.match(simpleEditorContents, /createEditorImageSource/, "Expected SimpleEditor uploaded image nodes to include asset metadata.");
+  assert.match(simpleEditorContents, /tdchAssetId/, "Expected SimpleEditor image persistence to preserve uploaded asset ids.");
   assert.equal(
-    /\bpublicUrl\b/.test(editorContents),
+    /\bpublicUrl\b/.test(editorContents) || /\bpublicUrl\b/.test(simpleEditorContents),
     false,
     "Expected board-post-editor to avoid persisting publicUrl in editor content.",
   );

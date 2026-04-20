@@ -8,7 +8,7 @@ import {
   type PublicBoardPostDetail,
   type PublicBoardPostListResponse,
 } from "@/lib/public-board-api";
-import { resolvePublicMenuPath } from "@/lib/public-menu-api";
+import { resolvePublicMenuPath, type PublicResolvedMenuPage } from "@/lib/public-menu-api";
 import { createPageMetadata } from "@/lib/seo";
 
 interface DynamicRoutePageProps {
@@ -38,8 +38,12 @@ function getParentPath(path: string): string | null {
   return `/${parts.slice(0, -1).join("/")}`;
 }
 
-async function loadPublicBoardList(boardKey: string) {
-  const list = await listPublicBoardPosts(boardKey, { page: 0, size: 20 });
+async function loadPublicBoardList(resolved: PublicResolvedMenuPage) {
+  if (!resolved.boardKey) {
+    notFound();
+  }
+
+  const list = await listPublicBoardPosts(resolved.boardKey, resolved.menuId, { page: 0, size: 20 });
 
   if (!list) {
     notFound();
@@ -97,7 +101,7 @@ async function resolvePublicBoardState(path: string) {
     return { kind: "none" as const, resolved: parentResolved };
   }
 
-  const post = await getPublicBoardPost(parentResolved.boardKey, postId);
+  const post = await getPublicBoardPost(parentResolved.boardKey, parentResolved.menuId, postId);
   if (!post) {
     return { kind: "missing" as const, resolved: parentResolved };
   }
@@ -175,12 +179,7 @@ export default async function DynamicRoutePage({
     }
 
     if (boardState.kind === "list") {
-      const boardKey = boardState.resolved.boardKey;
-      if (!boardKey) {
-        notFound();
-      }
-
-      const list = await loadPublicBoardList(boardKey);
+      const list = await loadPublicBoardList(boardState.resolved);
       return renderPublicBoardList(boardState.resolved.label, boardState.resolved.fullPath, list.items);
     }
 
@@ -204,7 +203,7 @@ export default async function DynamicRoutePage({
     }
 
     if (resolved.fullPath === path) {
-      const list = await loadPublicBoardList(resolved.boardKey);
+      const list = await loadPublicBoardList(resolved);
       return renderPublicBoardList(resolved.label, resolved.fullPath, list.items);
     }
   }
@@ -212,12 +211,7 @@ export default async function DynamicRoutePage({
   const boardState = await resolvePublicBoardState(path);
 
   if (boardState.kind === "list") {
-    const boardKey = boardState.resolved.boardKey;
-    if (!boardKey) {
-      notFound();
-    }
-
-    const list = await loadPublicBoardList(boardKey);
+    const list = await loadPublicBoardList(boardState.resolved);
     return renderPublicBoardList(boardState.resolved.label, boardState.resolved.fullPath, list.items);
   }
 

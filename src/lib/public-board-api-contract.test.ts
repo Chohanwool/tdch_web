@@ -8,6 +8,7 @@ import {
 } from "@/lib/public-board-api";
 
 const _assertBoardSlug: string = "announcements";
+const _assertMenuId = 456;
 const _assertPostId: string = "post-123";
 
 const _assertPostAsset: PublicBoardPostAsset = {
@@ -25,6 +26,7 @@ const _assertPostAsset: PublicBoardPostAsset = {
 const _assertPostSummary: PublicBoardPostSummary = {
   id: _assertPostId,
   boardId: "board-123",
+  menuId: String(_assertMenuId),
   title: "주일 예배 안내",
   isPublic: true,
   authorId: "writer-42",
@@ -35,6 +37,7 @@ const _assertPostSummary: PublicBoardPostSummary = {
 const _assertPostDetail: PublicBoardPostDetail = {
   id: _assertPostSummary.id,
   boardId: _assertPostSummary.boardId,
+  menuId: _assertPostSummary.menuId,
   title: _assertPostSummary.title,
   contentJson: {
     type: "doc",
@@ -62,8 +65,8 @@ const _assertListResponse: PublicBoardPostListResponse = {
 };
 
 async function assertPublicBoardApiContract() {
-  const list = await listPublicBoardPosts(_assertBoardSlug, { page: 1, size: 12 });
-  const detail = await getPublicBoardPost(_assertBoardSlug, _assertPostId);
+  const list = await listPublicBoardPosts(_assertBoardSlug, _assertMenuId, { page: 1, size: 12 });
+  const detail = await getPublicBoardPost(_assertBoardSlug, _assertMenuId, _assertPostId);
 
   const _assertList: PublicBoardPostListResponse | null = list;
   const _assertDetail: PublicBoardPostDetail | null = detail;
@@ -75,6 +78,7 @@ async function assertPublicBoardApiContract() {
 }
 
 void _assertBoardSlug;
+void _assertMenuId;
 void _assertPostId;
 void _assertPostAsset;
 void _assertPostSummary;

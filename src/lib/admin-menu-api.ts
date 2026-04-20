@@ -25,6 +25,9 @@ export interface AdminMenuTreeNode {
   slugCustomized: boolean;
   staticPageKey: string | null;
   boardKey: string | null;
+  boardTypeId: number | null;
+  boardTypeKey: string | null;
+  boardTypeLabel: string | null;
   externalUrl: string | null;
   openInNewTab: boolean;
   playlistTitle: string | null;
@@ -69,6 +72,7 @@ export interface MenuTreeNodePayload {
   slugCustomized?: boolean;
   staticPageKey?: string | null;
   boardKey?: string | null;
+  boardTypeId?: number | null;
   externalUrl?: string | null;
   openInNewTab?: boolean;
   isAuto?: boolean;
@@ -91,6 +95,15 @@ export async function getAdminMenuTree(actorId: string): Promise<AdminMenuTreeRe
     headers: { "X-Admin-Actor-Id": actorId },
   });
   return response.json() as Promise<AdminMenuTreeResponse>;
+}
+
+function flattenMenuItems(items: AdminMenuTreeNode[]): AdminMenuTreeNode[] {
+  return items.flatMap((item) => [item, ...flattenMenuItems(item.children)]);
+}
+
+export async function getAdminMenuItems(actorId: string): Promise<AdminMenuTreeNode[]> {
+  const tree = await getAdminMenuTree(actorId);
+  return flattenMenuItems(tree.items);
 }
 
 export async function getAdminYouTubePlaylists(actorId: string): Promise<AdminYouTubePlaylistsResponse> {

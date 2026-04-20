@@ -19,7 +19,11 @@ function unauthorizedResponse() {
   );
 }
 
-export async function GET(_request: Request, context: RouteContext) {
+function readMenuId(request: Request) {
+  return new URL(request.url).searchParams.get("menuId");
+}
+
+export async function GET(request: Request, context: RouteContext) {
   const session = await getAdminSession();
 
   if (!isAdminSession(session) || !session.user.id) {
@@ -27,9 +31,10 @@ export async function GET(_request: Request, context: RouteContext) {
   }
 
   const { slug } = await context.params;
+  const menuId = readMenuId(request);
 
   try {
-    const posts = await getAdminBoardPosts(session.user.id, slug);
+    const posts = await getAdminBoardPosts(session.user.id, slug, menuId);
     return NextResponse.json({ posts });
   } catch (error) {
     const status = error instanceof AdminApiError ? error.status : 400;
@@ -52,10 +57,11 @@ export async function POST(request: Request, context: RouteContext) {
   }
 
   const { slug } = await context.params;
+  const menuId = readMenuId(request);
 
   try {
     const payload = await request.json();
-    const post = await createAdminBoardPost(session.user.id, slug, payload);
+    const post = await createAdminBoardPost(session.user.id, slug, menuId ? { ...payload, menuId } : payload);
     return NextResponse.json(post);
   } catch (error) {
     const status = error instanceof AdminApiError ? error.status : 400;
