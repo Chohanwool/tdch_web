@@ -39,11 +39,8 @@ type ScreenMode = "list" | "editor";
 
 type BoardPostListItem = AdminBoardPostSummary & {
   boardSlug: string;
-  boardTitle: string;
   boardMenuId: number;
   boardMenuLabel: string;
-  boardTypeId: number | null;
-  boardTypeLabel: string;
 };
 
 function createEmptyDraft(): Draft {
@@ -108,35 +105,19 @@ function getErrorMessage(error: unknown, fallback: string) {
   return error instanceof Error ? error.message : fallback;
 }
 
-function getBoardTypeId(boardMenu: AdminMenuTreeNode, board: AdminBoardSummary | null) {
-  const boardTypeId = boardMenu.boardTypeId ?? board?.boardTypeId ?? null;
-  return boardTypeId === null ? null : Number(boardTypeId);
-}
-
-function getBoardTypeLabel(boardMenu: AdminMenuTreeNode, board: AdminBoardSummary | null) {
-  return boardMenu.boardTypeLabel ?? boardMenu.boardTypeKey ?? board?.type ?? "게시판";
-}
-
 function formatBoardMenuOptionLabel(boardMenu: AdminMenuTreeNode) {
-  const boardTypeLabel = boardMenu.boardTypeLabel ?? boardMenu.boardTypeKey ?? "게시판";
-  return boardMenu.label.trim() === boardTypeLabel.trim()
-    ? boardMenu.label
-    : `${boardMenu.label} / ${boardTypeLabel}`;
+  return boardMenu.label;
 }
 
 function toBoardPostListItem(
   post: AdminBoardPostSummary,
   boardMenu: AdminMenuTreeNode,
-  board: AdminBoardSummary | null,
 ): BoardPostListItem {
   return {
     ...post,
     boardSlug: boardMenu.boardKey ?? "",
-    boardTitle: board?.title ?? boardMenu.label,
     boardMenuId: boardMenu.id,
     boardMenuLabel: boardMenu.label,
-    boardTypeId: getBoardTypeId(boardMenu, board),
-    boardTypeLabel: getBoardTypeLabel(boardMenu, board),
   };
 }
 
@@ -154,40 +135,38 @@ export default function BoardManagementClient({
   initialPosts = [],
   initialPost = null,
 }: BoardManagementClientProps) {
-  const boardMenus = useMemo(
-    () => initialBoardMenus.filter((boardMenu) => boardMenu.type === "BOARD" && boardMenu.boardKey && !boardMenu.isAuto),
-    [initialBoardMenus],
-  );
   const boardsBySlug = useMemo(
     () => new Map(initialBoards.map((board) => [board.slug, board])),
     [initialBoards],
   );
-  const boardTypeOptions = useMemo(() => {
-    const seen = new Set<number>();
-    return boardMenus
-      .map((boardMenu) => {
-        const board = boardMenu.boardKey ? boardsBySlug.get(boardMenu.boardKey) ?? null : null;
-        return {
-          id: getBoardTypeId(boardMenu, board),
-          label: getBoardTypeLabel(boardMenu, board),
-        };
-      })
-      .filter((option): option is { id: number; label: string } => {
-        if (option.id === null || seen.has(option.id)) {
-          return false;
-        }
-        seen.add(option.id);
-        return true;
-      });
-  }, [boardMenus, boardsBySlug]);
-
+  const disconnectedBoardMenus = useMemo(
+    () =>
+      initialBoardMenus.filter(
+        (boardMenu) =>
+          boardMenu.type === "BOARD" &&
+          Boolean(boardMenu.boardKey) &&
+          !boardMenu.isAuto &&
+          !boardsBySlug.has(boardMenu.boardKey ?? ""),
+      ),
+    [boardsBySlug, initialBoardMenus],
+  );
+  const boardMenus = useMemo(
+    () =>
+      initialBoardMenus.filter(
+        (boardMenu) =>
+          boardMenu.type === "BOARD" &&
+          Boolean(boardMenu.boardKey) &&
+          !boardMenu.isAuto &&
+          boardsBySlug.has(boardMenu.boardKey ?? ""),
+      ),
+    [boardsBySlug, initialBoardMenus],
+  );
   const initialMenuId = boardMenus[0]?.id ?? 0;
   const [screenMode, setScreenMode] = useState<ScreenMode>("list");
   const [selectedMenuId, setSelectedMenuId] = useState(initialMenuId);
   const [posts, setPosts] = useState<BoardPostListItem[]>(() => {
     const firstMenu = boardMenus[0] ?? null;
-    const firstBoard = firstMenu?.boardKey ? boardsBySlug.get(firstMenu.boardKey) ?? null : null;
-    return firstMenu ? initialPosts.map((post) => toBoardPostListItem(post, firstMenu, firstBoard)) : [];
+    return firstMenu ? initialPosts.map((post) => toBoardPostListItem(post, firstMenu)) : [];
   });
   const [selectedPostId, setSelectedPostId] = useState<string | null>(initialPost?.id ?? null);
   const [draft, setDraft] = useState<Draft>(initialPost ? createDraftFromPost(initialPost) : createEmptyDraft());
@@ -198,7 +177,7 @@ export default function BoardManagementClient({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [boardTypeFilter, setBoardTypeFilter] = useState("ALL");
+  const [boardMenuFilter, setBoardMenuFilter] = useState("ALL");
   const [titleQuery, setTitleQuery] = useState("");
 
   const selectedBoardMenu = useMemo(
@@ -214,11 +193,11 @@ export default function BoardManagementClient({
   const filteredPosts = useMemo(() => {
     const normalizedQuery = titleQuery.trim().toLocaleLowerCase("ko-KR");
     return posts.filter((post) => {
-      const matchesType = boardTypeFilter === "ALL" || String(post.boardTypeId) === boardTypeFilter;
+      const matchesMenu = boardMenuFilter === "ALL" || String(post.boardMenuId) === boardMenuFilter;
       const matchesTitle = normalizedQuery.length === 0 || post.title.toLocaleLowerCase("ko-KR").includes(normalizedQuery);
-      return matchesType && matchesTitle;
+      return matchesMenu && matchesTitle;
     });
-  }, [boardTypeFilter, posts, titleQuery]);
+  }, [boardMenuFilter, posts, titleQuery]);
 
   const savePayload = useMemo<BoardPostSavePayload>(() => ({
     menuId: selectedMenuId,
@@ -258,8 +237,7 @@ export default function BoardManagementClient({
               throw new Error(payload.message || "게시글 목록을 불러오지 못했습니다.");
             }
 
-            const board = boardMenu.boardKey ? boardsBySlug.get(boardMenu.boardKey) ?? null : null;
-            return (payload.posts ?? []).map((post) => toBoardPostListItem(post, boardMenu, board));
+            return (payload.posts ?? []).map((post) => toBoardPostListItem(post, boardMenu));
           }),
         );
 
@@ -379,12 +357,9 @@ export default function BoardManagementClient({
   };
 
   const openNewPost = () => {
-    const preferredMenu = boardTypeFilter === "ALL"
+    const preferredMenu = boardMenuFilter === "ALL"
       ? boardMenus[0]
-      : boardMenus.find((boardMenu) => {
-          const board = boardMenu.boardKey ? boardsBySlug.get(boardMenu.boardKey) ?? null : null;
-          return String(getBoardTypeId(boardMenu, board)) === boardTypeFilter;
-        }) ?? boardMenus[0];
+      : boardMenus.find((boardMenu) => String(boardMenu.id) === boardMenuFilter) ?? boardMenus[0];
 
     setSelectedMenuId(preferredMenu?.id ?? 0);
     setSelectedPostId(null);
@@ -440,9 +415,9 @@ export default function BoardManagementClient({
 
       setDraft(createDraftFromPost(payload));
       setAttachmentAssetIds(getAttachmentAssetIds(payload));
-      setSelectedPostId(payload.id);
+        setSelectedPostId(payload.id);
       setPosts((current) => {
-        const nextPost = toBoardPostListItem(payload, selectedBoardMenu, selectedBoard);
+        const nextPost = toBoardPostListItem(payload, selectedBoardMenu);
         const exists = current.some((post) => post.id === payload.id);
         return sortPostsByUpdatedAt(
           exists
@@ -482,16 +457,16 @@ export default function BoardManagementClient({
 
             <div className="mt-4 grid gap-3 md:grid-cols-[220px_minmax(0,1fr)]">
               <label className="space-y-1.5">
-                <span className="text-[12px] font-semibold text-[#334155]">게시판 타입</span>
+                <span className="text-[12px] font-semibold text-[#334155]">게시판</span>
                 <select
-                  value={boardTypeFilter}
-                  onChange={(event) => setBoardTypeFilter(event.target.value)}
+                  value={boardMenuFilter}
+                  onChange={(event) => setBoardMenuFilter(event.target.value)}
                   className="w-full rounded-lg border border-[#d5deea] bg-white px-3 py-2 text-[13px]"
                 >
                   <option value="ALL">전체</option>
-                  {boardTypeOptions.map((boardType) => (
-                    <option key={boardType.id} value={boardType.id}>
-                      {boardType.label}
+                  {boardMenus.map((boardMenu) => (
+                    <option key={boardMenu.id} value={boardMenu.id}>
+                      {boardMenu.label}
                     </option>
                   ))}
                 </select>
@@ -508,6 +483,12 @@ export default function BoardManagementClient({
             </div>
 
             {notice && <p className="mt-3 text-[12px] text-[#2d5da8]">{notice}</p>}
+            {disconnectedBoardMenus.length > 0 && (
+              <p className="mt-3 rounded-lg bg-[#fff7ed] px-3 py-2 text-[12px] text-[#9a3412]">
+                연결 게시판이 사라진 메뉴 {disconnectedBoardMenus.length}개는 목록에서 제외했습니다.
+                메뉴 관리에서 저장하면 메뉴 전용 게시판이 다시 생성됩니다.
+              </p>
+            )}
             {error && <p className="mt-3 text-[12px] text-[#be123c]">오류: {error}</p>}
           </div>
 
@@ -522,13 +503,12 @@ export default function BoardManagementClient({
                     <button
                       type="button"
                       onClick={() => openPost(post)}
-                      className="grid w-full gap-2 px-1 py-4 text-left transition hover:bg-[#fafcff] md:grid-cols-[minmax(0,1fr)_140px_110px_120px]"
+                      className="grid w-full gap-2 px-1 py-4 text-left transition hover:bg-[#fafcff] md:grid-cols-[minmax(0,1fr)_110px_120px]"
                     >
                       <div className="min-w-0">
                         <p className="truncate text-[14px] font-semibold text-[#132033]">{post.title}</p>
                         <p className="mt-1 text-[12px] text-[#6d7f95]">{post.boardMenuLabel}</p>
                       </div>
-                      <span className="text-[12px] font-semibold text-[#4a6484]">{post.boardTypeLabel}</span>
                       <span className={`w-fit rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                         post.isPublic ? "bg-[#ecfdf5] text-[#047857]" : "bg-[#f8fafc] text-[#64748b]"
                       }`}>

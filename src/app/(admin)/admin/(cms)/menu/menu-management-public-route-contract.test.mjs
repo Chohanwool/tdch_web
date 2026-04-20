@@ -22,21 +22,13 @@ function extractBoardCase(contents) {
   return match.groups.body;
 }
 
-function extractBoardEditorBlock(contents) {
-  const match = contents.match(
-    /\{\s*selectedNode\.type\s*===\s*["']BOARD["']\s*&&\s*\((?<body>[\s\S]*?)(?=\n\s*\{\s*selectedNode\.type\s*===\s*["']EXTERNAL_LINK["'])/,
-  );
-  assert.ok(match?.groups?.body, "Expected the editor UI to render a BOARD-specific section.");
-  return match.groups.body;
-}
-
 test("admin menu page does not fetch global boards for BOARD menu editing", async () => {
   const contents = await readPage();
 
   assert.doesNotMatch(
     contents,
-    /getAdminBoards|availableBoards/s,
-    "Expected menu/page.tsx to avoid fetching or passing global seed boards.",
+    /getAdminBoards|availableBoards|getAdminBoardTypes|boardTypes/s,
+    "Expected menu/page.tsx to avoid fetching or passing global boards or board types.",
   );
   assert.match(
     contents,
@@ -71,39 +63,23 @@ test("admin menu public address preview builds BOARD URLs from parent and child 
   );
 });
 
-test("menu management client renders BOARD editing as a board type dropdown", async () => {
+test("menu management client hides BOARD type editing from admins", async () => {
   const contents = await readClient();
-  const boardEditorBlock = extractBoardEditorBlock(contents);
 
   assert.doesNotMatch(
     contents,
-    /availableBoards|AdminBoardSummary|getAdminBoards/s,
-    "Expected MenuManagementClient to avoid global board list props.",
-  );
-  assert.match(
-    boardEditorBlock,
-    /게시판 타입/,
-    "Expected BOARD editor label to be '게시판 타입'.",
+    /availableBoards|AdminBoardSummary|getAdminBoards|AdminBoardTypeSummary|getAdminBoardTypes/s,
+    "Expected MenuManagementClient to avoid global board and board type props.",
   );
   assert.doesNotMatch(
-    boardEditorBlock,
-    /게시판 키|연결 게시판/,
-    "Expected BOARD editor to avoid exposing raw board key or global board connection labels.",
+    contents,
+    /게시판 타입|게시판 키|연결 게시판/,
+    "Expected BOARD editor to hide board type and raw board key controls.",
   );
   assert.match(
-    boardEditorBlock,
-    /<select\b[\s\S]*value\s*=\s*\{\s*selectedNode\.boardTypeId[\s\S]*onChange\s*=\s*\{\s*\(?\s*event\s*\)?\s*=>[\s\S]*boardTypeId\s*:\s*Number\s*\(\s*event\.target\.value\s*\)/s,
-    "Expected BOARD editor to update node.boardTypeId from a board_type select value.",
-  );
-  assert.match(
-    boardEditorBlock,
-    /boardTypes\.map\s*\(\s*\(?\s*boardType\s*\)?\s*=>[\s\S]*<option\b[\s\S]*value\s*=\s*\{\s*boardType\.id\s*\}/s,
-    "Expected BOARD select options to come from board_type rows.",
-  );
-  assert.doesNotMatch(
-    boardEditorBlock,
-    /<input\b/,
-    "Expected BOARD editor to use a select, not a free text input, for boardKey.",
+    contents,
+    /boardTypeId:\s*null/,
+    "Expected new BOARD menu nodes to let the backend assign the default board type.",
   );
 });
 

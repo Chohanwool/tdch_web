@@ -106,8 +106,14 @@ test("board management client opens on the list screen with filters above the po
     /useState<ScreenMode>\(\s*["']list["']\s*\)/,
     "Expected the initial board management screen to be the post list.",
   );
-  assert.match(contents, /게시판 타입/, "Expected the post list to expose a board type filter.");
+  assert.match(contents, /게시판/, "Expected the post list to expose a board menu filter.");
+  assert.doesNotMatch(contents, /게시판 타입/, "Expected the post list to hide board type filtering from admins.");
   assert.match(contents, /제목 검색/, "Expected the post list to expose a title search filter.");
+  assert.match(
+    contents,
+    /boardMenus\.map\s*\(\s*\(?\s*boardMenu\s*\)?\s*=>[\s\S]*<option\b[\s\S]*value\s*=\s*\{\s*boardMenu\.id\s*\}/s,
+    "Expected the board filter to list actual BOARD menu entries.",
+  );
   assert.match(
     contents,
     /screenMode\s*===\s*["']list["'][\s\S]*filteredPosts\.map/s,
@@ -169,6 +175,26 @@ test("board management client selects BOARD menu ids instead of only board slugs
     contents,
     /!\s*boardMenu\.isAuto|isUserCreatedBoardMenu|filterUserCreatedBoardMenus/s,
     "Expected the client to guard against auto-generated seed/fallback BOARD menus.",
+  );
+});
+
+test("board management client ignores disconnected BOARD menu entries", async () => {
+  const contents = await readSource(clientPath);
+
+  assert.match(
+    contents,
+    /disconnectedBoardMenus/,
+    "Expected the client to track BOARD menus whose board row is missing.",
+  );
+  assert.match(
+    contents,
+    /boardsBySlug\.has\s*\(\s*boardMenu\.boardKey\s*\?\?\s*["']["']\s*\)/,
+    "Expected the selectable board menus to require a matching board slug before loading posts.",
+  );
+  assert.match(
+    contents,
+    /연결 게시판이 사라진 메뉴/,
+    "Expected the UI to explain why disconnected board menus are excluded.",
   );
 });
 

@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { AdminBoardTypeSummary } from "@/lib/admin-board-api";
 import type {
   AdminMenuTreeNode,
   MenuStatus,
@@ -210,7 +209,7 @@ function toPayload(nodes: EditorNode[]): MenuTreeNodePayload[] {
   }));
 }
 
-function buildNewNode(id: number, type: MenuType, defaultBoardTypeId: number | null): EditorNode {
+function buildNewNode(id: number, type: MenuType): EditorNode {
   return {
     id,
     type,
@@ -222,7 +221,7 @@ function buildNewNode(id: number, type: MenuType, defaultBoardTypeId: number | n
     slugCustomized: false,
     staticPageKey: type === "STATIC" ? "about.greeting" : null,
     boardKey: null,
-    boardTypeId: type === "BOARD" ? defaultBoardTypeId : null,
+    boardTypeId: null,
     boardTypeKey: null,
     boardTypeLabel: null,
     externalUrl: type === "EXTERNAL_LINK" ? "https://example.com" : null,
@@ -294,10 +293,8 @@ function getPublicRouteSummary(node: EditorNode, menuById: Map<number, EditorNod
 }
 
 export default function MenuManagementClient({
-  boardTypes,
   initialItems,
 }: {
-  boardTypes: AdminBoardTypeSummary[];
   initialItems: AdminMenuTreeNode[];
 }) {
   const router = useRouter();
@@ -392,7 +389,7 @@ export default function MenuManagementClient({
   const handleAddRoot = (type: MenuType) => {
     const nextId = tempId;
     setTempId((prev) => prev - 1);
-    const nextNode = buildNewNode(nextId, type, Number(boardTypes[0]?.id ?? 0) || null);
+    const nextNode = buildNewNode(nextId, type);
     markDirty([...items, nextNode]);
     setSelectedId(nextId);
   };
@@ -403,7 +400,7 @@ export default function MenuManagementClient({
     }
     const nextId = tempId;
     setTempId((prev) => prev - 1);
-    const nextNode = buildNewNode(nextId, type, Number(boardTypes[0]?.id ?? 0) || null);
+    const nextNode = buildNewNode(nextId, type);
     markDirty(
       mapTree(items, selectedNode.id, (node) => ({
         ...node,
@@ -922,28 +919,6 @@ export default function MenuManagementClient({
                           </option>
                         ))}
                       </select>
-                    </label>
-                  )}
-
-                  {selectedNode.type === "BOARD" && (
-                    <label className="space-y-1.5">
-                      <span className="text-[12px] font-semibold text-[#334155]">게시판 타입</span>
-                      <select
-                        value={selectedNode.boardTypeId ?? boardTypes[0]?.id ?? ""}
-                        onChange={(event) =>
-                          updateSelectedNode((node) => ({ ...node, boardTypeId: Number(event.target.value) }))
-                        }
-                        className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px]"
-                      >
-                        {boardTypes.map((boardType) => (
-                          <option key={boardType.id} value={boardType.id}>
-                            {boardType.label}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="text-[11px] leading-5 text-[#6d7f95]">
-                        저장 시 이 메뉴 전용 게시판이 생성되고 이 타입으로 관리됩니다.
-                      </p>
                     </label>
                   )}
 
