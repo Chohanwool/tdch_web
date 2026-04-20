@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   collectAssetIdsFromTiptapDocument,
   createEmptyTiptapDocument,
+  normalizeTiptapDocumentImageMetadata,
   type TiptapDocument,
 } from "@/lib/admin-board-editor-content";
 import {
@@ -199,17 +200,21 @@ export default function BoardManagementClient({
     });
   }, [boardMenuFilter, posts, titleQuery]);
 
-  const savePayload = useMemo<BoardPostSavePayload>(() => ({
-    menuId: selectedMenuId,
-    title: (draft.title ?? "").trim(),
-    contentJson: draft.contentJson,
-    contentHtml: draft.contentHtml,
-    isPublic: draft.isPublic,
-    assetIds: [...new Set([
-      ...collectAssetIdsFromTiptapDocument(draft.contentJson),
-      ...attachmentAssetIds,
-    ])],
-  }), [attachmentAssetIds, draft, selectedMenuId]);
+  const savePayload = useMemo<BoardPostSavePayload>(() => {
+    const contentJson = normalizeTiptapDocumentImageMetadata(draft.contentJson);
+
+    return {
+      menuId: selectedMenuId,
+      title: (draft.title ?? "").trim(),
+      contentJson,
+      contentHtml: draft.contentHtml,
+      isPublic: draft.isPublic,
+      assetIds: [...new Set([
+        ...collectAssetIdsFromTiptapDocument(contentJson),
+        ...attachmentAssetIds,
+      ])],
+    };
+  }, [attachmentAssetIds, draft, selectedMenuId]);
 
   useEffect(() => {
     if (boardMenus.length === 0) {

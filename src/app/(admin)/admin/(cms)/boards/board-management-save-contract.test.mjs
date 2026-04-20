@@ -8,6 +8,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const clientPath = path.join(here, "_components", "board-management-client.tsx");
 const editorPath = path.join(here, "_components", "board-post-editor.tsx");
 const simpleEditorPath = path.join(here, "..", "..", "..", "..", "..", "components", "tiptap-templates", "simple", "simple-editor.tsx");
+const imageUploadNodePath = path.join(here, "..", "..", "..", "..", "..", "components", "tiptap-node", "image-upload-node", "image-upload-node.tsx");
 
 async function readSource(sourcePath) {
   return readFile(sourcePath, "utf8");
@@ -83,6 +84,16 @@ test("board management client sends the complete board post save payload", async
 
   assert.match(
     contents,
+    /normalizeTiptapDocumentImageMetadata/,
+    "Expected save payload to restore uploaded image asset metadata before sending contentJson.",
+  );
+  assert.match(
+    contents,
+    /contentJson\s*=\s*normalizeTiptapDocumentImageMetadata\(draft\.contentJson\)/,
+    "Expected save payload contentJson to use the normalized editor document.",
+  );
+  assert.match(
+    contents,
     /body\s*:\s*JSON\.stringify\s*\(\s*savePayload\s*\)/s,
     "Expected save requests to JSON.stringify savePayload, which contains title, contentJson, contentHtml, isPublic, and assetIds.",
   );
@@ -118,6 +129,7 @@ test("board post editor keeps inline image persistence asset based", async () =>
   const clientContents = await readSource(clientPath);
   const editorContents = await readSource(editorPath);
   const simpleEditorContents = await readSource(simpleEditorPath);
+  const imageUploadNodeContents = await readSource(imageUploadNodePath);
 
   assert.match(
     clientContents,
@@ -127,6 +139,9 @@ test("board post editor keeps inline image persistence asset based", async () =>
   assert.match(editorContents, /onImageUpload/, "Expected board-post-editor to keep delegating image uploads.");
   assert.match(simpleEditorContents, /createEditorImageSource/, "Expected SimpleEditor uploaded image nodes to include asset metadata.");
   assert.match(simpleEditorContents, /tdchAssetId/, "Expected SimpleEditor image persistence to preserve uploaded asset ids.");
+  assert.match(imageUploadNodeContents, /tdchAssetId/, "Expected uploaded image insertion to read the persisted asset id.");
+  assert.match(imageUploadNodeContents, /tdchStoredPath/, "Expected uploaded image insertion to read the persisted stored path.");
+  assert.match(imageUploadNodeContents, /\.\.\.getUploadedImageMetadata\(url\)/, "Expected inserted image attrs to include upload metadata.");
   assert.equal(
     /\bpublicUrl\b/.test(editorContents) || /\bpublicUrl\b/.test(simpleEditorContents),
     false,

@@ -37,6 +37,7 @@ test("admin board editor content helper file exists and exports the expected sur
   assertExportedFunction(contents, "createYoutubeEmbedNode");
   assertExportedFunction(contents, "extractYouTubeVideoId");
   assertExportedFunction(contents, "collectAssetIdsFromTiptapDocument");
+  assertExportedFunction(contents, "normalizeTiptapDocumentImageMetadata");
 });
 
 test("image node creation stores asset identity and stored path without public URLs", async () => {
@@ -59,13 +60,34 @@ test("asset collection includes official simple editor uploaded image sources", 
 
   assert.match(
     collectAssetIdsFromTiptapDocument,
+    /getImageMetadataFromSource/,
+    "Expected asset collection to read asset ids from SimpleEditor image src metadata.",
+  );
+  assert.match(
+    contents,
     /tdchAssetId/,
     "Expected asset collection to read asset ids from SimpleEditor image src metadata.",
   );
   assert.match(
-    collectAssetIdsFromTiptapDocument,
+    contents,
     /URLSearchParams/,
     "Expected asset collection to parse SimpleEditor image src metadata safely.",
+  );
+});
+
+test("image metadata normalization restores asset attrs from simple editor image sources", async () => {
+  const contents = await readHelper();
+  const normalizeTiptapDocumentImageMetadata = extractFunction(contents, "normalizeTiptapDocumentImageMetadata");
+
+  assert.match(
+    normalizeTiptapDocumentImageMetadata,
+    /getImageMetadataFromSource/,
+    "Expected normalization to recover metadata from the SimpleEditor image src hash.",
+  );
+  assert.match(
+    normalizeTiptapDocumentImageMetadata,
+    /\.\.\.metadata/,
+    "Expected normalized image attrs to include recovered asset metadata.",
   );
 });
 

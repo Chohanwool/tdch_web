@@ -89,17 +89,7 @@ export function collectAssetIdsFromTiptapDocument(document: unknown): Array<stri
   const assetIds: Array<string | number> = [];
 
   const collectFromImageSource = (value: unknown) => {
-    if (typeof value !== "string") {
-      return;
-    }
-
-    const hashIndex = value.indexOf("#");
-    if (hashIndex === -1) {
-      return;
-    }
-
-    const params = new URLSearchParams(value.slice(hashIndex + 1));
-    const assetId = params.get("tdchAssetId");
+    const { assetId } = getImageMetadataFromSource(value);
 
     if (assetId) {
       assetIds.push(assetId);
@@ -127,6 +117,60 @@ export function collectAssetIdsFromTiptapDocument(document: unknown): Array<stri
 
   visit(document);
   return assetIds;
+}
+
+function getImageMetadataFromSource(value: unknown) {
+  if (typeof value !== "string") {
+    return {};
+  }
+
+  const hashIndex = value.indexOf("#");
+  if (hashIndex === -1) {
+    return {};
+  }
+
+  const params = new URLSearchParams(value.slice(hashIndex + 1));
+  const assetId = params.get("tdchAssetId");
+  const storedPath = params.get("tdchStoredPath");
+
+  return {
+    ...(assetId ? { assetId } : {}),
+    ...(storedPath ? { storedPath } : {}),
+  };
+}
+
+export function normalizeTiptapDocumentImageMetadata(
+  document: TiptapDocument | Record<string, unknown>,
+): TiptapDocument | Record<string, unknown> {
+  const normalizeNode = (node: unknown): unknown => {
+    if (!node || typeof node !== "object") {
+      return node;
+    }
+
+    const candidate = node as TiptapNode;
+    const attrs = candidate.attrs && typeof candidate.attrs === "object" ? candidate.attrs : undefined;
+    const metadata = getImageMetadataFromSource(attrs?.src);
+    const content = Array.isArray(candidate.content) ? candidate.content.map(normalizeNode) : undefined;
+
+    if (candidate.type !== "image" && !content) {
+      return node;
+    }
+
+    return {
+      ...candidate,
+      ...(attrs || Object.keys(metadata).length > 0
+        ? {
+            attrs: {
+              ...attrs,
+              ...metadata,
+            },
+          }
+        : {}),
+      ...(content ? { content } : {}),
+    };
+  };
+
+  return normalizeNode(document) as TiptapDocument | Record<string, unknown>;
 }
 
 function normalizeYouTubeId(value: string) {

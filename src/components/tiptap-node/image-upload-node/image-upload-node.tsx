@@ -212,6 +212,23 @@ function useFileUpload(options: UploadOptions) {
   }
 }
 
+function getUploadedImageMetadata(url: string) {
+  const hashIndex = url.indexOf("#")
+
+  if (hashIndex === -1) {
+    return {}
+  }
+
+  const params = new URLSearchParams(url.slice(hashIndex + 1))
+  const assetId = params.get("tdchAssetId")
+  const storedPath = params.get("tdchStoredPath")
+
+  return {
+    ...(assetId ? { assetId } : {}),
+    ...(storedPath ? { storedPath } : {}),
+  }
+}
+
 const CloudUploadIcon: React.FC = () => (
   <svg
     width="24"
@@ -465,6 +482,7 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
             attrs: {
               ...extension.options,
               src: url,
+              ...getUploadedImageMetadata(url),
               alt: filename,
               title: filename,
             },
