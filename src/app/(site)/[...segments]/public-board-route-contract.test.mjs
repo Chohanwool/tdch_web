@@ -21,6 +21,11 @@ test("public site catch-all route keeps static behavior and adds board rendering
   );
   assert.match(
     contents,
+    /from\s*["']@\/components\/site-page-shell["']/,
+    "Expected the catch-all route to use the shared site page shell for public board pages.",
+  );
+  assert.match(
+    contents,
     /from\s*["']@\/lib\/public-board-api["']/,
     "Expected the catch-all route to import public board API helpers.",
   );
@@ -45,6 +50,36 @@ test("public site catch-all route keeps static behavior and adds board rendering
     contents,
     /PUBLIC_BOARD|board/i,
     "Expected the route to keep the existing public-site menu resolution logic and add board-specific handling.",
+  );
+});
+
+test("public board list and detail pages render the shared page header and breadcrumb shell", async () => {
+  const contents = await readRoute();
+
+  assert.match(
+    contents,
+    /function\s+PublicBoardPageShell/,
+    "Expected public board pages to use a shared page shell.",
+  );
+  assert.match(
+    contents,
+    /<SitePageShell\b[\s\S]*subtitle\s*=\s*["']BOARD["'][\s\S]*>/,
+    "Expected public board pages to render through the shared visual page shell.",
+  );
+  assert.doesNotMatch(
+    contents,
+    /from\s*["']@\/components\/(?:page-header|breadcrumb)["']/,
+    "Expected public board route code not to compose PageHeader or Breadcrumb directly.",
+  );
+  assert.match(
+    contents,
+    /renderPublicBoardList[\s\S]*<PublicBoardPageShell\b[\s\S]*<PublicBoardRenderer\s+mode\s*=\s*["']list["']/,
+    "Expected public board list pages to be wrapped in the page shell.",
+  );
+  assert.match(
+    contents,
+    /renderPublicBoardDetail[\s\S]*<PublicBoardPageShell\b[\s\S]*<PublicBoardRenderer\s+mode\s*=\s*["']detail["']/,
+    "Expected public board detail pages to be wrapped in the page shell.",
   );
 });
 

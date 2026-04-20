@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import Breadcrumb from "@/components/breadcrumb";
-import PageHeader from "@/components/page-header";
+import SitePageShell from "@/components/site-page-shell";
 import GreetingPage from "@/app/(site)/about/greeting/page";
 import PastorPage from "@/app/(site)/about/pastor/page";
 import ServiceTimesPage from "@/app/(site)/about/service-times/page";
@@ -27,17 +26,14 @@ function AboutStaticPageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex w-full flex-col">
-      {showHeader && (
-        <PageHeader
-          title="교회소개"
-          subtitle={subtitle}
-          backgroundImageUrl="/images/main_bg/main_bg_sec1.png"
-        />
-      )}
-      {showBreadcrumb && <Breadcrumb />}
+    <SitePageShell
+      title="교회소개"
+      subtitle={subtitle}
+      showHeader={showHeader}
+      showBreadcrumb={showBreadcrumb}
+    >
       <main className="flex-1 w-full">{children}</main>
-    </div>
+    </SitePageShell>
   );
 }
 
@@ -47,15 +43,9 @@ function CommissionStaticPageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex w-full flex-col bg-white">
-      <PageHeader
-        title="지상명령"
-        subtitle="THE GREAT COMMISSION"
-        backgroundImageUrl="/images/main_bg/main_bg_sec1.png"
-      />
-      <Breadcrumb />
+    <SitePageShell title="지상명령" subtitle="THE GREAT COMMISSION">
       <main className="flex-1 w-full">{children}</main>
-    </div>
+    </SitePageShell>
   );
 }
 

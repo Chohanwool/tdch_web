@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import MenuStaticPageRenderer from "@/components/menu-static-page-renderer";
 import PublicBoardRenderer from "@/components/public-board/public-board-renderer";
+import SitePageShell from "@/components/site-page-shell";
 import {
   getPublicBoardPost,
   listPublicBoardPosts,
@@ -57,7 +58,11 @@ function renderPublicBoardList(
   boardPath: string,
   posts: PublicBoardPostListResponse["items"],
 ) {
-  return <PublicBoardRenderer mode="list" boardLabel={boardLabel} boardPath={boardPath} posts={posts} />;
+  return (
+    <PublicBoardPageShell boardLabel={boardLabel}>
+      <PublicBoardRenderer mode="list" boardLabel={boardLabel} boardPath={boardPath} posts={posts} />
+    </PublicBoardPageShell>
+  );
 }
 
 function renderPublicBoardDetail(
@@ -65,7 +70,25 @@ function renderPublicBoardDetail(
   boardPath: string,
   post: PublicBoardPostDetail,
 ) {
-  return <PublicBoardRenderer mode="detail" boardLabel={boardLabel} boardPath={boardPath} post={post} />;
+  return (
+    <PublicBoardPageShell boardLabel={boardLabel}>
+      <PublicBoardRenderer mode="detail" boardLabel={boardLabel} boardPath={boardPath} post={post} />
+    </PublicBoardPageShell>
+  );
+}
+
+function PublicBoardPageShell({
+  boardLabel,
+  children,
+}: {
+  boardLabel: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <SitePageShell title={boardLabel} subtitle="BOARD">
+      {children}
+    </SitePageShell>
+  );
 }
 
 async function resolvePublicBoardState(path: string) {

@@ -86,3 +86,35 @@ test("public board renderer supports official SimpleEditor block nodes and text 
   assert.match(contents, /case\s+["']horizontalRule["']/, "Expected public rendering to support horizontal rules.");
   assert.match(contents, /getTextAlignStyle/, "Expected paragraph and heading nodes to render textAlign attrs.");
 });
+
+test("public board renderer uses typography policy tokens instead of arbitrary page typography", async () => {
+  const contents = await readRenderer();
+
+  assert.match(contents, /type-section-title/, "Expected section headings to use typography policy tokens.");
+  assert.match(contents, /type-body/, "Expected body copy to use typography policy tokens.");
+  assert.match(contents, /type-label/, "Expected labels and metadata to use typography policy tokens.");
+  assert.doesNotMatch(contents, /text-\[[0-9.]+(?:px|rem|em)\]/, "Expected no arbitrary text sizing classes.");
+  assert.doesNotMatch(contents, /font-\[var\(/, "Expected no arbitrary CSS variable font classes.");
+  assert.doesNotMatch(contents, /clamp\(|\bvw\b/, "Expected no viewport-driven typography sizing.");
+});
+
+test("public board renderer follows the shared section header and narrow content layout", async () => {
+  const contents = await readRenderer();
+
+  assert.match(
+    contents,
+    /section-shell section-shell--narrow/,
+    "Expected public board content to use the shared narrow content shell.",
+  );
+  assert.match(
+    contents,
+    /type-label font-semibold uppercase tracking-\[0\.28em\] text-site-gold/,
+    "Expected public board headers to use the shared eyebrow typography.",
+  );
+  assert.match(
+    contents,
+    /type-section-title font-section-title font-bold tracking-\[-0\.02em\] text-site-ink/,
+    "Expected public board headers to use the shared section title typography.",
+  );
+  assert.match(contents, /<h2\b/, "Expected public board content headers to use section-level h2 headings.");
+});

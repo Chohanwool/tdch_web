@@ -163,7 +163,7 @@ function renderInlineText(text: string, key: string, marks: unknown[] = []): Rea
       case "underline":
         return <u key={markKey}>{content}</u>;
       case "code":
-        return <code key={markKey} className="rounded bg-[#f1f5f9] px-1.5 py-0.5 font-mono text-[0.92em] text-[#1e293b]">{content}</code>;
+        return <code key={markKey} className="type-body-small rounded bg-[#f1f5f9] px-1.5 py-0.5 font-mono text-[#1e293b]">{content}</code>;
       case "highlight":
         return <mark key={markKey} style={getHighlightStyle(candidate.attrs)} className="rounded px-1">{content}</mark>;
       case "subscript":
@@ -229,21 +229,21 @@ function renderTiptapNode(node: unknown, key: string): ReactNode {
       const level = typeof levelValue === "number" && levelValue >= 1 && levelValue <= 6 ? levelValue : 2;
       const style = getTextAlignStyle(candidate.attrs);
       if (level === 1) {
-        return <h1 key={key} style={style} className="text-[28px] font-bold leading-[1.3] text-[#10213f]">{children}</h1>;
+        return <h1 key={key} style={style} className="type-section-title font-bold text-[#10213f]">{children}</h1>;
       }
       if (level === 3) {
-        return <h3 key={key} style={style} className="text-[22px] font-bold leading-[1.35] text-[#10213f]">{children}</h3>;
+        return <h3 key={key} style={style} className="type-subsection-title font-bold text-[#10213f]">{children}</h3>;
       }
       if (level === 4) {
-        return <h4 key={key} style={style} className="text-[19px] font-bold leading-[1.4] text-[#10213f]">{children}</h4>;
+        return <h4 key={key} style={style} className="type-block-title font-bold text-[#10213f]">{children}</h4>;
       }
       if (level === 5) {
-        return <h5 key={key} style={style} className="text-[17px] font-bold leading-[1.45] text-[#10213f]">{children}</h5>;
+        return <h5 key={key} style={style} className="type-card-title font-bold text-[#10213f]">{children}</h5>;
       }
       if (level === 6) {
-        return <h6 key={key} style={style} className="text-[15px] font-bold leading-[1.5] text-[#10213f]">{children}</h6>;
+        return <h6 key={key} style={style} className="type-body-strong font-bold text-[#10213f]">{children}</h6>;
       }
-      return <h2 key={key} style={style} className="text-[25px] font-bold leading-[1.35] text-[#10213f]">{children}</h2>;
+      return <h2 key={key} style={style} className="type-section-title font-bold text-[#10213f]">{children}</h2>;
     }
     case "bulletList":
       return <ul key={key} className="list-disc space-y-2 pl-6">{children}</ul>;
@@ -274,7 +274,7 @@ function renderTiptapNode(node: unknown, key: string): ReactNode {
       );
     case "codeBlock":
       return (
-        <pre key={key} className="overflow-x-auto rounded-[8px] border border-[#e2e8f0] bg-[#f8fafc] px-5 py-4 text-[14px] leading-7 text-[#1e293b]">
+        <pre key={key} className="type-body-small overflow-x-auto rounded-[8px] border border-[#e2e8f0] bg-[#f8fafc] px-5 py-4 text-[#1e293b]">
           <code className="font-mono whitespace-pre-wrap">{children}</code>
         </pre>
       );
@@ -378,9 +378,9 @@ function renderAttachment(asset: PublicBoardPostAsset) {
       <a href={href} target="_blank" rel="noreferrer" className="font-semibold text-[#2a4f8f] underline-offset-4 hover:underline">
         {asset.originalFilename}
       </a>
-      <span className="text-[12px] text-[#64748b]">{asset.mimeType}</span>
-      <span className="text-[12px] text-[#64748b]">{sizeLabel}</span>
-      {dimensions ? <span className="text-[12px] text-[#64748b]">{dimensions}</span> : null}
+      <span className="type-label text-[#64748b]">{asset.mimeType}</span>
+      <span className="type-label text-[#64748b]">{sizeLabel}</span>
+      {dimensions ? <span className="type-label text-[#64748b]">{dimensions}</span> : null}
     </li>
   );
 }
@@ -392,10 +392,10 @@ function renderBoardPostSummary(boardPath: string, post: PublicBoardPostSummary)
         href={getBoardPathHref(boardPath, post.id)}
         className="group flex items-center justify-between gap-4 py-5"
       >
-        <span className="min-w-0 flex-1 truncate text-[16px] font-semibold text-[#10213f] group-hover:text-[#2a4f8f]">
+        <span className="type-body-strong min-w-0 flex-1 truncate font-semibold text-[#10213f] group-hover:text-[#2a4f8f]">
           {post.title}
         </span>
-        <time dateTime={post.createdAt} className="shrink-0 text-[13px] text-[#64748b]">
+        <time dateTime={post.createdAt} className="type-body-small shrink-0 text-[#64748b]">
           {formatDate(post.createdAt)}
         </time>
       </Link>
@@ -407,15 +407,22 @@ export default function PublicBoardRenderer(props: PublicBoardRendererProps) {
   if (props.mode === "list") {
     return (
       <main className="bg-white pb-20">
-        <section className="section-shell pt-12">
-          <header className="border-b border-[#10213f] pb-5">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#64748b]">Board</p>
-            <h1 className="mt-2 text-[34px] font-bold leading-tight text-[#10213f]">{props.boardLabel}</h1>
+        <section className="section-shell section-shell--narrow pt-10 md:pt-16">
+          <header className="border-b border-site-ink pb-8">
+            <div className="flex flex-col gap-2">
+              <p className="type-label font-semibold uppercase tracking-[0.28em] text-site-gold">board</p>
+              <h2
+                id="public-board-list-title"
+                className="type-section-title font-section-title font-bold tracking-[-0.02em] text-site-ink"
+              >
+                {props.boardLabel}
+              </h2>
+            </div>
           </header>
           {props.posts.length > 0 ? (
             <ul>{props.posts.map((post) => renderBoardPostSummary(props.boardPath, post))}</ul>
           ) : (
-            <p className="py-16 text-center text-[15px] text-[#64748b]">등록된 게시글이 없습니다.</p>
+            <p className="type-body-small py-16 text-center text-[#64748b]">등록된 게시글이 없습니다.</p>
           )}
         </section>
       </main>
@@ -426,26 +433,32 @@ export default function PublicBoardRenderer(props: PublicBoardRendererProps) {
 
   return (
     <main className="bg-white pb-20">
-      <article className="section-shell pt-12">
+      <article className="section-shell section-shell--narrow pt-10 md:pt-16">
         <header className="border-b border-[#e2e8f0] pb-8">
-          <Link href={props.boardPath} className="text-[13px] font-semibold text-[#2a4f8f] underline-offset-4 hover:underline">
+          <Link href={props.boardPath} className="type-body-small font-semibold text-[#2a4f8f] underline-offset-4 hover:underline">
             {props.boardLabel}
           </Link>
-          <h1 className="mt-4 text-[32px] font-bold leading-tight text-[#10213f] md:text-[28px]">
-            {props.post.title}
-          </h1>
-          <time dateTime={props.post.createdAt} className="mt-3 block text-[14px] text-[#64748b]">
+          <div className="mt-5 flex flex-col gap-2">
+            <p className="type-label font-semibold uppercase tracking-[0.28em] text-site-gold">board</p>
+            <h2
+              id="public-board-detail-title"
+              className="type-section-title font-section-title font-bold tracking-[-0.02em] text-site-ink"
+            >
+              {props.post.title}
+            </h2>
+          </div>
+          <time dateTime={props.post.createdAt} className="type-body-small mt-3 block text-[#64748b]">
             {formatDate(props.post.createdAt)}
           </time>
         </header>
 
-        <div className="prose prose-slate mt-10 max-w-none text-[16px] leading-8 text-[#334155]">
+        <div className="type-body prose prose-slate mt-10 max-w-none text-[#334155]">
           {renderTiptapDocument(props.post.contentJson)}
         </div>
 
         {fileAttachments.length > 0 ? (
           <section className="mt-12 border-t border-[#10213f] pt-6">
-            <h2 className="text-[18px] font-bold text-[#10213f]">첨부 파일</h2>
+            <h2 className="type-block-title font-bold text-[#10213f]">첨부 파일</h2>
             <ul className="mt-4">{fileAttachments.map(renderAttachment)}</ul>
           </section>
         ) : null}
