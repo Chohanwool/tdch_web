@@ -109,6 +109,26 @@ test("board management client sends the complete board post save payload", async
   );
 });
 
+test("board management client uses public and private radio options with public as the default", async () => {
+  const contents = await readSource(clientPath);
+
+  assert.match(
+    contents,
+    /isPublic\s*:\s*true/,
+    "Expected new board posts to default to public visibility.",
+  );
+  assert.match(
+    contents,
+    /<fieldset[\s\S]*공개 여부[\s\S]*type=["']radio["'][\s\S]*공개[\s\S]*type=["']radio["'][\s\S]*비공개[\s\S]*<\/fieldset>/s,
+    "Expected the editor to expose public/private radio options.",
+  );
+  assert.doesNotMatch(
+    contents,
+    /공개 게시글로 노출/,
+    "Expected the old public checkbox label to be removed.",
+  );
+});
+
 test("board management client returns to the post list after successful create or update", async () => {
   const contents = await readSource(clientPath);
 

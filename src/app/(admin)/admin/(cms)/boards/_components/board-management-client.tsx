@@ -49,7 +49,7 @@ function createEmptyDraft(): Draft {
   const contentJson = createEmptyTiptapDocument();
   return {
     title: "",
-    isPublic: false,
+    isPublic: true,
     isPinned: false,
     contentJson,
     contentHtml: "",
@@ -617,14 +617,29 @@ export default function BoardManagementClient({
             />
           </label>
 
-          <label className="flex items-center gap-2 rounded-xl border border-[#eef2f7] bg-[#f8fafc] px-4 py-3 text-[13px] font-semibold text-[#334155]">
-            <input
-              type="checkbox"
-              checked={draft.isPublic}
-              onChange={(event) => setDraft((prev) => ({ ...prev, isPublic: event.target.checked }))}
-            />
-            공개 게시글로 노출
-          </label>
+          <fieldset className="rounded-xl border border-[#eef2f7] bg-[#f8fafc] px-4 py-3">
+            <legend className="text-[13px] font-semibold text-[#334155]">공개 여부</legend>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <label className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#334155]">
+                <input
+                  type="radio"
+                  name="board-post-visibility"
+                  checked={draft.isPublic}
+                  onChange={() => setDraft((prev) => ({ ...prev, isPublic: true }))}
+                />
+                공개
+              </label>
+              <label className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#334155]">
+                <input
+                  type="radio"
+                  name="board-post-visibility"
+                  checked={!draft.isPublic}
+                  onChange={() => setDraft((prev) => ({ ...prev, isPublic: false }))}
+                />
+                비공개
+              </label>
+            </div>
+          </fieldset>
 
           <label className="flex items-center gap-2 rounded-xl border border-[#eef2f7] bg-[#f8fafc] px-4 py-3 text-[13px] font-semibold text-[#334155]">
             <input
