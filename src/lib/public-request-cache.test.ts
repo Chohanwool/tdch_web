@@ -148,6 +148,34 @@ test("getNavigationResponse dedupes identical calls inside one public request ca
   }
 });
 
+test("getNavigationResponse falls back to static navigation when the public menu API fails", async () => {
+  const { runWithPublicRequestCache, getNavigationResponse } = await loadPublicLoaderModule();
+  const originalFetch = globalThis.fetch;
+  const originalWarn = console.warn;
+
+  globalThis.fetch = (async () => new Response("Bad Gateway", { status: 502 })) as typeof fetch;
+  console.warn = () => undefined;
+
+  try {
+    const navigation = await runWithPublicRequestCache(() => getNavigationResponse());
+
+    assert.deepEqual(
+      (navigation as { groups: Array<{ key: string; defaultLandingHref: string | null }> }).groups.map((group) => ({
+        key: group.key,
+        defaultLandingHref: group.defaultLandingHref,
+      })),
+      [
+        { key: "about", defaultLandingHref: "/about/greeting" },
+        { key: "newcomer", defaultLandingHref: "/newcomer/guide" },
+        { key: "videos", defaultLandingHref: null },
+      ],
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+    console.warn = originalWarn;
+  }
+});
+
 test("resolvePublicMenuPath dedupes identical paths and keeps distinct paths separate within one scope", async () => {
   const { runWithPublicRequestCache, resolvePublicMenuPath } = await loadPublicLoaderModule();
   const originalFetch = globalThis.fetch;
