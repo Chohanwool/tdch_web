@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { getNavigationResponse } from "@/lib/navigation-api";
 import { SITE_URL } from "@/lib/seo";
 
+export const dynamic = "force-dynamic";
+
 function normalizePath(href: string | null | undefined): string {
   if (!href) {
     return "";
