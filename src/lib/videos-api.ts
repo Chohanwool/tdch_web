@@ -88,30 +88,11 @@ export interface PublicVideoDetail {
   shortformPlaylist: PublicShortformPlaylistWindow | null;
 }
 
-function normalizeSlug(slug: string): string {
-  try {
-    return decodeURIComponent(slug);
-  } catch {
-    return slug;
-  }
-}
-
 function fetchVideoResourceOrNull<T>(
   path: string,
   next: NonNullable<ServerFetchInit["next"]>,
 ): Promise<T | null> {
   return serverFetchJsonOrNull<T>(path, { next });
-}
-
-function buildPlaylistSlugPath(slug: string): string {
-  return encodeURIComponent(normalizeSlug(slug));
-}
-
-export async function getPublicPlaylistDetail(slug: string): Promise<PublicPlaylistDetail | null> {
-  return fetchVideoResourceOrNull<PublicPlaylistDetail>(
-    `/api/v1/public/videos/${buildPlaylistSlugPath(slug)}`,
-    MENU_REVALIDATE_OPTIONS,
-  );
 }
 
 export async function getPublicPlaylistDetailByPath(path: string): Promise<PublicPlaylistDetail | null> {
@@ -120,17 +101,6 @@ export async function getPublicPlaylistDetailByPath(path: string): Promise<Publi
       `/api/v1/public/videos?path=${encodeURIComponent(path)}`,
       MENU_REVALIDATE_OPTIONS,
     ),
-  );
-}
-
-export async function getPublicPlaylistVideoList(
-  slug: string,
-  page = 1,
-  size = 6,
-): Promise<PublicVideoList | null> {
-  return fetchVideoResourceOrNull<PublicVideoList>(
-    `/api/v1/public/videos/${buildPlaylistSlugPath(slug)}/items?page=${page}&size=${size}`,
-    VIDEO_REVALIDATE_OPTIONS,
   );
 }
 
@@ -144,16 +114,6 @@ export async function getPublicPlaylistVideoListByPath(
       `/api/v1/public/videos/items?path=${encodeURIComponent(path)}&page=${page}&size=${size}`,
       VIDEO_REVALIDATE_OPTIONS,
     ),
-  );
-}
-
-export async function getPublicPlaylistVideoDetail(
-  slug: string,
-  videoId: string,
-): Promise<PublicVideoDetail | null> {
-  return fetchVideoResourceOrNull<PublicVideoDetail>(
-    `/api/v1/public/videos/${buildPlaylistSlugPath(slug)}/${encodeURIComponent(videoId)}`,
-    VIDEO_REVALIDATE_OPTIONS,
   );
 }
 

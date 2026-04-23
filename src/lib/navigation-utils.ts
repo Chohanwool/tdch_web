@@ -51,6 +51,7 @@ function findBestNavigationTarget<T extends NavigationMatchTarget>(
 export function toNavMenuGroups(navigation: NavigationResponse): NavMenuGroup[] {
   return navigation.groups.map((group) => ({
     key: group.key,
+    type: group.type,
     href: group.href,
     label: group.label,
     matchPath: group.matchPath,
@@ -63,6 +64,7 @@ export function toNavMenuGroups(navigation: NavigationResponse): NavMenuGroup[] 
     defaultLandingHref: group.defaultLandingHref,
     items: group.items.map((item) => ({
       key: item.key,
+      type: item.type,
       href: item.href,
       label: item.label,
       matchPath: item.matchPath,

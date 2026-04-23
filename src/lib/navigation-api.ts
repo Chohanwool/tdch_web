@@ -14,6 +14,7 @@ const FALLBACK_NAVIGATION_RESPONSE = {
   groups: [
     {
       key: "about",
+      type: "FOLDER",
       label: "교회 소개",
       href: "/about",
       matchPath: "/about",
@@ -36,6 +37,7 @@ const FALLBACK_NAVIGATION_RESPONSE = {
     },
     {
       key: "newcomer",
+      type: "FOLDER",
       label: "제자 양육",
       href: "/newcomer",
       matchPath: "/newcomer",
@@ -53,21 +55,6 @@ const FALLBACK_NAVIGATION_RESPONSE = {
         createStaticNavigationItem("disciples", "제자 훈련", "/newcomer/disciples", "newcomer.disciples"),
       ],
     },
-    {
-      key: "videos",
-      label: "예배 영상",
-      href: "/videos",
-      matchPath: "/videos",
-      linkType: "INTERNAL",
-      contentSiteKey: null,
-      visible: true,
-      headerVisible: true,
-      mobileVisible: true,
-      lnbVisible: true,
-      breadcrumbVisible: true,
-      defaultLandingHref: null,
-      items: [],
-    },
   ],
 } satisfies NavigationResponse;
 
@@ -80,6 +67,7 @@ function createStaticNavigationItem(
 ): NavigationResponse["groups"][number]["items"][number] {
   return {
     key,
+    type: "STATIC",
     label,
     href,
     matchPath: href,
@@ -92,10 +80,6 @@ function createStaticNavigationItem(
     breadcrumbVisible: true,
     defaultLanding,
   };
-}
-
-function isVideoHref(href: string): boolean {
-  return href.startsWith("/videos/");
 }
 
 export async function getNavigationResponse(): Promise<NavigationResponse> {
@@ -119,29 +103,4 @@ export async function getNavMenuGroups(): Promise<NavMenuGroup[]> {
 export async function getNavigationGroupByKey(key: string): Promise<NavMenuGroup | undefined> {
   const groups = await getNavMenuGroups();
   return groups.find((group) => group.key === key);
-}
-
-export async function getVideoNavigationLandingHref(): Promise<string | null> {
-  const groups = await getNavMenuGroups();
-  const videoGroup = groups.find((group) => {
-    if (group.defaultLandingHref && isVideoHref(group.defaultLandingHref)) {
-      return true;
-    }
-
-    if (isVideoHref(group.href)) {
-      return true;
-    }
-
-    return group.items.some((item) => isVideoHref(item.href));
-  });
-
-  if (!videoGroup) {
-    return null;
-  }
-
-  return (
-    videoGroup.defaultLandingHref ??
-    videoGroup.items.find((item) => isVideoHref(item.href))?.href ??
-    (isVideoHref(videoGroup.href) ? videoGroup.href : null)
-  );
 }

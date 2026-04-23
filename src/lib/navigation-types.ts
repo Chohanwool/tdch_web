@@ -2,6 +2,7 @@ export type NavigationLinkType = "INTERNAL" | "ANCHOR" | "EXTERNAL";
 
 export interface NavigationItemDto {
   key: string;
+  type?: string;
   label: string;
   href: string;
   matchPath: string | null;
@@ -17,6 +18,7 @@ export interface NavigationItemDto {
 
 export interface NavigationGroupDto {
   key: string;
+  type?: string;
   label: string;
   href: string;
   matchPath: string | null;
@@ -37,6 +39,7 @@ export interface NavigationResponse {
 
 export interface NavSubItem {
   key: string;
+  type?: string;
   href: string;
   label: string;
   matchPath?: string | null;
@@ -51,6 +54,7 @@ export interface NavSubItem {
 
 export interface NavMenuGroup {
   key: string;
+  type?: string;
   href: string;
   label: string;
   matchPath?: string | null;

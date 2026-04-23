@@ -273,7 +273,7 @@ function buildVideoNodePath(node: EditorNode, menuById: Map<number, EditorNode>)
     current = current.parentId ? menuById.get(current.parentId) : undefined;
   }
 
-  return `/videos/${segments.reverse().join("/")}`;
+  return `/${segments.reverse().join("/")}`;
 }
 
 function getPublicRouteSummary(node: EditorNode, menuById: Map<number, EditorNode>): string {
