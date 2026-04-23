@@ -439,6 +439,7 @@ export default function MenuManagementClient({
   const hiddenStatusAffectsDescendants =
     Boolean(selectedNode) && selectedNode?.parentId === null && descendantIds.size > 0;
   const confirmingSelectedDelete = selectedNode ? deleteConfirmId === selectedNode.id : false;
+  const selectedPublicRoute = selectedNode ? getPublicRouteSummary(selectedNode, menuById) : "";
   const canMoveUp = selectedSiblingIndex > 0;
   const canMoveDown =
     selectedSiblingIndex !== -1 && selectedSiblingIndex < siblingNodes.length - 1;
@@ -1032,14 +1033,17 @@ export default function MenuManagementClient({
                       </p>
                     </div>
 
-                    <label className="space-y-1.5">
+                    <div className="space-y-1.5">
                       <span className="text-[12px] font-semibold text-[#334155]">공개 주소</span>
-                      <input
-                        value={getPublicRouteSummary(selectedNode, menuById)}
-                        readOnly
-                        className="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2 text-[13px] text-[#475569]"
-                      />
-                    </label>
+                      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-[#e2e8f0] bg-white px-3 py-2">
+                        <code className="min-w-0 flex-1 break-all text-[13px] text-[#475569]">
+                          {selectedPublicRoute}
+                        </code>
+                      </div>
+                      <p className="text-[11px] leading-5 text-[#6d7f95]">
+                        저장 전 자동 생성 경로는 저장 후 서버에서 확정됩니다.
+                      </p>
+                    </div>
                   </div>
 
                   <div className="space-y-4 rounded-xl border border-[#eef2f7] bg-[#fbfdff] p-4">
