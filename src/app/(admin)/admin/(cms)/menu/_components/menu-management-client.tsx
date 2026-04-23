@@ -8,6 +8,7 @@ import type {
   MenuTreeNodePayload,
   MenuType,
 } from "@/lib/admin-menu-api";
+import { useAdminToast } from "../../components/admin-toast-provider";
 
 type EditorNode = AdminMenuTreeNode;
 
@@ -209,7 +210,7 @@ function toPayload(nodes: EditorNode[]): MenuTreeNodePayload[] {
     status: !node.isAuto && node.status === "DRAFT" ? "HIDDEN" : node.status,
     label: node.label,
     slug: node.slug,
-    slugCustomized: node.slugCustomized,
+    slugCustomized: node.isAuto ? node.slugCustomized : false,
     staticPageKey: node.staticPageKey,
     boardKey: node.boardKey,
     boardTypeId: node.boardTypeId,
@@ -332,7 +333,7 @@ function buildNodeChangeSignatures(
         status: !node.isAuto && node.status === "DRAFT" ? "HIDDEN" : node.status,
         label: node.label,
         slug: node.slug,
-        slugCustomized: node.slugCustomized,
+        slugCustomized: node.isAuto ? node.slugCustomized : false,
         staticPageKey: node.staticPageKey,
         boardKey: node.boardKey,
         boardTypeId: node.boardTypeId,
@@ -358,13 +359,12 @@ export default function MenuManagementClient({
   initialItems: AdminMenuTreeNode[];
 }) {
   const router = useRouter();
+  const toast = useAdminToast();
   const [items, setItems] = useState<EditorNode[]>(cloneTree(initialItems));
   const [savedItems, setSavedItems] = useState<EditorNode[]>(cloneTree(initialItems));
   const [selectedId, setSelectedId] = useState<number | null>(findInitialSelectedId(initialItems));
   const [tempId, setTempId] = useState(-1);
   const [saving, setSaving] = useState(false);
-  const [dirty, setDirty] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [manualSlugDrafts, setManualSlugDrafts] = useState<Record<number, string>>({});
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
@@ -387,6 +387,7 @@ export default function MenuManagementClient({
         .map(([id]) => id),
     );
   }, [items, savedItems]);
+  const changedMenuCount = changedMenuIds.size;
   const descendantIds = useMemo(
     () => (selectedNode ? collectDescendantIds(selectedNode) : new Set<number>()),
     [selectedNode],
@@ -440,8 +441,6 @@ export default function MenuManagementClient({
 
   const markDirty = (nextItems: EditorNode[]) => {
     setItems(nextItems);
-    setDirty(true);
-    setMessage(null);
     setDeleteConfirmId(null);
   };
 
@@ -517,13 +516,13 @@ export default function MenuManagementClient({
     }
 
     if (selectedNode.status === "PUBLISHED") {
-      setMessage("공개 중인 메뉴는 바로 삭제할 수 없습니다. 먼저 상태를 숨김으로 변경하고 저장한 뒤 삭제해 주세요.");
+      toast.error("공개 중인 메뉴는 바로 삭제할 수 없습니다. 먼저 상태를 숨김으로 변경하고 저장한 뒤 삭제해 주세요.");
       setDeleteConfirmId(null);
       return;
     }
 
-    if (dirty) {
-      setMessage("저장하지 않은 변경사항이 있습니다. 즉시 삭제 전에 먼저 저장하거나 변경을 정리해 주세요.");
+    if (changedMenuCount > 0) {
+      toast.error("저장하지 않은 변경사항이 있습니다. 즉시 삭제 전에 먼저 저장하거나 변경을 정리해 주세요.");
       setDeleteConfirmId(null);
       return;
     }
@@ -549,17 +548,16 @@ export default function MenuManagementClient({
       setSavedItems(removeNode(savedItems, selectedNode.id));
       setSelectedId(null);
       setDeleteConfirmId(null);
-      setMessage("메뉴를 즉시 삭제했습니다.");
+      toast.success("메뉴를 즉시 삭제했습니다.");
       router.refresh();
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "메뉴를 삭제하지 못했습니다.");
+      toast.error(error instanceof Error ? error.message : "메뉴를 삭제하지 못했습니다.");
       setDeleteConfirmId(null);
     }
   };
 
   const handleSave = async () => {
     setSaving(true);
-    setMessage(null);
     try {
       const response = await fetch("/api/admin/menu/tree", {
         method: "PUT",
@@ -576,11 +574,10 @@ export default function MenuManagementClient({
       setItems(nextItems);
       setSavedItems(nextItems);
       setSelectedId(findInitialSelectedId(payload.items));
-      setDirty(false);
-      setMessage("메뉴 구조를 저장했습니다.");
+      toast.success("메뉴 구조를 저장했습니다.");
       router.refresh();
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "메뉴를 저장하지 못했습니다.");
+      toast.error(error instanceof Error ? error.message : "메뉴를 저장하지 못했습니다.");
     } finally {
       setSaving(false);
     }
@@ -602,16 +599,13 @@ export default function MenuManagementClient({
             <button
               type="button"
               onClick={handleSave}
-              disabled={!dirty || saving}
+              disabled={changedMenuCount === 0 || saving}
               className="rounded-lg bg-[#3f74c7] px-4 py-2 text-[12px] font-semibold text-white disabled:opacity-60"
             >
-              {saving ? "저장 중..." : `변경사항 저장${dirty ? "" : ""}`}
+              {saving ? "저장 중..." : `변경사항 저장${changedMenuCount > 0 ? ` (${changedMenuCount})` : ""}`}
             </button>
           </div>
         </div>
-        {message && (
-          <p className="mt-3 text-[12px] text-[#2d5da8]">{message}</p>
-        )}
       </div>
 
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">

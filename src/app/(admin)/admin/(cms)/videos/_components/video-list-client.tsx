@@ -10,6 +10,7 @@ import type {
   MenuTreeNodePayload,
   YouTubeContentForm,
 } from "@/lib/admin-menu-api";
+import { useAdminToast } from "../../components/admin-toast-provider";
 
 type PageSize = 10 | 20 | 50;
 const PAGE_SIZE_OPTIONS: PageSize[] = [10, 20, 50];
@@ -234,11 +235,11 @@ export default function VideoListClient({
   initialPlaylistMenuId: number | null;
   initialItems: AdminVideoSummary[];
 }) {
+  const toast = useAdminToast();
   const [menuItems, setMenuItems] = useState<EditorNode[]>(cloneTree(initialMenuItems));
   const [menuDirty, setMenuDirty] = useState(false);
   const [menuSaving, setMenuSaving] = useState(false);
   const [syncing, setSyncing] = useState(false);
-  const [menuMessage, setMenuMessage] = useState<string | null>(null);
 
   // ── 필터 입력 상태 (아직 적용 전) ──────────────────────────────────────────
   const [filterMenuId, setFilterMenuId] = useState<number | null>(initialPlaylistMenuId);
@@ -255,7 +256,7 @@ export default function VideoListClient({
     initialPlaylistMenuId != null ? { [initialPlaylistMenuId]: initialItems } : {},
   );
   const [listLoading, setListLoading] = useState(false);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [, setFetchError] = useState<string | null>(null);
 
   // ── 페이지네이션 ────────────────────────────────────────────────────────────
   const [pageSize, setPageSize] = useState<PageSize>(10);
@@ -292,7 +293,6 @@ export default function VideoListClient({
   const markMenuDirty = (nextItems: EditorNode[]) => {
     setMenuItems(nextItems);
     setMenuDirty(true);
-    setMenuMessage(null);
   };
 
   const updatePlaylistNode = (
@@ -304,7 +304,6 @@ export default function VideoListClient({
 
   const handleSaveMenuTree = async () => {
     setMenuSaving(true);
-    setMenuMessage(null);
     try {
       const response = await fetch("/api/admin/menu/tree", {
         method: "PUT",
@@ -318,9 +317,9 @@ export default function VideoListClient({
 
       setMenuItems(cloneTree(payload.items));
       setMenuDirty(false);
-      setMenuMessage("재생목록 설정을 저장했습니다.");
+      toast.success("재생목록 설정을 저장했습니다.");
     } catch (error) {
-      setMenuMessage(error instanceof Error ? error.message : "재생목록 설정을 저장하지 못했습니다.");
+      toast.error(error instanceof Error ? error.message : "재생목록 설정을 저장하지 못했습니다.");
     } finally {
       setMenuSaving(false);
     }
@@ -328,7 +327,6 @@ export default function VideoListClient({
 
   const handleSync = async () => {
     setSyncing(true);
-    setMenuMessage(null);
     try {
       const response = await fetch("/api/admin/youtube/sync", { method: "POST" });
       const payload = (await response.json()) as { message?: string };
@@ -337,7 +335,7 @@ export default function VideoListClient({
       }
       window.location.reload();
     } catch (error) {
-      setMenuMessage(error instanceof Error ? error.message : "유튜브 동기화에 실패했습니다.");
+      toast.error(error instanceof Error ? error.message : "유튜브 동기화에 실패했습니다.");
       setSyncing(false);
     }
   };
@@ -370,7 +368,9 @@ export default function VideoListClient({
         }
       } catch (error) {
         if (!cancelled) {
-          setFetchError(error instanceof Error ? error.message : "영상 목록을 불러오지 못했습니다.");
+          const message = error instanceof Error ? error.message : "영상 목록을 불러오지 못했습니다.";
+          setFetchError(message);
+          toast.error(message);
         }
       } finally {
         if (!cancelled) setListLoading(false);
@@ -379,7 +379,7 @@ export default function VideoListClient({
 
     void loadList();
     return () => { cancelled = true; };
-  }, [applied, itemsByMenuId]);
+  }, [applied, itemsByMenuId, toast]);
 
   // ── 필터 적용 후 페이지 리셋 ────────────────────────────────────────────────
   useEffect(() => {
@@ -585,9 +585,6 @@ export default function VideoListClient({
             </button>
           </div>
         </div>
-        {menuMessage && (
-          <p className="mt-3 text-[12px] text-[#2d5da8]">{menuMessage}</p>
-        )}
       </section>
 
       {renderPlaylistSection("분류 대기", "그룹 지정 후 노출 상태로 바꿀 수 있습니다.", draftPlaylists, "bg-amber-100 text-amber-700")}
@@ -699,10 +696,6 @@ export default function VideoListClient({
         </div>
 
         {/* 오류 */}
-        {fetchError && (
-          <p className="px-5 py-4 text-[12px] text-[#e53e3e]">{fetchError}</p>
-        )}
-
         {/* 테이블 */}
         <div className="overflow-x-auto">
           <table className="min-w-full border-collapse text-left">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminToastProvider } from "./(cms)/components/admin-toast-provider";
 
 export const metadata: Metadata = {
   title: {
@@ -17,8 +18,10 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="min-h-screen bg-[#0f1c2e] font-[var(--font-sans)] antialiased">
-      {children}
-    </div>
+    <AdminToastProvider>
+      <div className="min-h-screen bg-[#0f1c2e] font-[var(--font-sans)] antialiased">
+        {children}
+      </div>
+    </AdminToastProvider>
   );
 }

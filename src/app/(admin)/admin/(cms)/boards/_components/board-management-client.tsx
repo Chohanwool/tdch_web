@@ -20,6 +20,7 @@ import type {
   BoardPostSavePayload,
 } from "@/lib/admin-board-api";
 import type { AdminMenuTreeNode } from "@/lib/admin-menu-api";
+import { useAdminToast } from "../../components/admin-toast-provider";
 import BoardPostEditor from "./board-post-editor";
 
 interface BoardManagementClientProps {
@@ -143,6 +144,7 @@ export default function BoardManagementClient({
   initialPosts = [],
   initialPost = null,
 }: BoardManagementClientProps) {
+  const toast = useAdminToast();
   const boardsBySlug = useMemo(
     () => new Map(initialBoards.map((board) => [board.slug, board])),
     [initialBoards],
@@ -182,8 +184,8 @@ export default function BoardManagementClient({
   const [loading, setLoading] = useState(false);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
+  const [, setNotice] = useState<string | null>(null);
   const [boardMenuFilter, setBoardMenuFilter] = useState("ALL");
   const [titleQuery, setTitleQuery] = useState("");
   const [appliedBoardMenu, setAppliedBoardMenu] = useState("ALL");
@@ -205,10 +207,13 @@ export default function BoardManagementClient({
       setAttachmentAssetIds([]);
       setError(null);
       setNotice(msg);
+      if (msg) {
+        toast.success(msg);
+      }
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
+  }, [toast]);
 
   const selectedBoardMenu = useMemo(
     () => boardMenus.find((boardMenu) => boardMenu.id === selectedMenuId) ?? boardMenus[0] ?? null,
@@ -288,7 +293,9 @@ export default function BoardManagementClient({
         setPosts(sortPostsByUpdatedAt(groupedPosts.flat()));
       } catch (loadError) {
         if (!cancelled) {
-          setError(getErrorMessage(loadError, "게시글 목록을 불러오지 못했습니다."));
+          const message = getErrorMessage(loadError, "게시글 목록을 불러오지 못했습니다.");
+          setError(message);
+          toast.error(message);
         }
       } finally {
         if (!cancelled) {
@@ -302,7 +309,7 @@ export default function BoardManagementClient({
     return () => {
       cancelled = true;
     };
-  }, [boardMenus, boardsBySlug]);
+  }, [boardMenus, boardsBySlug, toast]);
 
   useEffect(() => {
     if (screenMode !== "editor" || !selectedBoardMenu?.boardKey || !selectedMenuId || !selectedPostId) {
@@ -331,7 +338,9 @@ export default function BoardManagementClient({
         setAttachmentAssetIds(getAttachmentAssetIds(payload));
       } catch (loadError) {
         if (!cancelled) {
-          setError(getErrorMessage(loadError, "게시글 상세를 불러오지 못했습니다."));
+          const message = getErrorMessage(loadError, "게시글 상세를 불러오지 못했습니다.");
+          setError(message);
+          toast.error(message);
         }
       } finally {
         if (!cancelled) {
@@ -345,7 +354,7 @@ export default function BoardManagementClient({
     return () => {
       cancelled = true;
     };
-  }, [screenMode, selectedBoardMenu, selectedMenuId, selectedPostId]);
+  }, [screenMode, selectedBoardMenu, selectedMenuId, selectedPostId, toast]);
 
   const handleUpload = async (file: File): Promise<AdminUploadAssetMetadata> => {
     if (!selectedBoard) {
@@ -366,7 +375,9 @@ export default function BoardManagementClient({
     }
 
     if (!selectedBoard) {
-      setError("첨부 파일을 업로드할 게시판 메뉴를 먼저 선택해 주세요.");
+      const message = "첨부 파일을 업로드할 게시판 메뉴를 먼저 선택해 주세요.";
+      setError(message);
+      toast.error(message);
       return;
     }
 
@@ -389,8 +400,11 @@ export default function BoardManagementClient({
 
       setAttachmentAssetIds((current) => Array.from(new Set([...current, ...uploadedAssetIds])));
       setNotice("첨부 파일을 저장용 자산으로 업로드했습니다.");
+      toast.success("첨부 파일을 저장용 자산으로 업로드했습니다.");
     } catch (uploadError) {
-      setError(getErrorMessage(uploadError, "첨부 파일 업로드에 실패했습니다."));
+      const message = getErrorMessage(uploadError, "첨부 파일 업로드에 실패했습니다.");
+      setError(message);
+      toast.error(message);
     } finally {
       setUploadingAttachment(false);
     }
@@ -408,6 +422,7 @@ export default function BoardManagementClient({
     setScreenMode("editor");
     setError(null);
     setNotice("새 게시글 작성 모드입니다.");
+    toast.info("새 게시글 작성 모드입니다.");
     window.history.pushState({ boardEditor: true }, "");
     editorPushedRef.current = true;
   };
@@ -475,9 +490,12 @@ export default function BoardManagementClient({
         setAttachmentAssetIds([]);
         setScreenMode("list");
         setNotice("게시글을 저장했습니다.");
+        toast.success("게시글을 저장했습니다.");
       }
     } catch (saveError) {
-      setError(getErrorMessage(saveError, "게시글을 저장하지 못했습니다."));
+      const message = getErrorMessage(saveError, "게시글을 저장하지 못했습니다.");
+      setError(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }
@@ -538,8 +556,6 @@ export default function BoardManagementClient({
                 전체 <span className="font-semibold text-[#132033]">{posts.length}</span>건 중{" "}
                 <span className="font-semibold text-[#132033]">{filteredPosts.length}</span>건 표시
               </span>
-              {notice && <span className="text-[12px] text-[#2d5da8]">{notice}</span>}
-              {error && <span className="text-[12px] text-[#be123c]">오류: {error}</span>}
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -665,9 +681,6 @@ export default function BoardManagementClient({
         </div>
 
         <div className="space-y-5 px-5 py-5">
-          {notice && <p className="rounded-lg bg-[#eff6ff] px-3 py-2 text-[12px] text-[#2d5da8]">{notice}</p>}
-          {error && <p className="rounded-lg bg-[#fff1f2] px-3 py-2 text-[12px] text-[#be123c]">오류: {error}</p>}
-
           <label className="space-y-1.5">
             <span className="text-[12px] font-semibold text-[#334155]">게시판</span>
             <select
@@ -755,7 +768,9 @@ export default function BoardManagementClient({
                 disabled={saving || uploadingAttachment}
                 onChange={(event) => {
                   void handleAttachmentUpload(event.target.files).catch((uploadError) => {
-                    setError(getErrorMessage(uploadError, "첨부 파일 업로드에 실패했습니다."));
+                    const message = getErrorMessage(uploadError, "첨부 파일 업로드에 실패했습니다.");
+                    setError(message);
+                    toast.error(message);
                   });
                   event.target.value = "";
                 }}

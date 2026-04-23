@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { AdminVideoDetail, UpdateAdminVideoMetaRequest } from "@/lib/admin-videos-api";
+import { useAdminToast } from "../../../components/admin-toast-provider";
 
 type VideoDraft = {
   displayTitle: string;
@@ -75,15 +76,13 @@ function toUpdatePayload(draft: VideoDraft): UpdateAdminVideoMetaRequest {
 
 export default function VideoEditClient({ initialDetail }: { initialDetail: AdminVideoDetail }) {
   const router = useRouter();
+  const toast = useAdminToast();
   const [detail, setDetail] = useState<AdminVideoDetail>(initialDetail);
   const [draft, setDraft] = useState<VideoDraft>(() => createDraft(initialDetail));
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [messageType, setMessageType] = useState<"success" | "error">("success");
 
   const handleSave = async () => {
     setSaving(true);
-    setMessage(null);
 
     try {
       const response = await fetch(
@@ -103,12 +102,10 @@ export default function VideoEditClient({ initialDetail }: { initialDetail: Admi
 
       setDetail(payload);
       setDraft(createDraft(payload));
-      setMessage("저장됐습니다.");
-      setMessageType("success");
+      toast.success("저장됐습니다.");
       router.refresh();
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "영상 메타를 저장하지 못했습니다.");
-      setMessageType("error");
+      toast.error(error instanceof Error ? error.message : "영상 메타를 저장하지 못했습니다.");
     } finally {
       setSaving(false);
     }
@@ -264,17 +261,11 @@ export default function VideoEditClient({ initialDetail }: { initialDetail: Admi
 
       {/* 액션 바 */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#e2e8f0] bg-white px-5 py-4 shadow-sm">
-        <div>
-          {message && (
-            <p className={`text-[12px] font-medium ${messageType === "success" ? "text-[#2d5da8]" : "text-[#e53e3e]"}`}>
-              {message}
-            </p>
-          )}
-        </div>
+        <div />
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => { setDraft(createDraft(detail)); setMessage(null); }}
+            onClick={() => setDraft(createDraft(detail))}
             className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155] transition hover:bg-[#f0f6ff]"
           >
             변경 취소

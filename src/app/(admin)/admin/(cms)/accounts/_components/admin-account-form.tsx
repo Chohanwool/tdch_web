@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import type { AdminAccount } from "@/lib/admin-accounts-api";
 import type { AdminAccountFormState } from "../actions";
+import { useAdminToast } from "../../components/admin-toast-provider";
 
 // ── 공통 UI ───────────────────────────────────────────────────────────────────
 
@@ -55,20 +56,20 @@ export default function AdminAccountForm({
   const action = mode === "new" ? createAction : (updateAction ?? createAction);
   const [state, formAction, isPending] = useActionState<AdminAccountFormState, FormData>(action, {});
   const router = useRouter();
+  const toast = useAdminToast();
 
   const [showPassword, setShowPassword] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [toast, setToast] = useState<{ message: string; success: boolean } | null>(null);
 
   useEffect(() => {
     if (!state.message) return;
-    setToast({ message: state.message, success: Boolean(state.success) });
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    toastTimerRef.current = setTimeout(() => setToast(null), 4000);
-    return () => { if (toastTimerRef.current) clearTimeout(toastTimerRef.current); };
-  }, [state.message, state.messageKey, state.success]);
+    if (state.success) {
+      toast.success(state.message);
+      return;
+    }
+    toast.error(state.message);
+  }, [state.message, state.messageKey, state.success, toast]);
 
   async function handleDelete() {
     if (!deleteAction || isDeleting) return;
@@ -80,29 +81,12 @@ export default function AdminAccountForm({
     } catch (err) {
       setIsDeleting(false);
       setDeleteConfirm(false);
-      alert(err instanceof Error ? err.message : "계정을 삭제하지 못했습니다.");
+      toast.error(err instanceof Error ? err.message : "계정을 삭제하지 못했습니다.");
     }
   }
 
   return (
     <>
-      {/* 토스트 */}
-      {toast && (
-        <div
-          role="alert"
-          className={`fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3 rounded-2xl border px-4 py-3.5 shadow-lg ${toast.success ? "border-emerald-100 bg-white" : "border-red-100 bg-white"
-            }`}
-        >
-          <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${toast.success ? "bg-emerald-100 text-emerald-600" : "bg-red-100 text-red-600"}`}>
-            {toast.success ? "✓" : "!"}
-          </span>
-          <p className="text-[13px] text-[#1e2f45]">{toast.message}</p>
-          <button onClick={() => setToast(null)} className="ml-auto shrink-0 text-[#8fa3bb] hover:text-[#374151]" aria-label="닫기">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
-          </button>
-        </div>
-      )}
-
       <form action={formAction} className="space-y-6">
         {/* ── 기본 정보 ── */}
         <section className="overflow-hidden rounded-2xl border border-[#e2e8f0] bg-white shadow-sm">
