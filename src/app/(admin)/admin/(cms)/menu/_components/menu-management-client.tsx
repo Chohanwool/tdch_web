@@ -548,7 +548,7 @@ export default function MenuManagementClient({
       setSavedItems(removeNode(savedItems, selectedNode.id));
       setSelectedId(null);
       setDeleteConfirmId(null);
-      toast.success("메뉴를 즉시 삭제했습니다.");
+      toast.success("메뉴를 삭제했습니다.");
       router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "메뉴를 삭제하지 못했습니다.");
@@ -639,11 +639,10 @@ export default function MenuManagementClient({
                     <button
                       type="button"
                       onClick={() => setSelectedId(node.id)}
-                      className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition ${
-                        selectedId === node.id
+                      className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition ${selectedId === node.id
                           ? "bg-[#edf4ff] text-[#132033]"
                           : "hover:bg-[#f8fafc] text-[#334155]"
-                      }`}
+                        }`}
                       style={{ paddingLeft: `${depth * 18 + 12}px` }}
                     >
                       <span className="min-w-0">
@@ -769,22 +768,20 @@ export default function MenuManagementClient({
                           <button
                             type="button"
                             onClick={() => switchSelectedSlugMode(false)}
-                            className={`rounded-md px-3 py-1.5 text-[11px] font-semibold ${
-                              selectedManualSlugMode
+                            className={`rounded-md px-3 py-1.5 text-[11px] font-semibold ${selectedManualSlugMode
                                 ? "text-[#64748b] hover:bg-[#f8fafc]"
                                 : "bg-[#3f74c7] text-white"
-                            }`}
+                              }`}
                           >
                             자동
                           </button>
                           <button
                             type="button"
                             onClick={() => switchSelectedSlugMode(true)}
-                            className={`rounded-md px-3 py-1.5 text-[11px] font-semibold ${
-                              selectedManualSlugMode
+                            className={`rounded-md px-3 py-1.5 text-[11px] font-semibold ${selectedManualSlugMode
                                 ? "bg-[#3f74c7] text-white"
                                 : "text-[#64748b] hover:bg-[#f8fafc]"
-                            }`}
+                              }`}
                           >
                             직접 입력
                           </button>
@@ -861,12 +858,12 @@ export default function MenuManagementClient({
 
                     {selectedNode.type === "YOUTUBE_PLAYLIST_GROUP" && (
                       <div className="rounded-xl border border-[#eef2f7] bg-white p-4">
-                      <p className="text-[12px] font-semibold text-[#334155]">영상 그룹 안내</p>
-                      <p className="mt-2 text-[12px] leading-5 text-[#5d6f86]">
-                        유튜브 재생목록은 수동으로 추가하지 않고, 영상 관리에서 동기화하고 그룹에 배정합니다.
-                      </p>
-                    </div>
-                  )}
+                        <p className="text-[12px] font-semibold text-[#334155]">영상 그룹 안내</p>
+                        <p className="mt-2 text-[12px] leading-5 text-[#5d6f86]">
+                          유튜브 재생목록은 수동으로 추가하지 않고, 영상 관리에서 동기화하고 그룹에 배정합니다.
+                        </p>
+                      </div>
+                    )}
 
                     {selectedNode.type === "STATIC" && (
                       <label className="space-y-1.5">
@@ -1012,7 +1009,7 @@ export default function MenuManagementClient({
                           </span>
                           <div className="min-w-0">
                             <p className="text-[14px] font-bold text-rose-900">
-                              {selectedNode.label} 메뉴를 즉시 삭제합니다.
+                              {selectedNode.label} 메뉴를 삭제합니다.
                             </p>
                             <p className="mt-2 text-[12px] leading-5 text-rose-800">
                               이 작업은 저장 버튼과 별개로 바로 반영됩니다.
