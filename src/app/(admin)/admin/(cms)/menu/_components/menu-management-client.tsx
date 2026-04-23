@@ -443,6 +443,9 @@ export default function MenuManagementClient({
   const canMoveUp = selectedSiblingIndex > 0;
   const canMoveDown =
     selectedSiblingIndex !== -1 && selectedSiblingIndex < siblingNodes.length - 1;
+  const selectedOrderLabel = selectedSiblingIndex >= 0
+    ? `현재 ${selectedSiblingIndex + 1} / ${siblingNodes.length}번째`
+    : "현재 순서를 확인할 수 없습니다.";
 
   const parentCandidates = flatItems.filter(({ node }) => {
     if (!selectedNode) {
@@ -1187,7 +1190,7 @@ export default function MenuManagementClient({
                       </p>
                     </label>
 
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <button
                         type="button"
                         onClick={() => {
@@ -1214,6 +1217,9 @@ export default function MenuManagementClient({
                       >
                         아래로 이동
                       </button>
+                      <span className="text-[12px] font-semibold text-[#64748b]">
+                        {selectedOrderLabel}
+                      </span>
                     </div>
                   </div>
                 </div>
