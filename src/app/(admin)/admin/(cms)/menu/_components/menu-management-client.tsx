@@ -313,6 +313,10 @@ function getPublicRouteSummary(node: EditorNode, menuById: Map<number, EditorNod
   }
 }
 
+function isManualSlugMode(node: EditorNode): boolean {
+  return node.isAuto ? node.slugCustomized : node.slugCustomized || node.slug.trim().length > 0;
+}
+
 export default function MenuManagementClient({
   initialItems,
 }: {
@@ -326,6 +330,7 @@ export default function MenuManagementClient({
   const [syncing, setSyncing] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [manualSlugDrafts, setManualSlugDrafts] = useState<Record<number, string>>({});
 
   const allFlatItems = useMemo(() => flattenTree(items), [items]);
   const flatItems = useMemo(
@@ -369,6 +374,7 @@ export default function MenuManagementClient({
   const selectedSiblingIndex = selectedNode
     ? siblingNodes.findIndex((node) => node.id === selectedNode.id)
     : -1;
+  const selectedManualSlugMode = selectedNode ? isManualSlugMode(selectedNode) : false;
   const canMoveUp = selectedSiblingIndex > 0;
   const canMoveDown =
     selectedSiblingIndex !== -1 && selectedSiblingIndex < siblingNodes.length - 1;
@@ -405,6 +411,35 @@ export default function MenuManagementClient({
     setItems(nextItems);
     setDirty(true);
     setMessage(null);
+  };
+
+  const switchSelectedSlugMode = (manual: boolean) => {
+    if (!selectedNode) {
+      return;
+    }
+
+    if (!manual) {
+      const currentSlug = selectedNode.slug.trim();
+      if (currentSlug) {
+        setManualSlugDrafts((prev) => ({
+          ...prev,
+          [selectedNode.id]: selectedNode.slug,
+        }));
+      }
+      updateSelectedNode((node) => ({
+        ...node,
+        slug: "",
+        slugCustomized: false,
+      }));
+      return;
+    }
+
+    const rememberedSlug = manualSlugDrafts[selectedNode.id] ?? "";
+    updateSelectedNode((node) => ({
+      ...node,
+      slug: node.slug.trim() ? node.slug : rememberedSlug,
+      slugCustomized: true,
+    }));
   };
 
   const handleAddRoot = (type: MenuType) => {
@@ -849,33 +884,38 @@ export default function MenuManagementClient({
                       <p className="mt-1 text-[11px] text-[#6d7f95]">사이트에서 접근할 URL 경로를 확인하고 조정합니다.</p>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-[12px] font-semibold text-[#334155]">URL 경로</span>
-                        {selectedNode.isAuto && selectedNode.slugCustomized && (
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[12px] font-semibold text-[#334155]">URL 경로</span>
+                          <span className="rounded-full bg-[#e8f0fb] px-2 py-0.5 text-[10px] font-semibold text-[#2d5da8]">
+                            {selectedManualSlugMode ? "직접 입력" : "자동 생성"}
+                          </span>
+                        </div>
+                        <div className="inline-flex rounded-lg border border-[#d5deea] bg-white p-0.5">
                           <button
                             type="button"
-                            onClick={() =>
-                              updateSelectedNode((node) => ({
-                                ...node,
-                                slug: "",
-                                slugCustomized: false,
-                              }))
-                            }
-                            className="text-[11px] font-semibold text-[#2d5da8]"
+                            onClick={() => switchSelectedSlugMode(false)}
+                            className={`rounded-md px-3 py-1.5 text-[11px] font-semibold ${
+                              selectedManualSlugMode
+                                ? "text-[#64748b] hover:bg-[#f8fafc]"
+                                : "bg-[#3f74c7] text-white"
+                            }`}
                           >
-                            자동 생성으로 되돌리기
+                            자동
                           </button>
-                        )}
-                        {!selectedNode.isAuto && selectedNode.slug.trim().length > 0 && (
                           <button
                             type="button"
-                            onClick={() => updateSelectedNode((node) => ({ ...node, slug: "" }))}
-                            className="text-[11px] font-semibold text-[#2d5da8]"
+                            onClick={() => switchSelectedSlugMode(true)}
+                            className={`rounded-md px-3 py-1.5 text-[11px] font-semibold ${
+                              selectedManualSlugMode
+                                ? "bg-[#3f74c7] text-white"
+                                : "text-[#64748b] hover:bg-[#f8fafc]"
+                            }`}
                           >
-                            자동 생성으로 되돌리기
+                            직접 입력
                           </button>
-                        )}
+                        </div>
                       </div>
                       <input
                         value={selectedNode.slug}
@@ -883,18 +923,21 @@ export default function MenuManagementClient({
                           updateSelectedNode((node) => ({
                             ...node,
                             slug: event.target.value,
-                            slugCustomized: node.isAuto ? event.target.value.trim().length > 0 : node.slugCustomized,
+                            slugCustomized: true,
                           }))
                         }
+                        disabled={!selectedManualSlugMode}
                         placeholder="비워두면 저장 시 메뉴명 기준으로 자동 생성됩니다."
-                        className="w-full rounded-lg border border-[#d5deea] bg-white px-3 py-2 text-[13px]"
+                        className="w-full rounded-lg border border-[#d5deea] bg-white px-3 py-2 text-[13px] disabled:bg-[#f8fafc] disabled:text-[#94a3b8]"
                       />
                       <p className="text-[11px] leading-5 text-[#6d7f95]">
-                        {selectedNode.isAuto
-                          ? selectedNode.slugCustomized
-                            ? "사용자 지정 URL 경로를 사용 중입니다. 비우거나 자동 생성으로 되돌리면 유튜브 동기화 기준 경로로 복원됩니다."
-                            : "현재는 유튜브 동기화 기준 URL 경로를 사용 중입니다. 값을 입력하면 사용자 지정 경로로 고정됩니다."
-                          : "공개 URL에 들어가는 주소 조각입니다. 영문 소문자, 숫자, 하이픈 기준으로 저장되며, 비워두면 서버가 메뉴명에서 자동 생성합니다."}
+                        {selectedManualSlugMode
+                          ? selectedNode.isAuto
+                            ? "저장 후 유튜브 동기화가 실행되어도 이 URL 경로를 유지합니다."
+                            : "입력한 값이 공개 URL에 사용됩니다. 비워두면 저장 시 자동 생성 모드로 돌아갑니다."
+                          : selectedNode.isAuto
+                            ? "유튜브 원제목 기준으로 URL 경로가 동기화됩니다. 고정하려면 직접 입력으로 전환하세요."
+                            : "저장 시 메뉴 이름 기준으로 URL 경로가 자동 생성됩니다."}
                       </p>
                     </div>
 
