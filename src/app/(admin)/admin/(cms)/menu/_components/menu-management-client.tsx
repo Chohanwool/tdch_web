@@ -745,6 +745,10 @@ export default function MenuManagementClient({
                     siblings !== null &&
                     dropIndicator.index === siblings.length &&
                     siblingIndex === siblings.length - 1;
+                  const dropDisabled =
+                    draggingMenuId !== null &&
+                    draggingMenuId !== node.id &&
+                    !canDropOnMenu(draggingMenuId, node.id);
 
                   return (
                   <li key={node.id}>
@@ -757,8 +761,11 @@ export default function MenuManagementClient({
                       onDrop={(event) => handleMenuDrop(event, node.id)}
                       onDragEnd={resetDragState}
                       aria-grabbed={draggingMenuId === node.id}
-                      className={`relative flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition ${draggingMenuId === node.id
+                        className={`relative flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition ${draggingMenuId === node.id
                           ? "opacity-50"
+                          : ""
+                        } ${dropDisabled
+                          ? "opacity-35 grayscale"
                           : ""
                         } ${selectedId === node.id
                           ? "bg-[#edf4ff] text-[#132033]"
