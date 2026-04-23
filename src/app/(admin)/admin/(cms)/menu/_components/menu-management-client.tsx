@@ -781,243 +781,271 @@ export default function MenuManagementClient({
               <p className="text-[13px] text-[#6d7f95]">왼쪽에서 편집할 메뉴를 선택해 주세요.</p>
             ) : (
               <>
-                <div className="grid gap-4">
-                  <label className="space-y-1.5">
-                    <span className="text-[12px] font-semibold text-[#334155]">메뉴 이름</span>
-                    <input
-                      value={selectedNode.label}
-                      onChange={(event) =>
-                        updateSelectedNode((node) => ({ ...node, label: event.target.value }))
-                      }
-                      className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px]"
-                    />
-                  </label>
-
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-[12px] font-semibold text-[#334155]">URL 경로</span>
-                      {selectedNode.isAuto && selectedNode.slugCustomized && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            updateSelectedNode((node) => ({
-                              ...node,
-                              slug: "",
-                              slugCustomized: false,
-                            }))
-                          }
-                          className="text-[11px] font-semibold text-[#2d5da8]"
-                        >
-                          자동 생성으로 되돌리기
-                        </button>
-                      )}
-                      {!selectedNode.isAuto && selectedNode.slug.trim().length > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => updateSelectedNode((node) => ({ ...node, slug: "" }))}
-                          className="text-[11px] font-semibold text-[#2d5da8]"
-                        >
-                          자동 생성으로 되돌리기
-                        </button>
-                      )}
+                <div className="grid gap-5">
+                  <div className="space-y-4 rounded-xl border border-[#eef2f7] bg-[#fbfdff] p-4">
+                    <div>
+                      <h3 className="text-[12px] font-bold text-[#132033]">기본 정보</h3>
+                      <p className="mt-1 text-[11px] text-[#6d7f95]">관리자와 사용자 사이트에 표시되는 기본 속성입니다.</p>
                     </div>
-                    <input
-                      value={selectedNode.slug}
-                      onChange={(event) =>
-                        updateSelectedNode((node) => ({
-                          ...node,
-                          slug: event.target.value,
-                          slugCustomized: node.isAuto ? event.target.value.trim().length > 0 : node.slugCustomized,
-                        }))
-                      }
-                      placeholder="비워두면 저장 시 메뉴명 기준으로 자동 생성됩니다."
-                      className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px]"
-                    />
-                    <p className="text-[11px] leading-5 text-[#6d7f95]">
-                      {selectedNode.isAuto
-                        ? selectedNode.slugCustomized
-                          ? "사용자 지정 URL 경로를 사용 중입니다. 비우거나 자동 생성으로 되돌리면 유튜브 동기화 기준 경로로 복원됩니다."
-                          : "현재는 유튜브 동기화 기준 URL 경로를 사용 중입니다. 값을 입력하면 사용자 지정 경로로 고정됩니다."
-                        : "공개 URL에 들어가는 주소 조각입니다. 영문 소문자, 숫자, 하이픈 기준으로 저장되며, 비워두면 서버가 메뉴명에서 자동 생성합니다."}
-                    </p>
-                  </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
                     <label className="space-y-1.5">
-                      <span className="text-[12px] font-semibold text-[#334155]">타입</span>
+                      <span className="text-[12px] font-semibold text-[#334155]">메뉴 이름</span>
                       <input
-                        value={MENU_TYPE_LABEL[selectedNode.type]}
-                        readOnly
-                        className="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2 text-[13px]"
+                        value={selectedNode.label}
+                        onChange={(event) =>
+                          updateSelectedNode((node) => ({ ...node, label: event.target.value }))
+                        }
+                        className="w-full rounded-lg border border-[#d5deea] bg-white px-3 py-2 text-[13px]"
                       />
                     </label>
 
-                    <label className="space-y-1.5">
-                      <span className="text-[12px] font-semibold text-[#334155]">상태</span>
-                      <select
-                        value={selectedNode.status === "DRAFT" ? "" : selectedNode.status}
-                        onChange={(event) => {
-                          const nextStatus = event.target.value as Extract<MenuStatus, "PUBLISHED" | "HIDDEN">;
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <label className="space-y-1.5">
+                        <span className="text-[12px] font-semibold text-[#334155]">타입</span>
+                        <input
+                          value={MENU_TYPE_LABEL[selectedNode.type]}
+                          readOnly
+                          className="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2 text-[13px]"
+                        />
+                      </label>
+
+                      <label className="space-y-1.5">
+                        <span className="text-[12px] font-semibold text-[#334155]">상태</span>
+                        <select
+                          value={selectedNode.status === "DRAFT" ? "" : selectedNode.status}
+                          onChange={(event) => {
+                            const nextStatus = event.target.value as Extract<MenuStatus, "PUBLISHED" | "HIDDEN">;
+                            updateSelectedNode((node) => ({
+                              ...(node.parentId === null && nextStatus === "HIDDEN" ? hideNodeTree(node) : node),
+                              status: nextStatus,
+                            }));
+                          }}
+                          disabled={selectedNode.status === "ARCHIVED"}
+                          className="w-full rounded-lg border border-[#d5deea] bg-white px-3 py-2 text-[13px] disabled:bg-[#f8fafc]"
+                        >
+                          {selectedNode.status === "DRAFT" && (
+                            <option value="" disabled>
+                              {STATUS_LABEL.DRAFT}
+                            </option>
+                          )}
+                          {selectedNode.status === "ARCHIVED" && (
+                            <option value="ARCHIVED">
+                              {STATUS_LABEL.ARCHIVED}
+                            </option>
+                          )}
+                          {MANAGED_STATUS_OPTIONS.map((status) => (
+                            <option key={status.value} value={status.value}>
+                              {status.label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 rounded-xl border border-[#eef2f7] bg-[#fbfdff] p-4">
+                    <div>
+                      <h3 className="text-[12px] font-bold text-[#132033]">공개 경로</h3>
+                      <p className="mt-1 text-[11px] text-[#6d7f95]">사이트에서 접근할 URL 경로를 확인하고 조정합니다.</p>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-[12px] font-semibold text-[#334155]">URL 경로</span>
+                        {selectedNode.isAuto && selectedNode.slugCustomized && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              updateSelectedNode((node) => ({
+                                ...node,
+                                slug: "",
+                                slugCustomized: false,
+                              }))
+                            }
+                            className="text-[11px] font-semibold text-[#2d5da8]"
+                          >
+                            자동 생성으로 되돌리기
+                          </button>
+                        )}
+                        {!selectedNode.isAuto && selectedNode.slug.trim().length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => updateSelectedNode((node) => ({ ...node, slug: "" }))}
+                            className="text-[11px] font-semibold text-[#2d5da8]"
+                          >
+                            자동 생성으로 되돌리기
+                          </button>
+                        )}
+                      </div>
+                      <input
+                        value={selectedNode.slug}
+                        onChange={(event) =>
                           updateSelectedNode((node) => ({
-                            ...(node.parentId === null && nextStatus === "HIDDEN" ? hideNodeTree(node) : node),
-                            status: nextStatus,
-                          }));
+                            ...node,
+                            slug: event.target.value,
+                            slugCustomized: node.isAuto ? event.target.value.trim().length > 0 : node.slugCustomized,
+                          }))
+                        }
+                        placeholder="비워두면 저장 시 메뉴명 기준으로 자동 생성됩니다."
+                        className="w-full rounded-lg border border-[#d5deea] bg-white px-3 py-2 text-[13px]"
+                      />
+                      <p className="text-[11px] leading-5 text-[#6d7f95]">
+                        {selectedNode.isAuto
+                          ? selectedNode.slugCustomized
+                            ? "사용자 지정 URL 경로를 사용 중입니다. 비우거나 자동 생성으로 되돌리면 유튜브 동기화 기준 경로로 복원됩니다."
+                            : "현재는 유튜브 동기화 기준 URL 경로를 사용 중입니다. 값을 입력하면 사용자 지정 경로로 고정됩니다."
+                          : "공개 URL에 들어가는 주소 조각입니다. 영문 소문자, 숫자, 하이픈 기준으로 저장되며, 비워두면 서버가 메뉴명에서 자동 생성합니다."}
+                      </p>
+                    </div>
+
+                    <label className="space-y-1.5">
+                      <span className="text-[12px] font-semibold text-[#334155]">공개 주소</span>
+                      <input
+                        value={getPublicRouteSummary(selectedNode, menuById)}
+                        readOnly
+                        className="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2 text-[13px] text-[#475569]"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="space-y-4 rounded-xl border border-[#eef2f7] bg-[#fbfdff] p-4">
+                    <div>
+                      <h3 className="text-[12px] font-bold text-[#132033]">연결 대상</h3>
+                      <p className="mt-1 text-[11px] text-[#6d7f95]">메뉴가 열어야 할 페이지, 게시판, 외부 링크 또는 영상 정보를 설정합니다.</p>
+                    </div>
+
+                    {selectedNode.type === "FOLDER" && selectedNode.parentId === null && (
+                      <div className="grid gap-2 sm:grid-cols-3">
+                        <button
+                          type="button"
+                          onClick={() => handleAddChild("STATIC")}
+                          className="rounded-lg border border-[#d7e3f4] bg-[#f7fbff] px-3 py-2 text-[12px] font-semibold text-[#2d5da8]"
+                        >
+                          정적 페이지 추가
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleAddChild("BOARD")}
+                          className="rounded-lg border border-[#d7e3f4] bg-[#f7fbff] px-3 py-2 text-[12px] font-semibold text-[#2d5da8]"
+                        >
+                          게시판 메뉴 추가
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleAddChild("EXTERNAL_LINK")}
+                          className="rounded-lg border border-[#d7e3f4] bg-[#f7fbff] px-3 py-2 text-[12px] font-semibold text-[#2d5da8]"
+                        >
+                          외부 링크 추가
+                        </button>
+                      </div>
+                    )}
+
+                    {selectedNode.type === "YOUTUBE_PLAYLIST_GROUP" && (
+                      <div className="rounded-xl border border-[#eef2f7] bg-white p-4">
+                        <p className="text-[12px] font-semibold text-[#334155]">영상 그룹 안내</p>
+                        <p className="mt-2 text-[12px] leading-5 text-[#5d6f86]">
+                          유튜브 재생목록은 수동으로 추가하지 않고, 아래 영상 관리 카드에서 그룹에 배정합니다.
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedNode.type === "STATIC" && (
+                      <label className="space-y-1.5">
+                        <span className="text-[12px] font-semibold text-[#334155]">연결 페이지</span>
+                        <select
+                          value={selectedNode.staticPageKey ?? ""}
+                          onChange={(event) =>
+                            updateSelectedNode((node) => ({ ...node, staticPageKey: event.target.value }))
+                          }
+                          className="w-full rounded-lg border border-[#d5deea] bg-white px-3 py-2 text-[13px]"
+                        >
+                          {STATIC_PAGE_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    )}
+
+                    {selectedNode.type === "EXTERNAL_LINK" && (
+                      <>
+                        <label className="space-y-1.5">
+                          <span className="text-[12px] font-semibold text-[#334155]">외부 URL</span>
+                          <input
+                            value={selectedNode.externalUrl ?? ""}
+                            onChange={(event) =>
+                              updateSelectedNode((node) => ({ ...node, externalUrl: event.target.value }))
+                            }
+                            className="w-full rounded-lg border border-[#d5deea] bg-white px-3 py-2 text-[13px]"
+                          />
+                        </label>
+                        <label className="flex items-center gap-2 text-[12px] font-semibold text-[#334155]">
+                          <input
+                            type="checkbox"
+                            checked={selectedNode.openInNewTab}
+                            onChange={(event) =>
+                              updateSelectedNode((node) => ({ ...node, openInNewTab: event.target.checked }))
+                            }
+                          />
+                          새 탭에서 열기
+                        </label>
+                      </>
+                    )}
+
+                    {(selectedNode.playlistSourceTitle || selectedNode.thumbnailUrl) && (
+                      <div className="rounded-xl border border-[#eef2f7] bg-white p-4">
+                        <p className="text-[12px] font-semibold text-[#334155]">유튜브 원본 정보</p>
+                        <p className="mt-2 text-[13px] text-[#132033]">
+                          원제목: {selectedNode.playlistSourceTitle ?? "-"}
+                        </p>
+                        <p className="mt-1 text-[12px] text-[#6d7f95]">
+                          영상 수: {selectedNode.itemCount ?? 0}개
+                        </p>
+                        {selectedNode.labelCustomized && (
+                          <p className="mt-2 text-[12px] font-semibold text-[#2d5da8]">
+                            관리자가 표시 이름을 직접 수정한 메뉴입니다.
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-4 rounded-xl border border-[#eef2f7] bg-[#fbfdff] p-4">
+                    <div>
+                      <h3 className="text-[12px] font-bold text-[#132033]">배치와 순서</h3>
+                      <p className="mt-1 text-[11px] text-[#6d7f95]">상위 메뉴와 같은 단계 안의 노출 순서를 조정합니다.</p>
+                    </div>
+
+                    <label className="space-y-1.5">
+                      <span className="text-[12px] font-semibold text-[#334155]">상위 메뉴</span>
+                      <select
+                        value={selectedNode.parentId ?? ""}
+                        onChange={(event) => {
+                          const rawValue = event.target.value;
+                          const nextParentId = rawValue ? Number(rawValue) : null;
+                          markDirty(reparentNode(items, selectedNode.id, nextParentId));
                         }}
-                        disabled={selectedNode.status === "ARCHIVED"}
-                        className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px] disabled:bg-[#f8fafc]"
+                        disabled={
+                          selectedNode.type === "FOLDER" || selectedNode.type === "YOUTUBE_PLAYLIST_GROUP"
+                        }
+                        className="w-full rounded-lg border border-[#d5deea] bg-white px-3 py-2 text-[13px] disabled:bg-[#f8fafc]"
                       >
-                        {selectedNode.status === "DRAFT" && (
-                          <option value="" disabled>
-                            {STATUS_LABEL.DRAFT}
-                          </option>
+                        {(selectedNode.type === "FOLDER" || selectedNode.type === "YOUTUBE_PLAYLIST_GROUP") && (
+                          <option value="">루트(GNB)</option>
                         )}
-                        {selectedNode.status === "ARCHIVED" && (
-                          <option value="ARCHIVED">
-                            {STATUS_LABEL.ARCHIVED}
-                          </option>
+                        {selectedNode.type === "YOUTUBE_PLAYLIST" && (
+                          <option value="">미분류</option>
                         )}
-                        {MANAGED_STATUS_OPTIONS.map((status) => (
-                          <option key={status.value} value={status.value}>
-                            {status.label}
+                        {parentCandidates.map(({ node, depth }) => (
+                          <option key={node.id} value={node.id}>
+                            {"　".repeat(depth)}
+                            {node.label}
                           </option>
                         ))}
                       </select>
                     </label>
                   </div>
-
-                  <label className="space-y-1.5">
-                    <span className="text-[12px] font-semibold text-[#334155]">공개 주소</span>
-                    <input
-                      value={getPublicRouteSummary(selectedNode, menuById)}
-                      readOnly
-                      className="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2 text-[13px] text-[#475569]"
-                    />
-                  </label>
-
-                  {selectedNode.type === "FOLDER" && selectedNode.parentId === null && (
-                    <div className="grid gap-2 sm:grid-cols-3">
-                      <button
-                        type="button"
-                        onClick={() => handleAddChild("STATIC")}
-                        className="rounded-lg border border-[#d7e3f4] bg-[#f7fbff] px-3 py-2 text-[12px] font-semibold text-[#2d5da8]"
-                      >
-                        정적 페이지 추가
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleAddChild("BOARD")}
-                        className="rounded-lg border border-[#d7e3f4] bg-[#f7fbff] px-3 py-2 text-[12px] font-semibold text-[#2d5da8]"
-                      >
-                        게시판 메뉴 추가
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleAddChild("EXTERNAL_LINK")}
-                        className="rounded-lg border border-[#d7e3f4] bg-[#f7fbff] px-3 py-2 text-[12px] font-semibold text-[#2d5da8]"
-                      >
-                        외부 링크 추가
-                      </button>
-                    </div>
-                  )}
-
-                  {selectedNode.type === "YOUTUBE_PLAYLIST_GROUP" && (
-                    <div className="rounded-xl border border-[#eef2f7] bg-[#f8fafc] p-4">
-                      <p className="text-[12px] font-semibold text-[#334155]">영상 그룹 안내</p>
-                      <p className="mt-2 text-[12px] leading-5 text-[#5d6f86]">
-                        유튜브 재생목록은 수동으로 추가하지 않고, 아래 영상 관리 카드에서 그룹에 배정합니다.
-                      </p>
-                    </div>
-                  )}
-
-                  {selectedNode.type === "STATIC" && (
-                    <label className="space-y-1.5">
-                      <span className="text-[12px] font-semibold text-[#334155]">연결 페이지</span>
-                      <select
-                        value={selectedNode.staticPageKey ?? ""}
-                        onChange={(event) =>
-                          updateSelectedNode((node) => ({ ...node, staticPageKey: event.target.value }))
-                        }
-                        className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px]"
-                      >
-                        {STATIC_PAGE_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  )}
-
-                  {selectedNode.type === "EXTERNAL_LINK" && (
-                    <>
-                      <label className="space-y-1.5">
-                        <span className="text-[12px] font-semibold text-[#334155]">외부 URL</span>
-                        <input
-                          value={selectedNode.externalUrl ?? ""}
-                          onChange={(event) =>
-                            updateSelectedNode((node) => ({ ...node, externalUrl: event.target.value }))
-                          }
-                          className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px]"
-                        />
-                      </label>
-                      <label className="flex items-center gap-2 text-[12px] font-semibold text-[#334155]">
-                        <input
-                          type="checkbox"
-                          checked={selectedNode.openInNewTab}
-                          onChange={(event) =>
-                            updateSelectedNode((node) => ({ ...node, openInNewTab: event.target.checked }))
-                          }
-                        />
-                        새 탭에서 열기
-                      </label>
-                    </>
-                  )}
-
-                  <label className="space-y-1.5">
-                    <span className="text-[12px] font-semibold text-[#334155]">상위 메뉴</span>
-                    <select
-                      value={selectedNode.parentId ?? ""}
-                      onChange={(event) => {
-                        const rawValue = event.target.value;
-                        const nextParentId = rawValue ? Number(rawValue) : null;
-                        markDirty(reparentNode(items, selectedNode.id, nextParentId));
-                      }}
-                      disabled={
-                        selectedNode.type === "FOLDER" || selectedNode.type === "YOUTUBE_PLAYLIST_GROUP"
-                      }
-                      className="w-full rounded-lg border border-[#d5deea] px-3 py-2 text-[13px] disabled:bg-[#f8fafc]"
-                    >
-                      {(selectedNode.type === "FOLDER" || selectedNode.type === "YOUTUBE_PLAYLIST_GROUP") && (
-                        <option value="">루트(GNB)</option>
-                      )}
-                      {selectedNode.type === "YOUTUBE_PLAYLIST" && (
-                        <option value="">미분류</option>
-                      )}
-                      {parentCandidates.map(({ node, depth }) => (
-                        <option key={node.id} value={node.id}>
-                          {"　".repeat(depth)}
-                          {node.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  {(selectedNode.playlistSourceTitle || selectedNode.thumbnailUrl) && (
-                    <div className="rounded-xl border border-[#eef2f7] bg-[#f8fafc] p-4">
-                      <p className="text-[12px] font-semibold text-[#334155]">유튜브 원본 정보</p>
-                      <p className="mt-2 text-[13px] text-[#132033]">
-                        원제목: {selectedNode.playlistSourceTitle ?? "-"}
-                      </p>
-                      <p className="mt-1 text-[12px] text-[#6d7f95]">
-                        영상 수: {selectedNode.itemCount ?? 0}개
-                      </p>
-                      {selectedNode.labelCustomized && (
-                        <p className="mt-2 text-[12px] font-semibold text-[#2d5da8]">
-                          관리자가 표시 이름을 직접 수정한 메뉴입니다.
-                        </p>
-                      )}
-                    </div>
-                  )}
                 </div>
 
                 <div className="flex flex-wrap gap-2 border-t border-[#edf2f7] pt-4">
