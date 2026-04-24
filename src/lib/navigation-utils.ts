@@ -57,6 +57,7 @@ export function toNavMenuGroups(navigation: NavigationResponse): NavMenuGroup[] 
     matchPath: group.matchPath,
     linkType: group.linkType,
     contentSiteKey: group.contentSiteKey,
+    openInNewTab: group.openInNewTab,
     hiddenInHeader: !group.headerVisible,
     hiddenInMobile: !group.mobileVisible,
     hiddenInLnb: !group.lnbVisible,
@@ -70,6 +71,7 @@ export function toNavMenuGroups(navigation: NavigationResponse): NavMenuGroup[] 
       matchPath: item.matchPath,
       linkType: item.linkType,
       contentSiteKey: item.contentSiteKey,
+      openInNewTab: item.openInNewTab,
       hiddenInHeader: !item.headerVisible,
       hiddenInMobile: !item.mobileVisible,
       hiddenInLnb: !item.lnbVisible,
@@ -77,6 +79,20 @@ export function toNavMenuGroups(navigation: NavigationResponse): NavMenuGroup[] 
       defaultLanding: item.defaultLanding,
     })),
   }));
+}
+
+export function isExternalNavigationHref(href: string): boolean {
+  return /^(?:[a-z][a-z\d+\-.]*:)?\/\//i.test(href) || /^[a-z][a-z\d+\-.]*:/i.test(href);
+}
+
+export function shouldOpenNavigationInNewTab(
+  href: string,
+  options?: {
+    linkType?: NavigationResponse["groups"][number]["linkType"];
+    openInNewTab?: boolean;
+  },
+): boolean {
+  return options?.openInNewTab === true || options?.linkType === "EXTERNAL" || isExternalNavigationHref(href);
 }
 
 export function matchesNavigationPath(pathname: string, path: string | null | undefined): boolean {

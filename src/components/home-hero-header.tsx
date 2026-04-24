@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import MobileNav from "@/components/mobile-nav";
 import { useNavigation } from "@/lib/navigation-context";
+import { shouldOpenNavigationInNewTab } from "@/lib/navigation-utils";
 
 export default function HomeHeroHeader() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -28,6 +29,10 @@ export default function HomeHeroHeader() {
       <nav className="hidden items-center justify-end gap-7 text-lg font-semibold text-white lg:flex xl:gap-9 xl:text-[1.28rem]">
         {navMenuGroups.filter((menu) => !menu.hiddenInHeader).map((menu) => {
           const menuHref = menu.defaultLandingHref ?? menu.href;
+          const openMenuInNewTab = shouldOpenNavigationInNewTab(menuHref, {
+            linkType: menu.linkType,
+            openInNewTab: menu.openInNewTab,
+          });
 
           return (
             <div
@@ -36,6 +41,8 @@ export default function HomeHeroHeader() {
             >
               <Link
                 href={menuHref}
+                target={openMenuInNewTab ? "_blank" : undefined}
+                rel={openMenuInNewTab ? "noopener noreferrer" : undefined}
                 className="inline-flex whitespace-nowrap rounded-full border border-transparent px-5 py-2 text-white transition duration-300 group-hover/menu:border-white/25 group-hover/menu:bg-white/10"
               >
                 <span>{menu.label}</span>
@@ -46,15 +53,24 @@ export default function HomeHeroHeader() {
                   <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-cedar/60">
                     {menu.label}
                   </p>
-                  {menu.items.filter((item) => !item.hiddenInHeader).map((item) => (
-                    <Link
-                      key={item.key}
-                      href={item.href}
-                      className="block rounded-xl px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-cedar/5 hover:text-themeBlue"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+                  {menu.items.filter((item) => !item.hiddenInHeader).map((item) => {
+                    const openItemInNewTab = shouldOpenNavigationInNewTab(item.href, {
+                      linkType: item.linkType,
+                      openInNewTab: item.openInNewTab,
+                    });
+
+                    return (
+                      <Link
+                        key={item.key}
+                        href={item.href}
+                        target={openItemInNewTab ? "_blank" : undefined}
+                        rel={openItemInNewTab ? "noopener noreferrer" : undefined}
+                        className="block rounded-xl px-3 py-2 text-sm font-medium text-ink/80 transition hover:bg-cedar/5 hover:text-themeBlue"
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             </div>

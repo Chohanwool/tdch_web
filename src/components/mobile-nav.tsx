@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useNavigation } from "@/lib/navigation-context";
+import { shouldOpenNavigationInNewTab } from "@/lib/navigation-utils";
 
 export default function MobileNav({ isOpen, setIsOpen, isTransparent = false }: { isOpen: boolean, setIsOpen: (val: boolean) => void, isTransparent?: boolean }) {
   const [mounted, setMounted] = useState(false);
@@ -113,6 +114,10 @@ export default function MobileNav({ isOpen, setIsOpen, isTransparent = false }: 
             <ul className="space-y-10 md:space-y-0 md:grid md:grid-cols-5 md:gap-x-4 lg:gap-x-8">
               {navMenuGroups.filter((menu) => !menu.hiddenInMobile).map((menu) => {
                 const menuHref = menu.defaultLandingHref ?? menu.href;
+                const openMenuInNewTab = shouldOpenNavigationInNewTab(menuHref, {
+                  linkType: menu.linkType,
+                  openInNewTab: menu.openInNewTab,
+                });
 
                 return (
                 <li key={menu.key} className="flex flex-col">
@@ -120,6 +125,8 @@ export default function MobileNav({ isOpen, setIsOpen, isTransparent = false }: 
                   <div className="mb-5 md:mb-6 md:border-b md:border-cedar/10 md:pb-4">
                     <Link
                       href={menuHref}
+                      target={openMenuInNewTab ? "_blank" : undefined}
+                      rel={openMenuInNewTab ? "noopener noreferrer" : undefined}
                       onClick={closeMenu}
                       className="text-3xl md:text-xl md:font-bold font-black tracking-tight text-ink/90 transition hover:text-themeBlue"
                     >
@@ -129,17 +136,26 @@ export default function MobileNav({ isOpen, setIsOpen, isTransparent = false }: 
                   
                   {/* 소분류 링크들 (태블릿에서는 좌측 테두리 제거) */}
                   <ul className="grid gap-y-4 pl-4 border-l-2 border-cedar/10 md:pl-0 md:border-none">
-                    {menu.items.filter((item) => !item.hiddenInMobile).map((item) => (
-                      <li key={item.key}>
-                        <Link
-                          href={item.href}
-                          onClick={closeMenu}
-                          className="block text-xl font-semibold text-ink/65 transition hover:text-themeBlue hover:translate-x-1 duration-200"
-                        >
-                          {item.label}
-                        </Link>
-                      </li>
-                    ))}
+                    {menu.items.filter((item) => !item.hiddenInMobile).map((item) => {
+                      const openItemInNewTab = shouldOpenNavigationInNewTab(item.href, {
+                        linkType: item.linkType,
+                        openInNewTab: item.openInNewTab,
+                      });
+
+                      return (
+                        <li key={item.key}>
+                          <Link
+                            href={item.href}
+                            target={openItemInNewTab ? "_blank" : undefined}
+                            rel={openItemInNewTab ? "noopener noreferrer" : undefined}
+                            onClick={closeMenu}
+                            className="block text-xl font-semibold text-ink/65 transition hover:text-themeBlue hover:translate-x-1 duration-200"
+                          >
+                            {item.label}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </li>
                 );

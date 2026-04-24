@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useNavigation } from "@/lib/navigation-context";
-import { findMatchedNavigationGroup, findMatchedNavigationItem } from "@/lib/navigation-utils";
+import { findMatchedNavigationGroup, findMatchedNavigationItem, shouldOpenNavigationInNewTab } from "@/lib/navigation-utils";
 
 // Breadscrumb(브레드크럼) 과 LNB 목록
 // Breadscrumb: 현재 위치의 계층 표시
@@ -17,6 +17,12 @@ export default function Breadcrumb({
   const { navMenuGroups } = useNavigation();
   const menuGroup = findMatchedNavigationGroup(pathname, navMenuGroups);
   const currentItem = findMatchedNavigationItem(pathname, menuGroup);
+  const openGroupInNewTab = menuGroup
+    ? shouldOpenNavigationInNewTab(menuGroup.href, {
+      linkType: menuGroup.linkType,
+      openInNewTab: menuGroup.openInNewTab,
+    })
+    : false;
 
   return (
     <div className="w-full flex flex-col bg-[#f8fafd]">
@@ -50,6 +56,8 @@ export default function Breadcrumb({
                   <Link
                     href={menuGroup.href}
                     prefetch={false}
+                    target={openGroupInNewTab ? "_blank" : undefined}
+                    rel={openGroupInNewTab ? "noopener noreferrer" : undefined}
                     className={`font-medium transition hover:text-themeBlue ${currentItem ? "text-ink/40" : "text-ink/80"}`}
                   >
                     {menuGroup.label}
@@ -83,6 +91,10 @@ export default function Breadcrumb({
           <ul className="section-shell mx-auto flex w-max min-w-max items-center justify-center gap-1 px-4">
             {menuGroup.items.filter((item) => !item.hiddenInLnb).map((item) => {
               const isActive = item === currentItem;
+              const openItemInNewTab = shouldOpenNavigationInNewTab(item.href, {
+                linkType: item.linkType,
+                openInNewTab: item.openInNewTab,
+              });
 
               return (
                 <li key={item.key}>
@@ -96,6 +108,8 @@ export default function Breadcrumb({
                     <Link
                       href={item.href}
                       prefetch={false}
+                      target={openItemInNewTab ? "_blank" : undefined}
+                      rel={openItemInNewTab ? "noopener noreferrer" : undefined}
                       className="type-body-small block whitespace-nowrap border-b-[2.5px] border-transparent px-3 py-3.5 font-medium text-ink/65 transition-colors hover:border-themeBlue/30 hover:text-themeBlue md:px-4"
                     >
                       {item.label}
