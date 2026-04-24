@@ -83,11 +83,6 @@ function isDetachedPlaylist(node: EditorNode): boolean {
   return node.type === "YOUTUBE_PLAYLIST" && node.parentId === null;
 }
 
-function findInitialSelectedId(nodes: EditorNode[]): number | null {
-  const visibleNode = flattenTree(nodes).find(({ node }) => !isDetachedPlaylist(node));
-  return visibleNode?.node.id ?? nodes[0]?.id ?? null;
-}
-
 function mapTree(
   nodes: EditorNode[],
   targetId: number,
@@ -400,7 +395,7 @@ export default function MenuManagementClient({
   const toast = useAdminToast();
   const [items, setItems] = useState<EditorNode[]>(cloneTree(initialItems));
   const [savedItems, setSavedItems] = useState<EditorNode[]>(cloneTree(initialItems));
-  const [selectedId, setSelectedId] = useState<number | null>(findInitialSelectedId(initialItems));
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [tempId, setTempId] = useState(-1);
   const [saving, setSaving] = useState(false);
   const [manualSlugDrafts, setManualSlugDrafts] = useState<Record<number, string>>({});
@@ -749,7 +744,7 @@ export default function MenuManagementClient({
       const nextItems = cloneTree(payload.items);
       setItems(nextItems);
       setSavedItems(nextItems);
-      setSelectedId(findInitialSelectedId(payload.items));
+      setSelectedId(null);
       toast.success("메뉴 구조를 저장했습니다.");
       router.refresh();
     } catch (error) {
