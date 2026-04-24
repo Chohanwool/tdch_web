@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type DragEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import { useRouter } from "next/navigation";
 import type {
   AdminMenuTreeNode,
@@ -15,6 +15,10 @@ type DropIndicator = {
   parentId: number | null;
   index: number;
 };
+
+// 메뉴 트리 스크롤 컨테이너에 자동 스크롤 기능을 위한 설정 상수
+const AUTO_SCROLL_EDGE_THRESHOLD_PX = 72;
+const AUTO_SCROLL_MAX_SPEED_PX = 20;
 
 const STATUS_META: Record<MenuStatus, string> = {
   DRAFT: "bg-amber-100 text-amber-700",
@@ -403,6 +407,9 @@ export default function MenuManagementClient({
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
   const [draggingMenuId, setDraggingMenuId] = useState<number | null>(null);
   const [dropIndicator, setDropIndicator] = useState<DropIndicator | null>(null);
+  const treeScrollRef = useRef<HTMLDivElement>(null);
+  const autoScrollFrameRef = useRef<number | null>(null);
+  const autoScrollVelocityRef = useRef(0);
 
   const allFlatItems = useMemo(() => flattenTree(items), [items]);
   const flatItems = useMemo(
@@ -490,7 +497,76 @@ export default function MenuManagementClient({
     return Boolean(activeNode && overNode && activeNode.parentId === overNode.parentId);
   };
 
+  const stopAutoScroll = () => {
+    if (autoScrollFrameRef.current !== null) {
+      cancelAnimationFrame(autoScrollFrameRef.current);
+      autoScrollFrameRef.current = null;
+    }
+    autoScrollVelocityRef.current = 0;
+  };
+
+  const tickAutoScroll = () => {
+    const container = treeScrollRef.current;
+    const velocity = autoScrollVelocityRef.current;
+
+    if (!container || velocity === 0) {
+      autoScrollFrameRef.current = null;
+      return;
+    }
+
+    const previousScrollTop = container.scrollTop;
+    container.scrollTop += velocity;
+
+    if (container.scrollTop === previousScrollTop) {
+      autoScrollFrameRef.current = null;
+      return;
+    }
+
+    autoScrollFrameRef.current = requestAnimationFrame(tickAutoScroll);
+  };
+
+  const startAutoScroll = () => {
+    if (autoScrollFrameRef.current !== null) {
+      return;
+    }
+
+    autoScrollFrameRef.current = requestAnimationFrame(tickAutoScroll);
+  };
+
+  const updateAutoScroll = (clientY: number) => {
+    const container = treeScrollRef.current;
+
+    if (!container) {
+      stopAutoScroll();
+      return;
+    }
+
+    const rect = container.getBoundingClientRect();
+    const distanceFromTop = clientY - rect.top;
+    const distanceFromBottom = rect.bottom - clientY;
+
+    let nextVelocity = 0;
+
+    if (distanceFromTop >= 0 && distanceFromTop < AUTO_SCROLL_EDGE_THRESHOLD_PX) {
+      const ratio = (AUTO_SCROLL_EDGE_THRESHOLD_PX - distanceFromTop) / AUTO_SCROLL_EDGE_THRESHOLD_PX;
+      nextVelocity = -Math.max(4, Math.round(AUTO_SCROLL_MAX_SPEED_PX * ratio));
+    } else if (distanceFromBottom >= 0 && distanceFromBottom < AUTO_SCROLL_EDGE_THRESHOLD_PX) {
+      const ratio = (AUTO_SCROLL_EDGE_THRESHOLD_PX - distanceFromBottom) / AUTO_SCROLL_EDGE_THRESHOLD_PX;
+      nextVelocity = Math.max(4, Math.round(AUTO_SCROLL_MAX_SPEED_PX * ratio));
+    }
+
+    autoScrollVelocityRef.current = nextVelocity;
+
+    if (nextVelocity === 0) {
+      stopAutoScroll();
+      return;
+    }
+
+    startAutoScroll();
+  };
+
   const resetDragState = () => {
+    stopAutoScroll();
     setDraggingMenuId(null);
     setDropIndicator(null);
   };
@@ -500,9 +576,12 @@ export default function MenuManagementClient({
     event.dataTransfer.setData("text/plain", String(nodeId));
     setDraggingMenuId(nodeId);
     setDropIndicator(null);
+    updateAutoScroll(event.clientY);
   };
 
   const handleMenuDragOver = (event: DragEvent<HTMLButtonElement>, nodeId: number) => {
+    updateAutoScroll(event.clientY);
+
     if (!canDropOnMenu(draggingMenuId, nodeId)) {
       return;
     }
@@ -536,6 +615,10 @@ export default function MenuManagementClient({
     setSelectedId(draggingMenuId);
     resetDragState();
   };
+
+  useEffect(() => () => {
+    stopAutoScroll();
+  }, []);
 
   const switchSelectedSlugMode = (manual: boolean) => {
     if (!selectedNode) {
@@ -727,7 +810,10 @@ export default function MenuManagementClient({
               </button>
             </div>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
+          <div
+            ref={treeScrollRef}
+            className="min-h-0 flex-1 overflow-y-auto px-3 py-3"
+          >
             {flatItems.length === 0 ? (
               <p className="px-3 py-6 text-[13px] text-[#6d7f95]">등록된 메뉴가 없습니다.</p>
             ) : (
