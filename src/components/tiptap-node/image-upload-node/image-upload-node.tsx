@@ -224,7 +224,7 @@ function getUploadedImageMetadata(url: string) {
   const storedPath = params.get("tdchStoredPath")
 
   return {
-    ...(assetId ? { assetId } : {}),
+    ...(assetId ? { assetId: Number(assetId) } : {}),
     ...(storedPath ? { storedPath } : {}),
   }
 }
