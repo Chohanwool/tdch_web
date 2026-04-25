@@ -15,6 +15,7 @@ import {
 } from "@/lib/admin-upload-client";
 import type {
   AdminBoardPostDetail,
+  AdminBoardPostsPage,
   AdminBoardPostSummary,
   AdminBoardSummary,
   BoardPostSavePayload,
@@ -45,6 +46,8 @@ type BoardPostListItem = AdminBoardPostSummary & {
   boardMenuId: number;
   boardMenuLabel: string;
 };
+
+const BOARD_POSTS_PAGE_SIZE = 100;
 
 function createEmptyDraft(): Draft {
   const contentJson = createEmptyTiptapDocument();
@@ -138,6 +141,32 @@ function sortPostsByUpdatedAt(posts: BoardPostListItem[]) {
   });
 }
 
+function buildBoardPostsListUrl(
+  boardSlug: string,
+  options: {
+    menuId?: number;
+    page?: number;
+    size?: number;
+    title?: string;
+  },
+) {
+  const params = new URLSearchParams();
+  if (options.menuId != null) {
+    params.set("menuId", String(options.menuId));
+  }
+  if (options.page != null) {
+    params.set("page", String(options.page));
+  }
+  if (options.size != null) {
+    params.set("size", String(options.size));
+  }
+  if (options.title && options.title.trim().length > 0) {
+    params.set("title", options.title.trim());
+  }
+  const query = params.size > 0 ? `?${params.toString()}` : "";
+  return `/api/admin/boards/${boardSlug}/posts${query}`;
+}
+
 export default function BoardManagementClient({
   initialBoards,
   initialBoardMenus,
@@ -190,6 +219,7 @@ export default function BoardManagementClient({
   const [titleQuery, setTitleQuery] = useState("");
   const [appliedBoardMenu, setAppliedBoardMenu] = useState("ALL");
   const [appliedTitle, setAppliedTitle] = useState("");
+  const [listReloadTick, setListReloadTick] = useState(0);
 
   // 브라우저 뒤로가기로 editor → list 복귀를 위한 히스토리 추적
   const editorPushedRef = useRef(false);
@@ -225,14 +255,7 @@ export default function BoardManagementClient({
     [initialBoards, selectedBoardMenu],
   );
 
-  const filteredPosts = useMemo(() => {
-    const normalizedQuery = appliedTitle.trim().toLocaleLowerCase("ko-KR");
-    return posts.filter((post) => {
-      const matchesMenu = appliedBoardMenu === "ALL" || String(post.boardMenuId) === appliedBoardMenu;
-      const matchesTitle = normalizedQuery.length === 0 || post.title.toLocaleLowerCase("ko-KR").includes(normalizedQuery);
-      return matchesMenu && matchesTitle;
-    });
-  }, [appliedBoardMenu, posts, appliedTitle]);
+  const filteredPosts = posts;
 
   const handleBoardSearch = () => {
     setAppliedBoardMenu(boardMenuFilter);
@@ -269,20 +292,43 @@ export default function BoardManagementClient({
       setError(null);
 
       try {
+        const targetMenus = appliedBoardMenu === "ALL"
+          ? boardMenus
+          : boardMenus.filter((boardMenu) => String(boardMenu.id) === appliedBoardMenu);
         const groupedPosts = await Promise.all(
-          boardMenus.map(async (boardMenu) => {
+          targetMenus.map(async (boardMenu) => {
             if (!boardMenu.boardKey) {
               return [];
             }
 
-            const response = await fetch(`/api/admin/boards/${boardMenu.boardKey}/posts?menuId=${boardMenu.id}`);
-            const payload = (await response.json()) as { posts?: AdminBoardPostSummary[]; message?: string };
+            const loadedPosts: BoardPostListItem[] = [];
+            let page = 0;
 
-            if (!response.ok) {
-              throw new Error(payload.message || "게시글 목록을 불러오지 못했습니다.");
+            while (true) {
+              const response = await fetch(
+                buildBoardPostsListUrl(boardMenu.boardKey, {
+                  menuId: boardMenu.id,
+                  page,
+                  size: BOARD_POSTS_PAGE_SIZE,
+                  title: appliedTitle,
+                }),
+              );
+              const payload = (await response.json()) as AdminBoardPostsPage & { message?: string };
+
+              if (!response.ok) {
+                throw new Error(payload.message || "게시글 목록을 불러오지 못했습니다.");
+              }
+
+              loadedPosts.push(...(payload.posts ?? []).map((post) => toBoardPostListItem(post, boardMenu)));
+
+              if (!payload.hasNext) {
+                break;
+              }
+
+              page += 1;
             }
 
-            return (payload.posts ?? []).map((post) => toBoardPostListItem(post, boardMenu));
+            return loadedPosts;
           }),
         );
 
@@ -309,7 +355,7 @@ export default function BoardManagementClient({
     return () => {
       cancelled = true;
     };
-  }, [boardMenus, boardsBySlug, toast]);
+  }, [appliedBoardMenu, appliedTitle, boardMenus, listReloadTick, toast]);
 
   useEffect(() => {
     if (screenMode !== "editor" || !selectedBoardMenu?.boardKey || !selectedMenuId || !selectedPostId) {
@@ -481,6 +527,7 @@ export default function BoardManagementClient({
             : [nextPost, ...current],
         );
       });
+      setListReloadTick((current) => current + 1);
       if (editorPushedRef.current) {
         pendingNoticeRef.current = "게시글을 저장했습니다.";
         window.history.back(); // popstate가 목록 복귀 처리
@@ -553,7 +600,6 @@ export default function BoardManagementClient({
           <div className="flex items-center justify-between border-b border-[#edf2f7] px-5 py-4">
             <div className="flex items-center gap-3">
               <span className="text-[13px] text-[#5d6f86]">
-                전체 <span className="font-semibold text-[#132033]">{posts.length}</span>건 중{" "}
                 <span className="font-semibold text-[#132033]">{filteredPosts.length}</span>건 표시
               </span>
             </div>

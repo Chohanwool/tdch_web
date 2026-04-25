@@ -19,8 +19,8 @@ test("board management client fetches internal board post routes for list and de
 
   assert.match(
     contents,
-    /fetch\s*\(\s*`\/api\/admin\/boards\/\$\{[^}]*\}\/posts\?menuId=\$\{[^}]*\}`/s,
-    "Expected board-management-client to fetch menu-scoped /api/admin/boards/${slug}/posts?menuId=${menuId} for the list.",
+    /buildBoardPostsListUrl\s*\(\s*[^,]+,\s*\{[\s\S]*menuId:\s*boardMenu\.id[\s\S]*page[\s\S]*size[\s\S]*title:\s*appliedTitle[\s\S]*\}\s*\)/s,
+    "Expected board-management-client to build paged list requests with menuId, page, size, and title.",
   );
   assert.match(
     contents,
@@ -34,9 +34,10 @@ test("board management client includes selected menuId in list and detail reques
 
   assert.match(
     contents,
-    /\/api\/admin\/boards\/\$\{[^}]*\}\/posts\?menuId=\$\{[^}]*\}/s,
-    "Expected board-management-client to include menuId in selected board list requests.",
+    /buildBoardPostsListUrl\s*\(\s*[^,]+,\s*\{[\s\S]*menuId:\s*boardMenu\.id/s,
+    "Expected board-management-client to include menuId in board list requests.",
   );
+  assert.match(contents, /payload\.hasNext/, "Expected board-management-client to follow paged list responses.");
   assert.match(
     contents,
     /\/api\/admin\/boards\/\$\{[^}]*\}\/posts\/\$\{[^}]*\}\?menuId=\$\{[^}]*\}/s,

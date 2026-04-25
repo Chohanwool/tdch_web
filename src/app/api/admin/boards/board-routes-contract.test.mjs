@@ -73,14 +73,17 @@ test("admin board posts route lists and creates posts for a board slug", async (
   }
   assert.match(
     contents,
-    /readMenuId\s*\(\s*request\s*\)/s,
-    "Expected [slug]/posts/route.ts to read the selected BOARD menu id from the request.",
+    /readListOptions\s*\(\s*request\s*\)/s,
+    "Expected [slug]/posts/route.ts to read list options from the request.",
   );
   assert.match(
     contents,
-    /getAdminBoardPosts\s*\(\s*session\.user\.id\s*,\s*slug\s*,\s*menuId\s*\)/s,
-    "Expected [slug]/posts/route.ts to call getAdminBoardPosts(session.user.id, slug, menuId).",
+    /getAdminBoardPosts\s*\(\s*session\.user\.id\s*,\s*slug\s*,\s*options\s*\)/s,
+    "Expected [slug]/posts/route.ts to call getAdminBoardPosts(session.user.id, slug, options).",
   );
+  assert.match(contents, /page:\s*page == null \? undefined : Number\(page\)/, "Expected GET list route to forward page.");
+  assert.match(contents, /size:\s*size == null \? undefined : Number\(size\)/, "Expected GET list route to forward size.");
+  assert.match(contents, /title:\s*title == null \? undefined : title/, "Expected GET list route to forward title.");
   assert.match(
     contents,
     /createAdminBoardPost\s*\(\s*session\.user\.id\s*,\s*slug\s*,\s*menuId\s*\?\s*\{\s*\.\.\.payload,\s*menuId\s*\}\s*:\s*payload\s*\)/s,

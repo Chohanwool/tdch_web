@@ -12,6 +12,13 @@ interface RouteContext {
   params: Promise<{ slug: string }>;
 }
 
+type BoardPostsListOptions = {
+  menuId?: string | null;
+  page?: number;
+  size?: number;
+  title?: string | null;
+};
+
 function unauthorizedResponse() {
   return NextResponse.json(
     { code: "UNAUTHORIZED", message: "관리자 로그인이 필요합니다." },
@@ -23,6 +30,20 @@ function readMenuId(request: Request) {
   return new URL(request.url).searchParams.get("menuId");
 }
 
+function readListOptions(request: Request): BoardPostsListOptions {
+  const searchParams = new URL(request.url).searchParams;
+  const page = searchParams.get("page");
+  const size = searchParams.get("size");
+  const title = searchParams.get("title");
+
+  return {
+    menuId: searchParams.get("menuId"),
+    page: page == null ? undefined : Number(page),
+    size: size == null ? undefined : Number(size),
+    title: title == null ? undefined : title,
+  };
+}
+
 export async function GET(request: Request, context: RouteContext) {
   const session = await getAdminSession();
 
@@ -31,11 +52,11 @@ export async function GET(request: Request, context: RouteContext) {
   }
 
   const { slug } = await context.params;
-  const menuId = readMenuId(request);
+  const options = readListOptions(request);
 
   try {
-    const posts = await getAdminBoardPosts(session.user.id, slug, menuId);
-    return NextResponse.json({ posts });
+    const result = await getAdminBoardPosts(session.user.id, slug, options);
+    return NextResponse.json(result);
   } catch (error) {
     const status = error instanceof AdminApiError ? error.status : 400;
 

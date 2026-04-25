@@ -9,6 +9,7 @@ import {
   type AdminBoardPostAsset,
   type AdminBoardPostDetail,
   type AdminBoardPostSummary,
+  type AdminBoardPostsPage,
   type AdminBoardSummary,
   type BoardPostSavePayload,
 } from "@/lib/admin-board-api";
@@ -85,14 +86,14 @@ async function assertAdminBoardApiContract() {
   const menuId = _assertPostSummary.menuId;
 
   const boards = await getAdminBoards(actorId);
-  const posts = await getAdminBoardPosts(actorId, slug, menuId);
+  const posts = await getAdminBoardPosts(actorId, slug, { menuId });
   const post = await getAdminBoardPost(actorId, slug, postId, menuId);
   const created = await createAdminBoardPost(actorId, slug, _assertSavePayload);
   const updated = await updateAdminBoardPost(actorId, slug, postId, _assertSavePayload);
   await deleteAdminBoardPost(actorId, slug, postId);
 
   const _assertBoards: AdminBoardSummary[] = boards;
-  const _assertPosts: AdminBoardPostSummary[] = posts;
+  const _assertPosts: AdminBoardPostsPage = posts;
   const _assertPost: AdminBoardPostDetail = post;
   const _assertCreated: AdminBoardPostDetail = created;
   const _assertUpdated: AdminBoardPostDetail = updated;

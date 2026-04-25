@@ -25,6 +25,11 @@ export interface AdminBoardPostSummary {
   updatedAt: string;
 }
 
+export interface AdminBoardPostsPage {
+  posts: AdminBoardPostSummary[];
+  hasNext: boolean;
+}
+
 export interface AdminBoardPostAsset {
   id: string;
   kind: "INLINE_IMAGE" | "FILE_ATTACHMENT" | string;
@@ -206,14 +211,27 @@ export async function getAdminBoards(actorId: string): Promise<AdminBoardSummary
 export async function getAdminBoardPosts(
   actorId: string,
   slug: string,
-  menuId?: string | number | null,
-): Promise<AdminBoardPostSummary[]> {
-  const menuQuery = menuId == null ? "" : `?menuId=${toBackendNumber(menuId, "메뉴 ID")}`;
-  const response = await adminApiFetch(`/api/v1/admin/boards/${encodeURIComponent(slug)}/posts${menuQuery}`, {
+  options?: {
+    menuId?: string | number | null;
+    page?: number;
+    size?: number;
+    title?: string | null;
+  },
+): Promise<AdminBoardPostsPage> {
+  const params = new URLSearchParams();
+  if (options?.menuId != null) params.set("menuId", String(toBackendNumber(options.menuId, "메뉴 ID")));
+  if (options?.page != null) params.set("page", String(options.page));
+  if (options?.size != null) params.set("size", String(options.size));
+  if (options?.title) params.set("title", options.title);
+  const query = params.size > 0 ? `?${params.toString()}` : "";
+  const response = await adminApiFetch(`/api/v1/admin/boards/${encodeURIComponent(slug)}/posts${query}`, {
     headers: actorHeaders(actorId),
   });
-  const payload = (await response.json()) as { posts?: BackendPostSummary[] };
-  return (payload.posts ?? []).map(normalizePostSummary);
+  const payload = (await response.json()) as { posts?: BackendPostSummary[]; hasNext?: boolean };
+  return {
+    posts: (payload.posts ?? []).map(normalizePostSummary),
+    hasNext: payload.hasNext ?? false,
+  };
 }
 
 export async function getAdminBoardPost(
