@@ -25,7 +25,6 @@ export interface AdminMenuTreeNode {
   slugCustomized: boolean;
   staticPageKey: string | null;
   boardKey: string | null;
-  boardTypeId: number | null;
   boardTypeKey: string | null;
   boardTypeLabel: string | null;
   externalUrl: string | null;
@@ -72,7 +71,7 @@ export interface MenuTreeNodePayload {
   slugCustomized?: boolean;
   staticPageKey?: string | null;
   boardKey?: string | null;
-  boardTypeId?: number | null;
+  boardType?: string | null;
   externalUrl?: string | null;
   openInNewTab?: boolean;
   isAuto?: boolean;

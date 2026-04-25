@@ -78,8 +78,8 @@ test("menu management client hides BOARD type editing from admins", async () => 
   );
   assert.match(
     contents,
-    /boardTypeId:\s*null/,
-    "Expected new BOARD menu nodes to let the backend assign the default board type.",
+    /boardType:\s*node\.boardTypeKey/,
+    "Expected menu payload to send boardType from node.boardTypeKey so new nodes with null boardTypeKey let the backend assign the default board type.",
   );
 });
 

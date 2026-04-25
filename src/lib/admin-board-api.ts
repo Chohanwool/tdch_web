@@ -10,7 +10,6 @@ export interface AdminBoardSummary {
   slug: string;
   title: string;
   type: AdminBoardType;
-  boardTypeId?: string | null;
   description: string | null;
 }
 
@@ -59,7 +58,6 @@ interface BackendBoardSummary {
   slug: string;
   title: string;
   type: AdminBoardType;
-  boardTypeId?: string | number | null;
   description?: string | null;
 }
 
@@ -129,7 +127,6 @@ function normalizeBoard(board: BackendBoardSummary): AdminBoardSummary {
     slug: board.slug,
     title: board.title,
     type: board.type,
-    boardTypeId: board.boardTypeId == null ? null : toFrontendId(board.boardTypeId),
     description: board.description ?? null,
   };
 }

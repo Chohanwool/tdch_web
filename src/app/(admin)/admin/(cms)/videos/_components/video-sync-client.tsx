@@ -135,7 +135,7 @@ function toPayload(nodes: EditorNode[]): MenuTreeNodePayload[] {
     slugCustomized: node.slugCustomized,
     staticPageKey: node.staticPageKey,
     boardKey: node.boardKey,
-    boardTypeId: node.boardTypeId,
+    boardType: node.boardTypeKey,
     externalUrl: node.externalUrl,
     openInNewTab: node.openInNewTab,
     isAuto: node.isAuto,
