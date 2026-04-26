@@ -6,6 +6,8 @@ import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit"
 import { Image } from "@tiptap/extension-image"
+import { Link } from "@tiptap/extension-link"
+import { Underline } from "@tiptap/extension-underline"
 import { Youtube } from "@tiptap/extension-youtube"
 import { TaskItem, TaskList } from "@tiptap/extension-list"
 import { TextAlign } from "@tiptap/extension-text-align"
@@ -259,11 +261,14 @@ export function SimpleEditor({
     extensions: [
       StarterKit.configure({
         horizontalRule: false,
-        link: {
-          openOnClick: false,
-          enableClickSelection: true,
-        },
       }),
+      Link.configure({
+        openOnClick: false,
+        enableClickSelection: true,
+        autolink: true,
+        defaultProtocol: "https",
+      }),
+      Underline,
       HorizontalRule,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TaskList,

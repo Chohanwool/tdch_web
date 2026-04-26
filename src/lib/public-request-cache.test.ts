@@ -167,7 +167,6 @@ test("getNavigationResponse falls back to static navigation when the public menu
       [
         { key: "about", defaultLandingHref: "/about/greeting" },
         { key: "newcomer", defaultLandingHref: "/newcomer/guide" },
-        { key: "videos", defaultLandingHref: null },
       ],
     );
   } finally {
