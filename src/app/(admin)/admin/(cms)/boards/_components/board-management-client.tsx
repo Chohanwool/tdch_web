@@ -820,43 +820,6 @@ export default function BoardManagementClient({
   return (
     <div className="space-y-5">
       <section className="rounded-2xl border border-[#e2e8f0] bg-white shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#edf2f7] px-5 py-4">
-          <div>
-            <h2 className="text-[15px] font-bold text-[#132033]">{selectedPostId ? "게시글 상세" : "새 게시글 작성"}</h2>
-            <p className="mt-1 text-[12px] text-[#6d7f95]">상세와 새 게시글 작성은 같은 편집 화면에서 관리합니다.</p>
-          </div>
-          <div className="flex items-center gap-2">
-            {selectedPostId ? (
-              <button
-                type="button"
-                onClick={handleDelete}
-                disabled={saving}
-                className="rounded-lg border border-[#fecaca] bg-[#fff1f2] px-3 py-2 text-[12px] font-semibold text-[#b42318] disabled:opacity-60"
-              >
-                삭제
-              </button>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => {
-                if (editorPushedRef.current) {
-                  window.history.back(); // popstate가 목록 복귀 처리
-                } else {
-                  setScreenMode("list");
-                  setSelectedPostId(null);
-                  setDraft(createEmptyDraft());
-                  setAttachmentAssetIds([]);
-                  setError(null);
-                  setNotice(null);
-                }
-              }}
-              className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]"
-            >
-              목록으로
-            </button>
-          </div>
-        </div>
-
         <div className="space-y-5 px-5 py-5">
           <label className="space-y-1.5">
             <span className="text-[12px] font-semibold text-[#334155]">게시판</span>
@@ -962,23 +925,35 @@ export default function BoardManagementClient({
             {uploadingAttachment && <span className="text-[12px] text-[#6d7f95]">첨부 파일 업로드 중...</span>}
           </div>
 
-          <div className="flex justify-end gap-2 border-t border-[#edf2f7] pt-4">
-            <button
-              type="button"
-              onClick={() => {
-                if (editorPushedRef.current) {
-                  window.history.back(); // popstate가 목록 복귀 처리
-                } else {
-                  setScreenMode("list");
-                  setSelectedPostId(null);
-                  setDraft(createEmptyDraft());
-                  setAttachmentAssetIds([]);
-                }
-              }}
-              className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]"
-            >
-              취소
-            </button>
+          <div className="flex items-center justify-between gap-2 border-t border-[#edf2f7] pt-4">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (editorPushedRef.current) {
+                    window.history.back();
+                  } else {
+                    setScreenMode("list");
+                    setSelectedPostId(null);
+                    setDraft(createEmptyDraft());
+                    setAttachmentAssetIds([]);
+                  }
+                }}
+                className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]"
+              >
+                목록으로
+              </button>
+              {selectedPostId ? (
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={saving}
+                  className="rounded-lg border border-[#fecaca] bg-[#fff1f2] px-3 py-2 text-[12px] font-semibold text-[#b42318] disabled:opacity-60"
+                >
+                  삭제
+                </button>
+              ) : null}
+            </div>
             <button
               type="button"
               onClick={handleSave}
