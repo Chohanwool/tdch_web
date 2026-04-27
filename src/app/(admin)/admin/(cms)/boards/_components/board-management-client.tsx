@@ -821,6 +821,17 @@ export default function BoardManagementClient({
     <div className="space-y-5">
       <section className="rounded-2xl border border-[#e2e8f0] bg-white shadow-sm">
         <div className="space-y-5 px-5 py-5">
+          {selectedPostId && (() => {
+            const meta = posts.find((p) => p.id === selectedPostId);
+            if (!meta) return null;
+            return (
+              <div className="flex flex-wrap gap-x-6 gap-y-1 rounded-xl bg-[#f8fafc] px-4 py-3 text-[12px] text-[#5d6f86]">
+                <span><span className="font-semibold text-[#334155]">작성자</span>&nbsp;&nbsp;{meta.authorName}</span>
+                <span><span className="font-semibold text-[#334155]">등록일</span>&nbsp;&nbsp;{formatDate(meta.createdAt)}</span>
+                <span><span className="font-semibold text-[#334155]">수정일</span>&nbsp;&nbsp;{formatDate(meta.updatedAt)}</span>
+              </div>
+            );
+          })()}
           <label className="space-y-1.5">
             <span className="text-[12px] font-semibold text-[#334155]">게시판</span>
             <select

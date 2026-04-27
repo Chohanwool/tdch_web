@@ -93,6 +93,10 @@ function getBoardListPath(boardPath: string, page: number, pageSize: number, tit
   return query ? `${boardPath}?${query}` : boardPath;
 }
 
+function getBoardDetailPath(boardPath: string, postId: string) {
+  return `${boardPath.replace(/\/+$/, "")}/${postId}`;
+}
+
 async function loadPublicBoardList(resolved: PublicResolvedMenuPage, page: number, pageSize: number, title: string) {
   if (!resolved.boardKey) {
     notFound();
@@ -197,7 +201,12 @@ async function resolvePublicBoardState(path: string) {
     return { kind: "missing" as const, resolved: parentResolved };
   }
 
-  return { kind: "detail" as const, resolved: parentResolved, post };
+  return {
+    kind: "detail" as const,
+    resolved: parentResolved,
+    post,
+    canonicalPath: getBoardDetailPath(parentResolved.fullPath, post.id),
+  };
 }
 
 async function resolvePublicVideoState(path: string) {
@@ -296,6 +305,51 @@ async function renderPublicVideoDetail(
   return <PublicVideoPlaylistDetailView playlist={playlist} video={video} />;
 }
 
+function createNotFoundMetadata(): Metadata {
+  return {
+    title: "페이지를 찾을 수 없습니다",
+    description: "요청하신 페이지를 찾을 수 없습니다.",
+  };
+}
+
+async function loadBoardListForRender(
+  resolved: PublicResolvedMenuPage,
+  normalizedPage: number,
+  normalizedBoardPageSize: number,
+  normalizedBoardTitle: string,
+) {
+  const list = await loadPublicBoardList(
+    resolved,
+    normalizedPage,
+    normalizedBoardPageSize,
+    normalizedBoardTitle,
+  );
+
+  if (list.totalItems > 0 && normalizedPage > list.totalPages) {
+    redirect(
+      getBoardListPath(
+        resolved.fullPath,
+        list.totalPages,
+        normalizedBoardPageSize,
+        normalizedBoardTitle,
+      ),
+    );
+  }
+
+  if (list.currentPage !== normalizedPage) {
+    redirect(
+      getBoardListPath(
+        resolved.fullPath,
+        list.currentPage,
+        normalizedBoardPageSize,
+        normalizedBoardTitle,
+      ),
+    );
+  }
+
+  return renderPublicBoardList(resolved.label, resolved.fullPath, list);
+}
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -314,7 +368,7 @@ export async function generateMetadata({
       return createVideoMetadata({
         title: videoState.video.title,
         description: videoState.video.summary || videoState.video.description || `${videoState.resolved.label} 영상입니다.`,
-        path,
+        path: `${videoState.resolved.fullPath}/${videoState.video.videoId}`,
         publishedTime: videoState.video.publishedAt ?? undefined,
       });
     }
@@ -324,7 +378,7 @@ export async function generateMetadata({
       return createPageMetadata({
         title: boardState.post.title,
         description: `${boardState.post.title} | ${boardState.resolved.label}`,
-        path,
+        path: boardState.canonicalPath,
       });
     }
 
@@ -336,10 +390,7 @@ export async function generateMetadata({
       });
     }
 
-    return {
-      title: "페이지를 찾을 수 없습니다",
-      description: "요청하신 페이지를 찾을 수 없습니다.",
-    };
+    return createNotFoundMetadata();
   }
 
   if (resolved.type === "YOUTUBE_PLAYLIST") {
@@ -356,17 +407,14 @@ export async function generateMetadata({
 
   if (resolved.type === "BOARD") {
     if (!resolved.boardKey) {
-      return {
-        title: "페이지를 찾을 수 없습니다",
-        description: "요청하신 페이지를 찾을 수 없습니다.",
-      };
+      return createNotFoundMetadata();
     }
 
     if (resolved.fullPath === path) {
       return createPageMetadata({
         title: normalizedPage > 1 ? `${resolved.label} - ${normalizedPage}페이지` : resolved.label,
         description: `${resolved.label} | The 제자교회`,
-        path: getBoardListPath(path, normalizedPage, normalizedBoardPageSize, normalizedBoardTitle),
+        path: getBoardListPath(resolved.fullPath, normalizedPage, normalizedBoardPageSize, normalizedBoardTitle),
       });
     }
   }
@@ -404,21 +452,24 @@ export default async function DynamicRoutePage({
     const boardState = await resolvePublicBoardState(path);
 
     if (boardState.kind === "detail") {
-      return renderPublicBoardDetail(boardState.resolved.label, boardState.resolved.fullPath, boardState.post);
+      if (boardState.canonicalPath !== path) {
+        redirect(boardState.canonicalPath);
+      }
+
+      return renderPublicBoardDetail(
+        boardState.resolved.label,
+        boardState.resolved.fullPath,
+        boardState.post,
+      );
     }
 
     if (boardState.kind === "list") {
-      const list = await loadPublicBoardList(boardState.resolved, normalizedPage, normalizedBoardPageSize, normalizedBoardTitle);
-
-      if (list.totalItems > 0 && normalizedPage > list.totalPages) {
-        redirect(getBoardListPath(boardState.resolved.fullPath, list.totalPages, normalizedBoardPageSize, normalizedBoardTitle));
-      }
-
-      if (list.currentPage !== normalizedPage) {
-        redirect(getBoardListPath(boardState.resolved.fullPath, list.currentPage, normalizedBoardPageSize, normalizedBoardTitle));
-      }
-
-      return renderPublicBoardList(boardState.resolved.label, boardState.resolved.fullPath, list);
+      return loadBoardListForRender(
+        boardState.resolved,
+        normalizedPage,
+        normalizedBoardPageSize,
+        normalizedBoardTitle,
+      );
     }
 
     notFound();
@@ -445,37 +496,31 @@ export default async function DynamicRoutePage({
     }
 
     if (resolved.fullPath === path) {
-      const list = await loadPublicBoardList(resolved, normalizedPage, normalizedBoardPageSize, normalizedBoardTitle);
-
-      if (list.totalItems > 0 && normalizedPage > list.totalPages) {
-        redirect(getBoardListPath(resolved.fullPath, list.totalPages, normalizedBoardPageSize, normalizedBoardTitle));
-      }
-
-      if (list.currentPage !== normalizedPage) {
-        redirect(getBoardListPath(resolved.fullPath, list.currentPage, normalizedBoardPageSize, normalizedBoardTitle));
-      }
-
-      return renderPublicBoardList(resolved.label, resolved.fullPath, list);
+      return loadBoardListForRender(
+        resolved,
+        normalizedPage,
+        normalizedBoardPageSize,
+        normalizedBoardTitle,
+      );
     }
   }
 
   const boardState = await resolvePublicBoardState(path);
 
   if (boardState.kind === "list") {
-    const list = await loadPublicBoardList(boardState.resolved, normalizedPage, normalizedBoardPageSize, normalizedBoardTitle);
-
-    if (list.totalItems > 0 && normalizedPage > list.totalPages) {
-      redirect(getBoardListPath(boardState.resolved.fullPath, list.totalPages, normalizedBoardPageSize, normalizedBoardTitle));
-    }
-
-    if (list.currentPage !== normalizedPage) {
-      redirect(getBoardListPath(boardState.resolved.fullPath, list.currentPage, normalizedBoardPageSize, normalizedBoardTitle));
-    }
-
-    return renderPublicBoardList(boardState.resolved.label, boardState.resolved.fullPath, list);
+    return loadBoardListForRender(
+      boardState.resolved,
+      normalizedPage,
+      normalizedBoardPageSize,
+      normalizedBoardTitle,
+    );
   }
 
   if (boardState.kind === "detail") {
+    if (boardState.canonicalPath !== path) {
+      redirect(boardState.canonicalPath);
+    }
+
     return renderPublicBoardDetail(boardState.resolved.label, boardState.resolved.fullPath, boardState.post);
   }
 
