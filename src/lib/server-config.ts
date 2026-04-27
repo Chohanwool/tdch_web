@@ -1,16 +1,13 @@
 import "server-only";
 
-import { readApiBaseUrlFromEnv } from "@/lib/api-base-url";
+import { readServerApiBaseUrlFromEnv } from "@/lib/api-env";
 
 const readEnv = (name: string, fallback: string) => {
   const value = process.env[name]?.trim();
   return value && value.length > 0 ? value : fallback;
 };
 
-export const SERVER_API_BASE_URL = readApiBaseUrlFromEnv(process.env, [
-  "API_BASE_URL",
-  "NEXT_PUBLIC_API_BASE_URL",
-]);
+export const SERVER_API_BASE_URL = readServerApiBaseUrlFromEnv(process.env);
 
 export const NAVER_STATIC_MAP_CLIENT_ID = process.env.NAVER_MAP_CLIENT_ID?.trim() || "";
 export const NAVER_STATIC_MAP_CLIENT_SECRET =

@@ -17,18 +17,24 @@ type ServerFetchModule = {
 
 async function loadServerFetchModule(): Promise<ServerFetchModule> {
   const root = await mkdtemp(join(tmpdir(), "server-fetch-"));
-  const [serverFetchSource, serverConfigSource, apiBaseUrlSource] = await Promise.all([
+  const [serverFetchSource, serverConfigSource, apiBaseUrlSource, apiEnvSource] = await Promise.all([
     readFile(new URL("./server-fetch.ts", import.meta.url), "utf8"),
     readFile(new URL("./server-config.ts", import.meta.url), "utf8"),
     readFile(new URL("./api-base-url.ts", import.meta.url), "utf8"),
+    readFile(new URL("./api-env.ts", import.meta.url), "utf8"),
   ]);
 
   await writeFile(join(root, "api-base-url.ts"), apiBaseUrlSource, "utf8");
   await writeFile(
+    join(root, "api-env.ts"),
+    apiEnvSource.replace('from "./api-base-url"', 'from "./api-base-url.ts"'),
+    "utf8",
+  );
+  await writeFile(
     join(root, "server-config.ts"),
     serverConfigSource
       .replace('import "server-only";\n\n', "")
-      .replace('from "@/lib/api-base-url"', 'from "./api-base-url.ts"'),
+      .replace('from "@/lib/api-env"', 'from "./api-env.ts"'),
     "utf8",
   );
   const serverFetchPath = join(root, "server-fetch.ts");

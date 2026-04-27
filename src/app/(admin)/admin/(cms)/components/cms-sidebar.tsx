@@ -11,6 +11,7 @@ type NavItem = {
   icon?: ReactNode;
   matchHrefs?: string[];
   children?: NavItem[];
+  requireSuperAdmin?: boolean;
 };
 
 const NAV_GROUPS = [
@@ -67,6 +68,7 @@ const NAV_GROUPS = [
         href: "/admin/accounts",
         label: "관리자 계정",
         exact: false,
+        requireSuperAdmin: true,
         icon: (
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
             <path d="M8.5 9.2a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2Z" stroke="currentColor" strokeWidth="1.5" />
@@ -80,23 +82,15 @@ const NAV_GROUPS = [
 
 interface CmsSidebarProps {
   canManageAccounts: boolean;
-  operatorEntries?: NavItem[];
 }
 
-export default function CmsSidebar({ canManageAccounts, operatorEntries = [] }: CmsSidebarProps) {
+export default function CmsSidebar({ canManageAccounts }: CmsSidebarProps) {
   const pathname = usePathname();
   const currentPath = pathname ?? "";
-  const navGroups = NAV_GROUPS.map((group) =>
-    group.label === "운영" && canManageAccounts
-      ? {
-        ...group,
-        items: [
-          ...operatorEntries,
-          ...group.items,
-        ],
-      }
-      : group
-  );
+  const navGroups = NAV_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => !item.requireSuperAdmin || canManageAccounts),
+  }));
 
   const isActive = (href: string, exact: boolean) => {
     if (exact) {

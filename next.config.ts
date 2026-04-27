@@ -1,10 +1,8 @@
 import type { NextConfig } from "next";
-import { readApiBaseUrlFromEnv } from "./src/lib/api-base-url";
+import { readServerApiBaseUrlFromEnv } from "./src/lib/api-env";
 
-const upstreamApiBaseUrl = readApiBaseUrlFromEnv(process.env, [
-  "API_BASE_URL",
-  "NEXT_PUBLIC_API_BASE_URL",
-]);
+// The /upload rewrite must use the server-side API_BASE_URL contract.
+const upstreamApiBaseUrl = readServerApiBaseUrlFromEnv(process.env);
 
 const nextConfig: NextConfig = {
   output: "standalone",

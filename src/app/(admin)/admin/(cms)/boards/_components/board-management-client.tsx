@@ -680,7 +680,7 @@ export default function BoardManagementClient({
             <table className="min-w-full border-collapse text-left">
               <thead>
                 <tr className="border-b border-[#edf2f7] bg-[#f8fafc]">
-                  {["번호", "게시판", "제목", "공개", "고정", "수정일", ""].map((h) => (
+                  {["번호", "게시판", "제목", "공개", "고정", "작성자", "등록일", "수정일"].map((h) => (
                     <th
                       key={h}
                       className="whitespace-nowrap px-5 py-3 text-[11px] font-semibold tracking-wide text-[#55697f]"
@@ -693,13 +693,13 @@ export default function BoardManagementClient({
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="px-5 py-12 text-center text-[13px] text-[#6d7f95]">
+                    <td colSpan={8} className="px-5 py-12 text-center text-[13px] text-[#6d7f95]">
                       로딩 중...
                     </td>
                   </tr>
                 ) : filteredPosts.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-5 py-12 text-center text-[13px] text-[#6d7f95]">
+                    <td colSpan={8} className="px-5 py-12 text-center text-[13px] text-[#6d7f95]">
                       조건에 맞는 게시글이 없습니다.
                     </td>
                   </tr>
@@ -707,16 +707,17 @@ export default function BoardManagementClient({
                   filteredPosts.map((post, idx) => (
                     <tr
                       key={`${post.boardMenuId}-${post.id}`}
-                      className="border-b border-[#f0f4f8] last:border-0 transition hover:bg-[#fafcff]"
+                      className="cursor-pointer border-b border-[#f0f4f8] last:border-0 transition hover:bg-[#fafcff]"
+                      onClick={() => openPost(post)}
                     >
                       <td className="px-5 py-4 text-[13px] text-[#5d6f86]">{idx + 1}</td>
                       <td className="px-5 py-4 text-[12px] text-[#5d6f86]">{post.boardMenuLabel}</td>
                       <td className="px-5 py-4">
-                        <p className="max-w-[300px] truncate text-[13px] font-semibold text-[#132033]">
+                        <p className="max-w-[200px] truncate text-[13px] font-semibold text-[#132033]">
                           {post.title}
                         </p>
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="whitespace-nowrap px-5 py-4">
                         <span
                           className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
                             post.isPublic
@@ -727,7 +728,7 @@ export default function BoardManagementClient({
                           {post.isPublic ? "공개" : "비공개"}
                         </span>
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="whitespace-nowrap px-5 py-4">
                         {post.isPinned ? (
                           <span className="rounded-full bg-[#fff7ed] px-2.5 py-0.5 text-[10px] font-semibold text-[#c2410c]">
                             고정
@@ -737,16 +738,13 @@ export default function BoardManagementClient({
                         )}
                       </td>
                       <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
-                        {formatDate(post.updatedAt)}
+                        #{post.authorId}
                       </td>
-                      <td className="px-5 py-4">
-                        <button
-                          type="button"
-                          onClick={() => openPost(post)}
-                          className="inline-flex h-8 items-center rounded-lg border border-[#bfd0ea] bg-[#edf4ff] px-3 text-[12px] font-medium text-[#2d5da8] transition hover:bg-[#e4efff]"
-                        >
-                          편집
-                        </button>
+                      <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
+                        {formatDate(post.createdAt)}
+                      </td>
+                      <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
+                        {formatDate(post.updatedAt)}
                       </td>
                     </tr>
                   ))

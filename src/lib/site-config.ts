@@ -1,4 +1,4 @@
-import { normalizeApiBaseUrl, DEFAULT_API_BASE_URL } from "@/lib/api-base-url";
+import { readPublicApiBaseUrlFromEnv } from "@/lib/api-env";
 
 // .env에서 먼저 읽고 사용하는 객체 선언
 // Next.js는 빌드 시 .env 파일의 값을 process.env에 자동 주입한다.
@@ -91,9 +91,6 @@ export const NEWCOMER_CONTACT_APPLY_TEXT = readEnv(
   "NEXT_PUBLIC_NEWCOMER_CONTACT_APPLY_TEXT",
   DEFAULT_NEWCOMER_APPLY_TEXT,
 );
-export const PUBLIC_API_BASE_URL = normalizeApiBaseUrl(
-  process.env.NEXT_PUBLIC_API_BASE_URL,
-  DEFAULT_API_BASE_URL,
-);
+export const PUBLIC_API_BASE_URL = readPublicApiBaseUrlFromEnv(process.env);
 
 export const SITE_DESCRIPTION = `${SITE_ALTERNATE_NAME}(${SITE_NAME})는 ${SITE_TAGLINE}를 비전으로 삼는 교회입니다. ${CHURCH_ADDRESS}`;

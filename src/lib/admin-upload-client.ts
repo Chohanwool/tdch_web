@@ -1,4 +1,5 @@
-import { joinApiUrl, normalizeApiBaseUrl } from "@/lib/api-base-url";
+import { joinApiUrl } from "@/lib/api-base-url";
+import { readPublicApiBaseUrlFromEnv } from "@/lib/api-env";
 
 export type AdminUploadAssetKind = "INLINE_IMAGE" | "FILE_ATTACHMENT";
 
@@ -31,7 +32,7 @@ interface UploadAssetResponse {
 }
 
 function getApiBaseUrl() {
-  return normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL);
+  return readPublicApiBaseUrlFromEnv(process.env);
 }
 
 function buildPublicUrl(baseUrl: string, storedPath: string) {
