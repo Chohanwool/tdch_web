@@ -4,7 +4,6 @@ import type { CSSProperties, ReactNode } from "react";
 import PublicBoardDetailActions from "@/components/public-board/public-board-detail-actions";
 import PublicBoardAttachmentsDropdown from "@/components/public-board/public-board-attachments-dropdown";
 import PublicBoardListControls from "@/components/public-board/public-board-list-controls";
-import SectionHeading from "@/components/section-heading";
 import {
   type PublicBoardPostAsset,
   type PublicBoardPostDetail,
@@ -151,6 +150,35 @@ function AttachmentIndicatorIcon() {
     <svg viewBox="0 0 20 20" aria-hidden="true" className="h-4 w-4 fill-current">
       <path d="M13.85 5.15a3 3 0 0 0-4.24 0l-5.1 5.1a4.25 4.25 0 0 0 6.01 6.01l5.6-5.6a2.75 2.75 0 0 0-3.89-3.89L6.79 12.2a1.5 1.5 0 1 0 2.12 2.12l4.2-4.2.88.88-4.2 4.2a2.75 2.75 0 1 1-3.89-3.89l5.44-5.44a4 4 0 1 1 5.66 5.66l-5.6 5.6a5.5 5.5 0 0 1-7.78-7.78l5.1-5.1a4.25 4.25 0 0 1 6.01 6.01l-5.1 5.1-.88-.88 5.1-5.1a3 3 0 0 0 0-4.24" />
     </svg>
+  );
+}
+
+function BoardSectionHeading({
+  id,
+  label,
+  title,
+  as: HeadingTag = "h2",
+}: {
+  id?: string;
+  label: string;
+  title: string;
+  as?: "h1" | "h2";
+}) {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <p className="type-label font-semibold uppercase tracking-[0.28em] text-site-gold">
+          {label}
+        </p>
+        <HeadingTag
+          id={id}
+          className="type-section-title font-section-title font-bold tracking-[-0.02em] text-site-ink"
+        >
+          {title}
+        </HeadingTag>
+      </div>
+      <div className="h-px w-9 bg-site-gold" />
+    </div>
   );
 }
 
@@ -555,7 +583,7 @@ export default function PublicBoardRenderer(props: PublicBoardRendererProps) {
       <main className="bg-white pb-20">
         <section className="section-shell section-shell--narrow pt-10 md:pt-16">
           <header>
-            <SectionHeading id="public-board-list-title" label="BOARD" title={props.boardLabel} />
+            <BoardSectionHeading id="public-board-list-title" label="BOARD" title={props.boardLabel} />
           </header>
           <PublicBoardListControls totalItems={props.totalItems} pageSize={props.pageSize} searchTitle={props.searchTitle} />
           {props.posts.length > 0 ? (
@@ -641,7 +669,7 @@ export default function PublicBoardRenderer(props: PublicBoardRendererProps) {
             {props.boardLabel}
           </Link>
           <div className="mt-5">
-            <SectionHeading id="public-board-detail-title" label="BOARD" title={props.post.title} as="h1" />
+            <BoardSectionHeading id="public-board-detail-title" label="BOARD" title={props.post.title} as="h1" />
           </div>
           <div className="mt-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <p className="type-body-small text-site-muted">
