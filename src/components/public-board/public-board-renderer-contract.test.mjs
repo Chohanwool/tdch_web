@@ -17,8 +17,8 @@ test("public board renderer composes safe upload URLs and never trusts raw ifram
   assert.match(contents, /storedPath/, "Expected the renderer to use storedPath for upload URL composition.");
   assert.match(
     contents,
-    /PUBLIC_API_BASE_URL|public API base/i,
-    "Expected the renderer to compose image URLs from a configured public API base URL.",
+    /buildUploadPath|\/upload\//,
+    "Expected the renderer to compose image URLs from the same-origin /upload/* path.",
   );
   assert.match(
     contents,

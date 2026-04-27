@@ -1,3 +1,5 @@
+import { buildUploadPath } from "@/lib/upload-path";
+
 export interface TiptapNode {
   type: string;
   text?: string;
@@ -16,11 +18,6 @@ export interface CreateImageNodeInput {
   alt?: string;
 }
 
-function uploadSourceFromStoredPath(storedPath: string) {
-  const cleanPath = storedPath.replace(/^\/+/, "");
-  return cleanPath ? `/upload/${cleanPath}` : "";
-}
-
 export function createEmptyTiptapDocument(): TiptapDocument {
   return {
     type: "doc",
@@ -36,7 +33,7 @@ export function createImageNode({ assetId, storedPath, alt = "" }: CreateImageNo
   return {
     type: "image",
     attrs: {
-      src: uploadSourceFromStoredPath(storedPath),
+      src: buildUploadPath(storedPath),
       assetId,
       storedPath,
       alt,

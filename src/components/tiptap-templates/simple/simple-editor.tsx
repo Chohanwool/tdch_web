@@ -81,6 +81,7 @@ import {
   extractYouTubeVideoId,
   type TiptapDocument,
 } from "@/lib/admin-board-editor-content"
+import { buildUploadPath } from "@/lib/upload-path"
 
 type SimpleEditorUploadAsset = {
   assetId: string | number
@@ -97,13 +98,8 @@ type SimpleEditorProps = {
   contained?: boolean
 }
 
-function uploadSourceFromStoredPath(storedPath: string) {
-  const cleanPath = storedPath.replace(/^\/+/, "")
-  return cleanPath ? `/upload/${cleanPath}` : ""
-}
-
 function createEditorImageSource(asset: SimpleEditorUploadAsset) {
-  const url = new URL(uploadSourceFromStoredPath(asset.storedPath), "http://tdch.local")
+  const url = new URL(buildUploadPath(asset.storedPath), "http://tdch.local")
   url.hash = new URLSearchParams({
     tdchAssetId: String(asset.assetId),
     tdchStoredPath: asset.storedPath,
