@@ -97,6 +97,37 @@ function getBoardDetailPath(boardPath: string, postId: string) {
   return `${boardPath.replace(/\/+$/, "")}/${postId}`;
 }
 
+type BoardRouteState =
+  | { kind: "none" }
+  | { kind: "missing" }
+  | { kind: "list"; resolved: PublicResolvedMenuPage }
+  | {
+      kind: "detail";
+      resolved: PublicResolvedMenuPage;
+      post: PublicBoardPostDetail;
+      canonicalPath: string;
+    };
+
+type VideoRouteState =
+  | { kind: "none" }
+  | { kind: "missing" }
+  | { kind: "list"; resolved: PublicResolvedMenuPage }
+  | { kind: "detail"; resolved: PublicResolvedMenuPage; video: PublicVideoDetail };
+
+type PublicRouteState =
+  | { kind: "not-found" }
+  | { kind: "redirect"; target: string }
+  | { kind: "static"; resolved: PublicResolvedMenuPage }
+  | { kind: "video-list"; resolved: PublicResolvedMenuPage }
+  | { kind: "video-detail"; resolved: PublicResolvedMenuPage; video: PublicVideoDetail }
+  | { kind: "board-list"; resolved: PublicResolvedMenuPage }
+  | {
+      kind: "board-detail";
+      resolved: PublicResolvedMenuPage;
+      post: PublicBoardPostDetail;
+      canonicalPath: string;
+    };
+
 async function loadPublicBoardList(resolved: PublicResolvedMenuPage, page: number, pageSize: number, title: string) {
   if (!resolved.boardKey) {
     notFound();
@@ -163,9 +194,10 @@ function PublicBoardPageShell({
   );
 }
 
-async function resolvePublicBoardState(path: string) {
-  const resolved = await resolvePublicMenuPath(path);
-
+async function resolvePublicBoardState(
+  path: string,
+  resolved: PublicResolvedMenuPage | null,
+): Promise<BoardRouteState> {
   if (resolved?.type === "BOARD") {
     if (!resolved.boardKey) {
       return { kind: "missing" as const, resolved };
@@ -178,13 +210,13 @@ async function resolvePublicBoardState(path: string) {
 
   const parentPath = getParentPath(path);
   if (!parentPath) {
-    return { kind: "none" as const, resolved };
+    return { kind: "none" as const };
   }
 
   const parentResolved = resolved?.type === "BOARD" ? resolved : await resolvePublicMenuPath(parentPath);
 
   if (!parentResolved || parentResolved.type !== "BOARD" || !parentResolved.boardKey) {
-    return { kind: "none" as const, resolved: parentResolved ?? resolved };
+    return { kind: "none" as const };
   }
 
   if (parentResolved.fullPath === path) {
@@ -193,7 +225,7 @@ async function resolvePublicBoardState(path: string) {
 
   const postId = path.slice(parentResolved.fullPath.replace(/\/+$/, "").length + 1);
   if (!postId) {
-    return { kind: "none" as const, resolved: parentResolved };
+    return { kind: "none" as const };
   }
 
   const post = await getPublicBoardPost(parentResolved.boardKey, parentResolved.menuId, postId);
@@ -209,28 +241,29 @@ async function resolvePublicBoardState(path: string) {
   };
 }
 
-async function resolvePublicVideoState(path: string) {
-  const resolved = await resolvePublicMenuPath(path);
-
+async function resolvePublicVideoState(
+  path: string,
+  resolved: PublicResolvedMenuPage | null,
+): Promise<VideoRouteState> {
   if (resolved?.type === "YOUTUBE_PLAYLIST" && resolved.fullPath === path) {
     return { kind: "list" as const, resolved };
   }
 
   const parentPath = getParentPath(path);
   if (!parentPath) {
-    return { kind: "none" as const, resolved };
+    return { kind: "none" as const };
   }
 
   const parentResolved =
     resolved?.type === "YOUTUBE_PLAYLIST" ? resolved : await resolvePublicMenuPath(parentPath);
 
   if (!parentResolved || parentResolved.type !== "YOUTUBE_PLAYLIST") {
-    return { kind: "none" as const, resolved: parentResolved ?? resolved };
+    return { kind: "none" as const };
   }
 
   const videoId = path.slice(parentResolved.fullPath.replace(/\/+$/, "").length + 1);
   if (!videoId) {
-    return { kind: "none" as const, resolved: parentResolved };
+    return { kind: "none" as const };
   }
 
   const video = await getPublicPlaylistVideoDetailByPath(parentResolved.fullPath, videoId);
@@ -239,6 +272,73 @@ async function resolvePublicVideoState(path: string) {
   }
 
   return { kind: "detail" as const, resolved: parentResolved, video };
+}
+
+async function resolvePublicRouteState(path: string): Promise<PublicRouteState> {
+  const resolved = await resolvePublicMenuPath(path);
+
+  if (resolved?.redirectTo && resolved.redirectTo !== path) {
+    return { kind: "redirect", target: resolved.redirectTo };
+  }
+
+  if (resolved?.type === "STATIC") {
+    if (!resolved.staticPageKey) {
+      return { kind: "not-found" };
+    }
+
+    if (resolved.fullPath !== path) {
+      return { kind: "redirect", target: resolved.fullPath };
+    }
+
+    return { kind: "static", resolved };
+  }
+
+  if (resolved?.type === "YOUTUBE_PLAYLIST") {
+    return { kind: "video-list", resolved };
+  }
+
+  if (resolved?.type === "BOARD" && resolved.fullPath === path) {
+    if (!resolved.boardKey) {
+      return { kind: "not-found" };
+    }
+
+    return { kind: "board-list", resolved };
+  }
+
+  const videoState = await resolvePublicVideoState(path, resolved);
+
+  if (videoState.kind === "detail") {
+    return { kind: "video-detail", resolved: videoState.resolved, video: videoState.video };
+  }
+
+  if (videoState.kind === "missing") {
+    return { kind: "not-found" };
+  }
+
+  const boardState = await resolvePublicBoardState(path, resolved);
+
+  if (boardState.kind === "detail") {
+    return {
+      kind: "board-detail",
+      resolved: boardState.resolved,
+      post: boardState.post,
+      canonicalPath: boardState.canonicalPath,
+    };
+  }
+
+  if (boardState.kind === "list") {
+    return { kind: "board-list", resolved: boardState.resolved };
+  }
+
+  if (boardState.kind === "missing") {
+    return { kind: "not-found" };
+  }
+
+  if (resolved && resolved.fullPath !== path) {
+    return { kind: "redirect", target: resolved.fullPath };
+  }
+
+  return { kind: "not-found" };
 }
 
 async function renderPublicVideoList(
@@ -312,6 +412,51 @@ function createNotFoundMetadata(): Metadata {
   };
 }
 
+function createStaticPageMetadata(resolved: PublicResolvedMenuPage): Metadata {
+  return createPageMetadata({
+    title: resolved.label,
+    description: `${resolved.label} | The 제자교회`,
+    path: resolved.fullPath,
+  });
+}
+
+function createBoardListMetadata(
+  resolved: PublicResolvedMenuPage,
+  page: number,
+  pageSize: number,
+  title: string,
+): Metadata {
+  return createPageMetadata({
+    title: page > 1 ? `${resolved.label} - ${page}페이지` : resolved.label,
+    description: `${resolved.label} | The 제자교회`,
+    path: getBoardListPath(resolved.fullPath, page, pageSize, title),
+  });
+}
+
+function createBoardDetailMetadata(
+  resolved: PublicResolvedMenuPage,
+  post: PublicBoardPostDetail,
+  canonicalPath: string,
+): Metadata {
+  return createPageMetadata({
+    title: post.title,
+    description: `${post.title} | ${resolved.label}`,
+    path: canonicalPath,
+  });
+}
+
+function createVideoDetailPageMetadata(
+  resolved: PublicResolvedMenuPage,
+  video: PublicVideoDetail,
+): Metadata {
+  return createVideoMetadata({
+    title: video.title,
+    description: video.summary || video.description || `${resolved.label} 영상입니다.`,
+    path: `${resolved.fullPath}/${video.videoId}`,
+    publishedTime: video.publishedAt ?? undefined,
+  });
+}
+
 async function loadBoardListForRender(
   resolved: PublicResolvedMenuPage,
   normalizedPage: number,
@@ -357,73 +502,45 @@ export async function generateMetadata({
   const { segments } = await params;
   const { page, size, title } = await searchParams;
   const path = toResolvedPath(segments);
-  const resolved = await resolvePublicMenuPath(path);
+  const routeState = await resolvePublicRouteState(path);
   const normalizedPage = getNormalizedPage(page);
   const normalizedBoardPageSize = getNormalizedBoardPageSize(size);
   const normalizedBoardTitle = getNormalizedBoardTitle(title);
 
-  if (!resolved) {
-    const videoState = await resolvePublicVideoState(path);
-    if (videoState.kind === "detail") {
-      return createVideoMetadata({
-        title: videoState.video.title,
-        description: videoState.video.summary || videoState.video.description || `${videoState.resolved.label} 영상입니다.`,
-        path: `${videoState.resolved.fullPath}/${videoState.video.videoId}`,
-        publishedTime: videoState.video.publishedAt ?? undefined,
-      });
-    }
-
-    const boardState = await resolvePublicBoardState(path);
-    if (boardState.kind === "detail") {
-      return createPageMetadata({
-        title: boardState.post.title,
-        description: `${boardState.post.title} | ${boardState.resolved.label}`,
-        path: boardState.canonicalPath,
-      });
-    }
-
-    if (boardState.kind === "list") {
-      return createPageMetadata({
-        title: normalizedPage > 1 ? `${boardState.resolved.label} - ${normalizedPage}페이지` : boardState.resolved.label,
-        description: `${boardState.resolved.label} | The 제자교회`,
-        path: getBoardListPath(boardState.resolved.fullPath, normalizedPage, normalizedBoardPageSize, normalizedBoardTitle),
-      });
-    }
-
-    return createNotFoundMetadata();
+  if (routeState.kind === "video-detail") {
+    return createVideoDetailPageMetadata(routeState.resolved, routeState.video);
   }
 
-  if (resolved.type === "YOUTUBE_PLAYLIST") {
-    const playlist = await getPublicPlaylistDetailByPath(resolved.fullPath);
+  if (routeState.kind === "board-detail") {
+    return createBoardDetailMetadata(routeState.resolved, routeState.post, routeState.canonicalPath);
+  }
+
+  if (routeState.kind === "board-list") {
+    return createBoardListMetadata(
+      routeState.resolved,
+      normalizedPage,
+      normalizedBoardPageSize,
+      normalizedBoardTitle,
+    );
+  }
+
+  if (routeState.kind === "video-list") {
+    const playlist = await getPublicPlaylistDetailByPath(routeState.resolved.fullPath);
     return createPageMetadata({
-      title: playlist?.title ?? resolved.label,
-      description: playlist?.description || `${resolved.label} 재생목록입니다.`,
+      title: playlist?.title ?? routeState.resolved.label,
+      description: playlist?.description || `${routeState.resolved.label} 재생목록입니다.`,
       path:
         playlist?.contentForm === "SHORTFORM" || normalizedPage <= 1
-          ? resolved.fullPath
-          : `${resolved.fullPath}?page=${normalizedPage}`,
+          ? routeState.resolved.fullPath
+          : `${routeState.resolved.fullPath}?page=${normalizedPage}`,
     });
   }
 
-  if (resolved.type === "BOARD") {
-    if (!resolved.boardKey) {
-      return createNotFoundMetadata();
-    }
-
-    if (resolved.fullPath === path) {
-      return createPageMetadata({
-        title: normalizedPage > 1 ? `${resolved.label} - ${normalizedPage}페이지` : resolved.label,
-        description: `${resolved.label} | The 제자교회`,
-        path: getBoardListPath(resolved.fullPath, normalizedPage, normalizedBoardPageSize, normalizedBoardTitle),
-      });
-    }
+  if (routeState.kind === "static") {
+    return createStaticPageMetadata(routeState.resolved);
   }
 
-  return createPageMetadata({
-    title: resolved.label,
-    description: `${resolved.label} | The 제자교회`,
-    path,
-  });
+  return createNotFoundMetadata();
 }
 
 export default async function DynamicRoutePage({
@@ -433,103 +550,46 @@ export default async function DynamicRoutePage({
   const { segments } = await params;
   const { page, size, title } = await searchParams;
   const path = toResolvedPath(segments);
-  const resolved = await resolvePublicMenuPath(path);
+  const routeState = await resolvePublicRouteState(path);
   const normalizedPage = getNormalizedPage(page);
   const normalizedBoardPageSize = getNormalizedBoardPageSize(size);
   const normalizedBoardTitle = getNormalizedBoardTitle(title);
 
-  if (!resolved) {
-    const videoState = await resolvePublicVideoState(path);
+  if (routeState.kind === "redirect") {
+    redirect(routeState.target);
+  }
 
-    if (videoState.kind === "detail") {
-      return renderPublicVideoDetail(videoState.resolved, videoState.video, path);
-    }
-
-    if (videoState.kind === "missing") {
-      notFound();
-    }
-
-    const boardState = await resolvePublicBoardState(path);
-
-    if (boardState.kind === "detail") {
-      if (boardState.canonicalPath !== path) {
-        redirect(boardState.canonicalPath);
-      }
-
-      return renderPublicBoardDetail(
-        boardState.resolved.label,
-        boardState.resolved.fullPath,
-        boardState.post,
-      );
-    }
-
-    if (boardState.kind === "list") {
-      return loadBoardListForRender(
-        boardState.resolved,
-        normalizedPage,
-        normalizedBoardPageSize,
-        normalizedBoardTitle,
-      );
-    }
-
+  if (routeState.kind === "not-found") {
     notFound();
   }
 
-  if (resolved.redirectTo && resolved.redirectTo !== path) {
-    redirect(resolved.redirectTo);
+  if (routeState.kind === "static") {
+    return <MenuStaticPageRenderer staticPageKey={routeState.resolved.staticPageKey!} />;
   }
 
-  if (resolved.type === "STATIC") {
-    if (!resolved.staticPageKey) {
-      notFound();
-    }
-    return <MenuStaticPageRenderer staticPageKey={resolved.staticPageKey} />;
+  if (routeState.kind === "video-list") {
+    return renderPublicVideoList(routeState.resolved, path, normalizedPage);
   }
 
-  if (resolved.type === "YOUTUBE_PLAYLIST") {
-    return renderPublicVideoList(resolved, path, normalizedPage);
+  if (routeState.kind === "video-detail") {
+    return renderPublicVideoDetail(routeState.resolved, routeState.video, path);
   }
 
-  if (resolved.type === "BOARD") {
-    if (!resolved.boardKey) {
-      notFound();
-    }
-
-    if (resolved.fullPath === path) {
-      return loadBoardListForRender(
-        resolved,
-        normalizedPage,
-        normalizedBoardPageSize,
-        normalizedBoardTitle,
-      );
-    }
-  }
-
-  const boardState = await resolvePublicBoardState(path);
-
-  if (boardState.kind === "list") {
+  if (routeState.kind === "board-list") {
     return loadBoardListForRender(
-      boardState.resolved,
+      routeState.resolved,
       normalizedPage,
       normalizedBoardPageSize,
       normalizedBoardTitle,
     );
   }
 
-  if (boardState.kind === "detail") {
-    if (boardState.canonicalPath !== path) {
-      redirect(boardState.canonicalPath);
+  if (routeState.kind === "board-detail") {
+    if (routeState.canonicalPath !== path) {
+      redirect(routeState.canonicalPath);
     }
 
-    return renderPublicBoardDetail(boardState.resolved.label, boardState.resolved.fullPath, boardState.post);
-  }
-
-  if (boardState.kind === "missing") {
-    notFound();
-  }
-
-  if (resolved.fullPath !== path) {
-    redirect(resolved.fullPath);
+    return renderPublicBoardDetail(routeState.resolved.label, routeState.resolved.fullPath, routeState.post);
   }
 
   notFound();

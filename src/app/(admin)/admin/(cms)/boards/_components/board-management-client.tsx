@@ -41,6 +41,12 @@ type Draft = {
 
 type ScreenMode = "list" | "editor";
 
+type AttachmentAsset = {
+  id: string;
+  originalFilename: string;
+  byteSize?: number;
+};
+
 type BoardPostListItem = AdminBoardPostSummary & {
   boardSlug: string;
   boardMenuId: number;
@@ -71,10 +77,10 @@ function createDraftFromPost(post: AdminBoardPostDetail): Draft {
   };
 }
 
-function getAttachmentAssetIds(post: AdminBoardPostDetail) {
+function getAttachmentAssets(post: AdminBoardPostDetail): AttachmentAsset[] {
   return (post.assets ?? [])
     .filter((asset) => asset.kind === "FILE_ATTACHMENT")
-    .map((asset) => asset.id);
+    .map((asset) => ({ id: asset.id, originalFilename: asset.originalFilename, byteSize: asset.byteSize }));
 }
 
 function formatDate(value: string) {
@@ -222,7 +228,7 @@ export default function BoardManagementClient({
   });
   const [selectedPostId, setSelectedPostId] = useState<string | null>(initialPost?.id ?? null);
   const [draft, setDraft] = useState<Draft>(initialPost ? createDraftFromPost(initialPost) : createEmptyDraft());
-  const [attachmentAssetIds, setAttachmentAssetIds] = useState<string[]>(initialPost ? getAttachmentAssetIds(initialPost) : []);
+  const [attachmentAssets, setAttachmentAssets] = useState<AttachmentAsset[]>(initialPost ? getAttachmentAssets(initialPost) : []);
   const [loading, setLoading] = useState(false);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -248,7 +254,7 @@ export default function BoardManagementClient({
       setScreenMode("list");
       setSelectedPostId(null);
       setDraft(createEmptyDraft());
-      setAttachmentAssetIds([]);
+      setAttachmentAssets([]);
       setError(null);
       setNotice(msg);
       if (msg) {
@@ -292,10 +298,10 @@ export default function BoardManagementClient({
       isPinned: draft.isPinned,
       assetIds: [...new Set([
         ...collectAssetIdsFromTiptapDocument(contentJson),
-        ...attachmentAssetIds,
+        ...attachmentAssets.map((a) => a.id),
       ])],
     };
-  }, [attachmentAssetIds, draft, selectedMenuId]);
+  }, [attachmentAssets, draft, selectedMenuId]);
 
   useEffect(() => {
     if (boardMenus.length === 0) {
@@ -400,7 +406,7 @@ export default function BoardManagementClient({
         }
 
         setDraft(createDraftFromPost(payload));
-        setAttachmentAssetIds(getAttachmentAssetIds(payload));
+        setAttachmentAssets(getAttachmentAssets(payload));
       } catch (loadError) {
         if (!cancelled) {
           const message = getErrorMessage(loadError, "게시글 상세를 불러오지 못했습니다.");
@@ -451,7 +457,7 @@ export default function BoardManagementClient({
     setNotice(null);
 
     try {
-      const uploadedAssetIds: string[] = [];
+      const uploaded: AttachmentAsset[] = [];
 
       for (const file of Array.from(files)) {
         const rawToken = await requestUploadToken(selectedBoard.id, "FILE_ATTACHMENT");
@@ -460,10 +466,13 @@ export default function BoardManagementClient({
           kind: "FILE_ATTACHMENT",
           rawToken,
         });
-        uploadedAssetIds.push(asset.assetId);
+        uploaded.push({ id: asset.assetId, originalFilename: asset.originalFilename, byteSize: asset.byteSize });
       }
 
-      setAttachmentAssetIds((current) => Array.from(new Set([...current, ...uploadedAssetIds])));
+      setAttachmentAssets((current) => {
+        const existingIds = new Set(current.map((a) => a.id));
+        return [...current, ...uploaded.filter((a) => !existingIds.has(a.id))];
+      });
       setNotice("첨부 파일을 저장용 자산으로 업로드했습니다.");
       toast.success("첨부 파일을 저장용 자산으로 업로드했습니다.");
     } catch (uploadError) {
@@ -483,7 +492,7 @@ export default function BoardManagementClient({
     setSelectedMenuId(preferredMenu?.id ?? 0);
     setSelectedPostId(null);
     setDraft(createEmptyDraft());
-    setAttachmentAssetIds([]);
+    setAttachmentAssets([]);
     setScreenMode("editor");
     setError(null);
     setNotice("새 게시글 작성 모드입니다.");
@@ -553,7 +562,7 @@ export default function BoardManagementClient({
       } else {
         setSelectedPostId(null);
         setDraft(createEmptyDraft());
-        setAttachmentAssetIds([]);
+        setAttachmentAssets([]);
         setScreenMode("list");
         setNotice("게시글을 저장했습니다.");
         toast.success("게시글을 저장했습니다.");
@@ -598,7 +607,7 @@ export default function BoardManagementClient({
       setListReloadTick((current) => current + 1);
       setSelectedPostId(null);
       setDraft(createEmptyDraft());
-      setAttachmentAssetIds([]);
+      setAttachmentAssets([]);
       if (editorPushedRef.current) {
         pendingNoticeRef.current = "게시글을 삭제했습니다.";
         window.history.back();
@@ -840,7 +849,7 @@ export default function BoardManagementClient({
                 setSelectedMenuId(Number(event.target.value));
                 setSelectedPostId(null);
                 setDraft(createEmptyDraft());
-                setAttachmentAssetIds([]);
+                setAttachmentAssets([]);
                 setError(null);
               }}
               disabled={Boolean(selectedPostId)}
@@ -914,26 +923,52 @@ export default function BoardManagementClient({
             disabled={saving}
           />
 
-          <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[#eef2f7] bg-[#f8fafc] px-4 py-3">
-            <label className="inline-flex cursor-pointer items-center rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]">
-              첨부 파일 업로드
-              <input
-                type="file"
-                multiple
-                className="sr-only"
-                disabled={saving || uploadingAttachment}
-                onChange={(event) => {
-                  void handleAttachmentUpload(event.target.files).catch((uploadError) => {
-                    const message = getErrorMessage(uploadError, "첨부 파일 업로드에 실패했습니다.");
-                    setError(message);
-                    toast.error(message);
-                  });
-                  event.target.value = "";
-                }}
-              />
-            </label>
-            <span className="text-[12px] text-[#6d7f95]">저장 대상 첨부 파일 {attachmentAssetIds.length}개</span>
-            {uploadingAttachment && <span className="text-[12px] text-[#6d7f95]">첨부 파일 업로드 중...</span>}
+          <div className="space-y-2 rounded-xl border border-[#eef2f7] bg-[#f8fafc] px-4 py-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="inline-flex cursor-pointer items-center rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]">
+                첨부 파일 업로드
+                <input
+                  type="file"
+                  multiple
+                  className="sr-only"
+                  disabled={saving || uploadingAttachment}
+                  onChange={(event) => {
+                    void handleAttachmentUpload(event.target.files).catch((uploadError) => {
+                      const message = getErrorMessage(uploadError, "첨부 파일 업로드에 실패했습니다.");
+                      setError(message);
+                      toast.error(message);
+                    });
+                    event.target.value = "";
+                  }}
+                />
+              </label>
+              {uploadingAttachment && <span className="text-[12px] text-[#6d7f95]">업로드 중...</span>}
+            </div>
+            {attachmentAssets.length > 0 && (
+              <ul className="space-y-1">
+                {attachmentAssets.map((asset) => (
+                  <li key={asset.id} className="flex items-center justify-between gap-2 rounded-lg border border-[#e2e8f0] bg-white px-3 py-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-[12px] font-medium text-[#334155]">{asset.originalFilename}</p>
+                      {asset.byteSize != null && (
+                        <p className="text-[11px] text-[#8fa3bc]">{(asset.byteSize / 1024).toFixed(1)} KB</p>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      disabled={saving}
+                      onClick={() => setAttachmentAssets((current) => current.filter((a) => a.id !== asset.id))}
+                      className="shrink-0 rounded p-1 text-[#94a3b8] transition hover:bg-[#fee2e2] hover:text-[#b91c1c] disabled:opacity-40"
+                      aria-label="첨부 파일 제거"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                        <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                      </svg>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="flex items-center justify-between gap-2 border-t border-[#edf2f7] pt-4">
@@ -947,7 +982,7 @@ export default function BoardManagementClient({
                     setScreenMode("list");
                     setSelectedPostId(null);
                     setDraft(createEmptyDraft());
-                    setAttachmentAssetIds([]);
+                    setAttachmentAssets([]);
                   }
                 }}
                 className="rounded-lg border border-[#d7e3f4] bg-white px-3 py-2 text-[12px] font-semibold text-[#334155]"
