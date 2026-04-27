@@ -48,6 +48,7 @@ type BoardPostListItem = AdminBoardPostSummary & {
 };
 
 const BOARD_POSTS_PAGE_SIZE = 100;
+const DISPLAY_PAGE_SIZE = 20;
 
 function createEmptyDraft(): Draft {
   const contentJson = createEmptyTiptapDocument();
@@ -232,6 +233,7 @@ export default function BoardManagementClient({
   const [appliedBoardMenu, setAppliedBoardMenu] = useState("ALL");
   const [appliedTitle, setAppliedTitle] = useState("");
   const [listReloadTick, setListReloadTick] = useState(0);
+  const [displayPage, setDisplayPage] = useState(0);
 
   // 브라우저 뒤로가기로 editor → list 복귀를 위한 히스토리 추적
   const editorPushedRef = useRef(false);
@@ -268,10 +270,14 @@ export default function BoardManagementClient({
   );
 
   const filteredPosts = posts;
+  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / DISPLAY_PAGE_SIZE));
+  const safeDisplayPage = Math.min(displayPage, totalPages - 1);
+  const pagedPosts = filteredPosts.slice(safeDisplayPage * DISPLAY_PAGE_SIZE, (safeDisplayPage + 1) * DISPLAY_PAGE_SIZE);
 
   const handleBoardSearch = () => {
     setAppliedBoardMenu(boardMenuFilter);
     setAppliedTitle(titleQuery);
+    setDisplayPage(0);
   };
 
   const savePayload = useMemo<BoardPostSavePayload>(() => {
@@ -349,6 +355,7 @@ export default function BoardManagementClient({
         }
 
         setPosts(sortPostsByUpdatedAt(groupedPosts.flat()));
+        setDisplayPage(0);
       } catch (loadError) {
         if (!cancelled) {
           const message = getErrorMessage(loadError, "게시글 목록을 불러오지 못했습니다.");
@@ -661,7 +668,7 @@ export default function BoardManagementClient({
           <div className="flex items-center justify-between border-b border-[#edf2f7] px-5 py-4">
             <div className="flex items-center gap-3">
               <span className="text-[13px] text-[#5d6f86]">
-                <span className="font-semibold text-[#132033]">{filteredPosts.length}</span>건 표시
+                전체 <span className="font-semibold text-[#132033]">{filteredPosts.length}</span>건
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -704,13 +711,13 @@ export default function BoardManagementClient({
                     </td>
                   </tr>
                 ) : (
-                  filteredPosts.map((post, idx) => (
+                  pagedPosts.map((post, idx) => (
                     <tr
                       key={`${post.boardMenuId}-${post.id}`}
                       className="cursor-pointer border-b border-[#f0f4f8] last:border-0 transition hover:bg-[#fafcff]"
                       onClick={() => openPost(post)}
                     >
-                      <td className="px-5 py-4 text-[13px] text-[#5d6f86]">{idx + 1}</td>
+                      <td className="px-5 py-4 text-[13px] text-[#5d6f86]">{safeDisplayPage * DISPLAY_PAGE_SIZE + idx + 1}</td>
                       <td className="px-5 py-4 text-[12px] text-[#5d6f86]">{post.boardMenuLabel}</td>
                       <td className="px-5 py-4">
                         <p className="max-w-[200px] truncate text-[13px] font-semibold text-[#132033]">
@@ -752,6 +759,59 @@ export default function BoardManagementClient({
               </tbody>
             </table>
           </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-1 border-t border-[#edf2f7] px-5 py-3">
+              <button
+                type="button"
+                onClick={() => setDisplayPage(0)}
+                disabled={safeDisplayPage === 0}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-[12px] text-[#5d6f86] transition hover:bg-[#f1f5f9] disabled:opacity-30"
+              >
+                «
+              </button>
+              <button
+                type="button"
+                onClick={() => setDisplayPage((p) => Math.max(0, p - 1))}
+                disabled={safeDisplayPage === 0}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-[12px] text-[#5d6f86] transition hover:bg-[#f1f5f9] disabled:opacity-30"
+              >
+                ‹
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i)
+                .filter((i) => Math.abs(i - safeDisplayPage) <= 2)
+                .map((i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setDisplayPage(i)}
+                    className={`flex h-8 w-8 items-center justify-center rounded-lg text-[12px] font-medium transition ${
+                      i === safeDisplayPage
+                        ? "bg-[#3f74c7] text-white"
+                        : "text-[#5d6f86] hover:bg-[#f1f5f9]"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              <button
+                type="button"
+                onClick={() => setDisplayPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={safeDisplayPage === totalPages - 1}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-[12px] text-[#5d6f86] transition hover:bg-[#f1f5f9] disabled:opacity-30"
+              >
+                ›
+              </button>
+              <button
+                type="button"
+                onClick={() => setDisplayPage(totalPages - 1)}
+                disabled={safeDisplayPage === totalPages - 1}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-[12px] text-[#5d6f86] transition hover:bg-[#f1f5f9] disabled:opacity-30"
+              >
+                »
+              </button>
+            </div>
+          )}
         </section>
       </div>
     );
