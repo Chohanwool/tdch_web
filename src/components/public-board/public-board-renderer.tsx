@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import PublicBoardDetailActions from "@/components/public-board/public-board-detail-actions";
+import PublicBoardAttachmentsDropdown from "@/components/public-board/public-board-attachments-dropdown";
 import PublicBoardListControls from "@/components/public-board/public-board-list-controls";
 import SectionHeading from "@/components/section-heading";
 import {
@@ -651,14 +652,14 @@ export default function PublicBoardRenderer(props: PublicBoardRendererProps) {
               {" | "} 조회수: {props.post.viewCount.toLocaleString("ko-KR")}
             </p>
             {fileAttachments.length > 0 ? (
-              <a
-                href={getAttachmentUrl(fileAttachments[0])}
-                target="_blank"
-                rel="noreferrer"
-                className="type-body-small inline-flex shrink-0 items-center self-start font-semibold text-cedar underline underline-offset-4 transition hover:text-site-ink"
-              >
-                첨부파일 다운로드
-              </a>
+              <PublicBoardAttachmentsDropdown
+                attachments={fileAttachments.map((asset) => ({
+                  id: asset.id,
+                  storedPath: asset.storedPath,
+                  filename: asset.originalFilename,
+                  byteSize: asset.byteSize,
+                }))}
+              />
             ) : null}
           </div>
         </header>

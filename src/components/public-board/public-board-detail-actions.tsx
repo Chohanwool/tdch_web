@@ -120,7 +120,7 @@ export default function PublicBoardDetailActions({
         </Link>
       </div>
 
-      <div className="mt-5 space-y-3">
+      <div className="mt-5 space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
         {previousPost ? (
           <Link
             href={`${normalizedBoardPath}/${previousPost.id}`}
