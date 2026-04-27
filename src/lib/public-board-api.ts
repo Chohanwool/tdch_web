@@ -17,6 +17,11 @@ export interface PublicBoardPostAsset {
   publicUrl?: string | null;
 }
 
+export interface PublicBoardAdjacentPost {
+  id: string;
+  title: string;
+}
+
 export interface PublicBoardPostSummary {
   id: string;
   boardId: string;
@@ -39,6 +44,8 @@ export interface PublicBoardPostDetail extends PublicBoardPostSummary {
   contentJson: TiptapDocument | Record<string, unknown>;
   contentHtml: string;
   assets: PublicBoardPostAsset[];
+  previousPost: PublicBoardAdjacentPost | null;
+  nextPost: PublicBoardAdjacentPost | null;
 }
 
 export interface PublicBoardPostListResponse {
@@ -64,6 +71,11 @@ interface BackendBoardPostAsset {
   publicUrl?: string | null;
 }
 
+interface BackendBoardAdjacentPost {
+  id: string | number;
+  title: string;
+}
+
 interface BackendBoardPostSummary {
   id: string | number;
   boardId: string | number;
@@ -86,6 +98,8 @@ interface BackendBoardPostDetail extends BackendBoardPostSummary {
   contentJson: string | TiptapDocument | Record<string, unknown>;
   contentHtml?: string | null;
   assets?: BackendBoardPostAsset[];
+  previousPost?: BackendBoardAdjacentPost | null;
+  nextPost?: BackendBoardAdjacentPost | null;
 }
 
 interface BackendBoardPostListResponse {
@@ -132,6 +146,13 @@ function normalizeAsset(asset: BackendBoardPostAsset): PublicBoardPostAsset {
   };
 }
 
+function normalizeAdjacentPost(post: BackendBoardAdjacentPost): PublicBoardAdjacentPost {
+  return {
+    id: toFrontendId(post.id),
+    title: post.title,
+  };
+}
+
 function normalizeSummary(post: BackendBoardPostSummary): PublicBoardPostSummary {
   return {
     id: toFrontendId(post.id),
@@ -158,6 +179,8 @@ function normalizeDetail(post: BackendBoardPostDetail): PublicBoardPostDetail {
     contentJson: normalizeContentJson(post.contentJson),
     contentHtml: post.contentHtml ?? "",
     assets: (post.assets ?? []).map(normalizeAsset),
+    previousPost: post.previousPost ? normalizeAdjacentPost(post.previousPost) : null,
+    nextPost: post.nextPost ? normalizeAdjacentPost(post.nextPost) : null,
   };
 }
 
@@ -222,7 +245,7 @@ async function fetchPublicBoardPost(
   const payload = await serverFetchJsonOrNull<BackendBoardPostDetail>(
     `/api/v1/public/boards/${encodeURIComponent(slug)}/posts/${encodeURIComponent(postId)}?menuId=${menuId}`,
     {
-      next: PUBLIC_BOARD_REVALIDATE_OPTIONS,
+      cache: "no-store",
     },
   );
 

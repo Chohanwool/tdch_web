@@ -1,4 +1,5 @@
 import {
+  type PublicBoardAdjacentPost,
   getPublicBoardPost,
   listPublicBoardPosts,
   type PublicBoardPostAsset,
@@ -21,6 +22,11 @@ const _assertPostAsset: PublicBoardPostAsset = {
   width: 1200,
   height: 630,
   sortOrder: 0,
+};
+
+const _assertAdjacentPost: PublicBoardAdjacentPost = {
+  id: "post-122",
+  title: "이전 게시글",
 };
 
 const _assertPostSummary: PublicBoardPostSummary = {
@@ -67,6 +73,8 @@ const _assertPostDetail: PublicBoardPostDetail = {
   createdAt: _assertPostSummary.createdAt,
   updatedAt: _assertPostSummary.updatedAt,
   assets: [_assertPostAsset],
+  previousPost: _assertAdjacentPost,
+  nextPost: null,
 };
 
 const _assertListResponse: PublicBoardPostListResponse = {
@@ -95,6 +103,7 @@ void _assertBoardSlug;
 void _assertMenuId;
 void _assertPostId;
 void _assertPostAsset;
+void _assertAdjacentPost;
 void _assertPostSummary;
 void _assertPostDetail;
 void _assertListResponse;
