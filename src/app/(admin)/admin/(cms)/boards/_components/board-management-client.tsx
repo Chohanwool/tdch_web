@@ -113,6 +113,18 @@ function getErrorMessage(error: unknown, fallback: string) {
   return error instanceof Error ? error.message : fallback;
 }
 
+function getEditorUploadErrorMessage(error: Error) {
+  if (error.message.startsWith("File size exceeds maximum allowed")) {
+    return "이미지 파일은 10MB 이하만 업로드할 수 있습니다.";
+  }
+
+  if (error.message.startsWith("Maximum ")) {
+    return "한 번에 업로드할 수 있는 이미지 개수를 초과했습니다.";
+  }
+
+  return error.message || "이미지 업로드에 실패했습니다.";
+}
+
 function formatBoardMenuOptionLabel(boardMenu: AdminMenuTreeNode) {
   return boardMenu.label;
 }
@@ -855,6 +867,11 @@ export default function BoardManagementClient({
           <BoardPostEditor
             value={draft.contentJson}
             onImageUpload={handleUpload}
+            onImageUploadError={(error) => {
+              const message = getEditorUploadErrorMessage(error);
+              setError(message);
+              toast.error(message);
+            }}
             onChange={(contentJson, contentHtml) => {
               setDraft((prev) => ({
                 ...prev,

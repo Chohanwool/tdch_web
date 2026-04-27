@@ -92,6 +92,7 @@ type SimpleEditorProps = {
   value?: TiptapDocument | Record<string, unknown>
   onChange?: (value: TiptapDocument | Record<string, unknown>, html: string) => void
   onImageUpload?: (file: File) => Promise<SimpleEditorUploadAsset>
+  onImageUploadError?: (error: Error) => void
   disabled?: boolean
   contained?: boolean
 }
@@ -232,6 +233,7 @@ export function SimpleEditor({
   value,
   onChange,
   onImageUpload,
+  onImageUploadError,
   disabled = false,
   contained = false,
 }: SimpleEditorProps) {
@@ -308,7 +310,7 @@ export function SimpleEditor({
           const asset = await onImageUpload(file)
           return createEditorImageSource(asset)
         },
-        onError: (error) => console.error("Upload failed:", error),
+        onError: (error) => onImageUploadError?.(error),
       }),
     ],
     content: initialContent,

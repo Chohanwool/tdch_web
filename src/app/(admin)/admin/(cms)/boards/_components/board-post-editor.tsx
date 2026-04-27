@@ -8,6 +8,7 @@ interface BoardPostEditorProps {
   value: TiptapDocument | Record<string, unknown>;
   onChange: (value: TiptapDocument | Record<string, unknown>, html: string) => void;
   onImageUpload: (file: File) => Promise<AdminUploadAssetMetadata>;
+  onImageUploadError?: (error: Error) => void;
   disabled?: boolean;
 }
 
@@ -15,6 +16,7 @@ export default function BoardPostEditor({
   value,
   onChange,
   onImageUpload,
+  onImageUploadError,
   disabled = false,
 }: BoardPostEditorProps) {
   return (
@@ -22,6 +24,7 @@ export default function BoardPostEditor({
       value={value}
       onChange={onChange}
       onImageUpload={onImageUpload}
+      onImageUploadError={onImageUploadError}
       disabled={disabled}
       contained
     />
