@@ -1,28 +1,21 @@
 import "server-only";
 
+import { AsyncLocalStorage } from "node:async_hooks";
 import { cache } from "react";
 
 const getPublicRequestCacheStore = cache(() => new Map<string, Promise<unknown>>());
-
-let scopedStore: Map<string, Promise<unknown>> | null = null;
+const publicRequestCacheScope = new AsyncLocalStorage<Map<string, Promise<unknown>>>();
 
 export async function runWithPublicRequestCache<T>(loader: () => Promise<T>): Promise<T> {
-  if (scopedStore) {
+  if (publicRequestCacheScope.getStore()) {
     return loader();
   }
 
-  const store = getPublicRequestCacheStore();
-  scopedStore = store;
-
-  try {
-    return await loader();
-  } finally {
-    scopedStore = null;
-  }
+  return publicRequestCacheScope.run(getPublicRequestCacheStore(), loader);
 }
 
 export function getOrSetPublicRequestCache<T>(key: string, loader: () => Promise<T>): Promise<T> {
-  const store = scopedStore ?? getPublicRequestCacheStore();
+  const store = publicRequestCacheScope.getStore() ?? getPublicRequestCacheStore();
 
   const existing = store.get(key);
   if (existing) {
