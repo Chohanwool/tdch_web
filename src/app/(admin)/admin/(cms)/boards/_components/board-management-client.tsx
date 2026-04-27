@@ -138,6 +138,13 @@ function formatBoardMenuOptionLabel(boardMenu: AdminMenuTreeNode) {
   return boardMenu.label;
 }
 
+function createAttachmentAssetsFromIds(ids: string[]): AttachmentAsset[] {
+  return ids.map((id) => ({
+    id,
+    originalFilename: "",
+  }));
+}
+
 function toBoardPostListItem(
   post: AdminBoardPostSummary,
   boardMenu: AdminMenuTreeNode,
@@ -282,14 +289,27 @@ export default function BoardManagementClient({
   );
 
   const filteredPosts = posts;
+  const attachmentAssetIds = attachmentAssets.map((asset) => asset.id);
   const totalPages = Math.max(1, Math.ceil(filteredPosts.length / DISPLAY_PAGE_SIZE));
   const safeDisplayPage = Math.min(displayPage, totalPages - 1);
-  const pagedPosts = filteredPosts.slice(safeDisplayPage * DISPLAY_PAGE_SIZE, (safeDisplayPage + 1) * DISPLAY_PAGE_SIZE);
+  const pageStartIndex = safeDisplayPage * DISPLAY_PAGE_SIZE;
+  const pageEndIndex = pageStartIndex + DISPLAY_PAGE_SIZE;
 
   const handleBoardSearch = () => {
     setAppliedBoardMenu(boardMenuFilter);
     setAppliedTitle(titleQuery);
     setDisplayPage(0);
+  };
+
+  const setAttachmentAssetIds = (ids: string[]) => {
+    setAttachmentAssets((current) => {
+      if (ids.length === 0) {
+        return [];
+      }
+
+      const currentById = new Map(current.map((asset) => [asset.id, asset]));
+      return ids.map((id) => currentById.get(id) ?? createAttachmentAssetsFromIds([id])[0]);
+    });
   };
 
   const savePayload = useMemo<BoardPostSavePayload>(() => {
@@ -304,10 +324,10 @@ export default function BoardManagementClient({
       isPinned: draft.isPinned,
       assetIds: [...new Set([
         ...collectAssetIdsFromTiptapDocument(contentJson),
-        ...attachmentAssets.map((a) => a.id),
+        ...attachmentAssetIds,
       ])],
     };
-  }, [attachmentAssets, draft, selectedMenuId]);
+  }, [attachmentAssetIds, draft, selectedMenuId]);
 
   useEffect(() => {
     if (boardMenus.length === 0) {
@@ -491,15 +511,15 @@ export default function BoardManagementClient({
   };
 
   const openNewPost = () => {
-    const preferredMenu = boardMenuFilter === "ALL"
+      const preferredMenu = boardMenuFilter === "ALL"
       ? boardMenus[0]
       : boardMenus.find((boardMenu) => String(boardMenu.id) === boardMenuFilter) ?? boardMenus[0];
 
-    setSelectedMenuId(preferredMenu?.id ?? 0);
-    setSelectedPostId(null);
-    setDraft(createEmptyDraft());
-    setAttachmentAssets([]);
-    setScreenMode("editor");
+      setSelectedMenuId(preferredMenu?.id ?? 0);
+      setSelectedPostId(null);
+      setDraft(createEmptyDraft());
+      setAttachmentAssetIds([]);
+      setScreenMode("editor");
     setError(null);
     setNotice("새 게시글 작성 모드입니다.");
     toast.info("새 게시글 작성 모드입니다.");
@@ -562,14 +582,14 @@ export default function BoardManagementClient({
         );
       });
       setListReloadTick((current) => current + 1);
+      setSelectedPostId(null);
+      setDraft(createEmptyDraft());
+      setAttachmentAssetIds([]);
+      setScreenMode("list");
       if (editorPushedRef.current) {
         pendingNoticeRef.current = "게시글을 저장했습니다.";
         window.history.back(); // popstate가 목록 복귀 처리
       } else {
-        setSelectedPostId(null);
-        setDraft(createEmptyDraft());
-        setAttachmentAssets([]);
-        setScreenMode("list");
         setNotice("게시글을 저장했습니다.");
         toast.success("게시글을 저장했습니다.");
       }
@@ -613,7 +633,7 @@ export default function BoardManagementClient({
       setListReloadTick((current) => current + 1);
       setSelectedPostId(null);
       setDraft(createEmptyDraft());
-      setAttachmentAssets([]);
+      setAttachmentAssetIds([]);
       if (editorPushedRef.current) {
         pendingNoticeRef.current = "게시글을 삭제했습니다.";
         window.history.back();
@@ -726,50 +746,56 @@ export default function BoardManagementClient({
                     </td>
                   </tr>
                 ) : (
-                  pagedPosts.map((post, idx) => (
-                    <tr
-                      key={`${post.boardMenuId}-${post.id}`}
-                      className={`border-b border-[#f0f4f8] last:border-0 transition ${canEditPost(post) ? "cursor-pointer hover:bg-[#fafcff]" : "opacity-60"}`}
-                      onClick={() => canEditPost(post) && openPost(post)}
-                    >
-                      <td className="px-5 py-4 text-[13px] text-[#5d6f86]">{safeDisplayPage * DISPLAY_PAGE_SIZE + idx + 1}</td>
-                      <td className="px-5 py-4 text-[12px] text-[#5d6f86]">{post.boardMenuLabel}</td>
-                      <td className="px-5 py-4">
-                        <p className="max-w-[200px] truncate text-[13px] font-semibold text-[#132033]">
-                          {post.title}
-                        </p>
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-4">
-                        <span
-                          className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
-                            post.isPublic
-                              ? "bg-[#ecfdf5] text-[#047857]"
-                              : "bg-[#f8fafc] text-[#64748b]"
-                          }`}
-                        >
-                          {post.isPublic ? "공개" : "비공개"}
-                        </span>
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-4">
-                        {post.isPinned ? (
-                          <span className="rounded-full bg-[#fff7ed] px-2.5 py-0.5 text-[10px] font-semibold text-[#c2410c]">
-                            고정
+                  filteredPosts.map((post, idx) => {
+                    if (idx < pageStartIndex || idx >= pageEndIndex) {
+                      return null;
+                    }
+
+                    return (
+                      <tr
+                        key={`${post.boardMenuId}-${post.id}`}
+                        className={`border-b border-[#f0f4f8] last:border-0 transition ${canEditPost(post) ? "cursor-pointer hover:bg-[#fafcff]" : "opacity-60"}`}
+                        onClick={() => canEditPost(post) && openPost(post)}
+                      >
+                        <td className="px-5 py-4 text-[13px] text-[#5d6f86]">{idx + 1}</td>
+                        <td className="px-5 py-4 text-[12px] text-[#5d6f86]">{post.boardMenuLabel}</td>
+                        <td className="px-5 py-4">
+                          <p className="max-w-[200px] truncate text-[13px] font-semibold text-[#132033]">
+                            {post.title}
+                          </p>
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4">
+                          <span
+                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
+                              post.isPublic
+                                ? "bg-[#ecfdf5] text-[#047857]"
+                                : "bg-[#f8fafc] text-[#64748b]"
+                            }`}
+                          >
+                            {post.isPublic ? "공개" : "비공개"}
                           </span>
-                        ) : (
-                          <span className="text-[12px] text-[#c0cbd8]">—</span>
-                        )}
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
-                        {post.authorName}
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
-                        {formatDate(post.createdAt)}
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
-                        {formatDate(post.updatedAt)}
-                      </td>
-                    </tr>
-                  ))
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4">
+                          {post.isPinned ? (
+                            <span className="rounded-full bg-[#fff7ed] px-2.5 py-0.5 text-[10px] font-semibold text-[#c2410c]">
+                              고정
+                            </span>
+                          ) : (
+                            <span className="text-[12px] text-[#c0cbd8]">—</span>
+                          )}
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
+                          {post.authorName}
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
+                          {formatDate(post.createdAt)}
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
+                          {formatDate(post.updatedAt)}
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
@@ -836,6 +862,12 @@ export default function BoardManagementClient({
     <div className="space-y-5">
       <section className="rounded-2xl border border-[#e2e8f0] bg-white shadow-sm">
         <div className="space-y-5 px-5 py-5">
+          <div className="space-y-1">
+            <h2 className="text-[18px] font-semibold text-[#132033]">
+              {selectedPostId ? "게시글 상세" : "새 게시글 작성"}
+            </h2>
+            <p className="text-[12px] text-[#6d7f95]">게시판별 공지와 일반 게시글을 관리합니다.</p>
+          </div>
           {selectedPostId && (() => {
             const meta = posts.find((p) => p.id === selectedPostId);
             if (!meta) return null;
@@ -999,15 +1031,17 @@ export default function BoardManagementClient({
                   >
                     목록으로
                   </button>
-                  {selectedPostId && canEdit ? (
-                    <button
-                      type="button"
-                      onClick={handleDelete}
-                      disabled={saving}
-                      className="rounded-lg border border-[#fecaca] bg-[#fff1f2] px-3 py-2 text-[12px] font-semibold text-[#b42318] disabled:opacity-60"
-                    >
-                      삭제
-                    </button>
+                  {selectedPostId ? (
+                    canEdit ? (
+                      <button
+                        type="button"
+                        onClick={handleDelete}
+                        disabled={saving}
+                        className="rounded-lg border border-[#fecaca] bg-[#fff1f2] px-3 py-2 text-[12px] font-semibold text-[#b42318] disabled:opacity-60"
+                      >
+                        삭제
+                      </button>
+                    ) : null
                   ) : null}
                 </div>
                 {canEdit ? (
