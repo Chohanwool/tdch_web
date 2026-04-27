@@ -17,6 +17,7 @@ export async function POST() {
     const result = await syncAdminYouTube(session.user.id);
 
     revalidateTag("menu");
+    revalidateTag("videos");
     revalidatePath("/admin/menu");
 
     return NextResponse.json(result);

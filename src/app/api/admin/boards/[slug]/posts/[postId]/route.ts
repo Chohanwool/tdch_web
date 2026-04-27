@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 
 import { getAdminSession, isAdminSession } from "@/auth";
 import { AdminApiError } from "@/lib/admin-api";
@@ -63,6 +64,7 @@ export async function PUT(request: Request, context: RouteContext) {
   try {
     const payload = await request.json();
     const post = await updateAdminBoardPost(session.user.id, slug, postId, menuId ? { ...payload, menuId } : payload);
+    revalidateTag("public-board");
     return NextResponse.json(post);
   } catch (error) {
     const status = error instanceof AdminApiError ? error.status : 400;
@@ -89,6 +91,7 @@ export async function DELETE(request: Request, context: RouteContext) {
 
   try {
     await deleteAdminBoardPost(session.user.id, slug, postId, menuId);
+    revalidateTag("public-board");
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     const status = error instanceof AdminApiError ? error.status : 400;

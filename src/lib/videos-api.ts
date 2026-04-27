@@ -99,7 +99,7 @@ export async function getPublicPlaylistDetailByPath(path: string): Promise<Publi
   return getOrSetPublicRequestCache(`playlist-detail-by-path:${path}`, () =>
     fetchVideoResourceOrNull<PublicPlaylistDetail>(
       `/api/v1/public/videos?path=${encodeURIComponent(path)}`,
-      MENU_REVALIDATE_OPTIONS,
+      VIDEO_REVALIDATE_OPTIONS,
     ),
   );
 }

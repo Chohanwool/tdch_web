@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 
 import { getAdminSession, isAdminSession } from "@/auth";
 import { AdminApiError } from "@/lib/admin-api";
@@ -83,6 +84,7 @@ export async function POST(request: Request, context: RouteContext) {
   try {
     const payload = await request.json();
     const post = await createAdminBoardPost(session.user.id, slug, menuId ? { ...payload, menuId } : payload);
+    revalidateTag("public-board");
     return NextResponse.json(post);
   } catch (error) {
     const status = error instanceof AdminApiError ? error.status : 400;
