@@ -738,7 +738,7 @@ export default function BoardManagementClient({
                         )}
                       </td>
                       <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
-                        #{post.authorId}
+                        {post.authorName}
                       </td>
                       <td className="whitespace-nowrap px-5 py-4 text-[12px] text-[#5d6f86]">
                         {formatDate(post.createdAt)}

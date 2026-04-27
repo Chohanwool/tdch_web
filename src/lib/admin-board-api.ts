@@ -21,6 +21,7 @@ export interface AdminBoardPostSummary {
   isPublic: boolean;
   isPinned: boolean;
   authorId: string;
+  authorName: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -74,6 +75,7 @@ interface BackendPostSummary {
   isPublic: boolean;
   isPinned?: boolean | null;
   authorId: string | number;
+  authorName?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -145,6 +147,7 @@ function normalizePostSummary(post: BackendPostSummary): AdminBoardPostSummary {
     isPublic: post.isPublic,
     isPinned: post.isPinned ?? false,
     authorId: toFrontendId(post.authorId),
+    authorName: post.authorName ?? "-",
     createdAt: post.createdAt,
     updatedAt: post.updatedAt,
   };
