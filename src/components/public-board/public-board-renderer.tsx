@@ -383,14 +383,18 @@ function renderAttachment(asset: PublicBoardPostAsset) {
 }
 
 function renderBoardPostSummary(boardPath: string, post: PublicBoardPostSummary) {
+  const itemClassName = post.isPinned
+    ? "border-b border-[#d7dde6] bg-[#f5f7fa] last:border-b-0"
+    : "border-b border-[#e2e8f0] last:border-b-0";
+
   return (
-    <li key={post.id} className="border-b border-[#e2e8f0] last:border-b-0">
+    <li key={post.id} className={itemClassName}>
       <Link
         href={getBoardPathHref(boardPath, post.id)}
-        className="group flex items-center justify-between gap-4 py-5"
+        className="group flex items-center justify-between gap-4 px-4 py-5 md:px-5"
       >
         <span className="type-body-strong min-w-0 flex-1 truncate font-semibold text-[#10213f] group-hover:text-[#2a4f8f]">
-          {post.isPinned ? <span className="mr-2 text-[#c2410c]">상단</span> : null}
+          {post.isPinned ? <span className="mr-2 text-[#c2410c]">공지</span> : null}
           {post.title}
         </span>
         <time dateTime={post.createdAt} className="type-body-small shrink-0 text-[#64748b]">
