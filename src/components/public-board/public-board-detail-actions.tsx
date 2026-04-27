@@ -84,18 +84,43 @@ export default function PublicBoardDetailActions({
 
   async function handleShare() {
     const shareUrl = typeof window !== "undefined" ? new URL(pathname, window.location.origin).toString() : pathname;
+    let nextLabel: string | null = null;
 
     try {
-      if (navigator.share) {
-        await navigator.share({ url: shareUrl });
-        setShareLabel("공유 완료");
-      } else {
+      if (navigator.share && (!navigator.canShare || navigator.canShare({ url: shareUrl }))) {
+        await navigator.share({
+          title: document.title,
+          text: document.title,
+          url: shareUrl,
+        });
+        nextLabel = "공유 완료";
+      } else if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(shareUrl);
-        setShareLabel("링크 복사됨");
+        nextLabel = "링크 복사됨";
+      } else {
+        throw new Error("clipboard unavailable");
       }
-    } catch {
-      setShareLabel("공유 실패");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(shareUrl);
+          nextLabel = "링크 복사됨";
+        } else {
+          nextLabel = "공유 실패";
+        }
+      } catch {
+        nextLabel = "공유 실패";
+      }
     } finally {
+      if (!nextLabel) {
+        return;
+      }
+
+      setShareLabel(nextLabel);
       window.setTimeout(() => setShareLabel("게시글 공유"), 1800);
     }
   }

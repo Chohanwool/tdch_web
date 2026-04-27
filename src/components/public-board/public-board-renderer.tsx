@@ -559,9 +559,9 @@ export default function PublicBoardRenderer(props: PublicBoardRendererProps) {
           <header>
             <SectionHeading id="public-board-list-title" label="BOARD" title={props.boardLabel} />
           </header>
+          <PublicBoardListControls totalItems={props.totalItems} pageSize={props.pageSize} searchTitle={props.searchTitle} />
           {props.posts.length > 0 ? (
             <>
-              <PublicBoardListControls totalItems={props.totalItems} pageSize={props.pageSize} searchTitle={props.searchTitle} />
               <div className="border-b border-site-ink">
                 <div className="hidden gap-3 px-3 py-3 text-center md:grid md:grid-cols-[88px_minmax(0,1fr)_120px_132px_88px] md:px-5">
                   <span className="type-label text-center font-semibold tracking-[0.08em] text-site-muted">번호</span>
